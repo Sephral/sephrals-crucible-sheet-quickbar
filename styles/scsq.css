@@ -2770,17 +2770,16 @@
   font-family: var(--fo-font-ui);
 }
 
-/* Status row: portrait, pools, action economy */
+/* Status row: portrait, pools, action economy, defenses, end turn and the tools; it sets the width of the bar */
 .folio .fo-qb-status {
-  display: grid;
-  grid-template-columns: 52px 200px max-content;
-  justify-content: start;
+  display: flex;
   align-items: center;
   gap: 10px 14px;
 }
 
 .folio .fo-qb-portrait {
   position: relative;
+  flex: none;
   width: 52px;
   height: 52px;
 }
@@ -2844,6 +2843,8 @@
 }
 
 .folio .fo-qb-pools {
+  flex: none;
+  width: 200px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -2969,11 +2970,13 @@
   color: var(--fo-text-3);
 }
 
-/* Action bar */
+/* Action bar: as wide as the status row (it adds no width of its own) and wraps below it */
 .folio .fo-qb-bar {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 0;
+  min-width: 100%;
 }
 
 .folio .fo-qb-actions {
@@ -2982,7 +2985,6 @@
   flex-wrap: wrap;
   gap: 4px;
   min-width: 0;
-  max-width: 440px;
 }
 
 .folio .window-content button.fo-qb-action {
@@ -3068,7 +3070,8 @@
 }
 
 .folio .fo-qb-defenses {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
   gap: 4px;
 }
 
@@ -3101,7 +3104,9 @@
 
 .folio .fo-qb-tools {
   display: flex;
+  flex-direction: column;
   gap: 3px;
+  margin-left: auto;
 }
 
 .folio .window-content button.fo-qb-tool {
@@ -3376,10 +3381,6 @@
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
-}
-
-.folio .fo-qb-status:has(.fo-qb-endturn) {
-  grid-template-columns: 52px 200px max-content max-content;
 }
 
 .folio .fo-qb-cost.skill {
@@ -3874,12 +3875,11 @@
 .application.crucible.folio.fo-compact.fo-qb .window-header .window-title { font-size: 11px; }
 .application.crucible.folio.fo-compact.fo-qb .window-content { padding: 0 6px 6px; }
 .application.folio.fo-compact .fo-quickbar { gap: 4px; }
-.application.folio.fo-compact .fo-qb-status { grid-template-columns: 42px 170px max-content; gap: 6px 10px; }
-.application.folio.fo-compact .fo-qb-status:has(.fo-qb-endturn) { grid-template-columns: 42px 170px max-content max-content; }
+.application.folio.fo-compact .fo-qb-status { gap: 6px 10px; }
 .application.folio.fo-compact .fo-qb-portrait { width: 42px; height: 42px; }
 .application.folio.fo-compact .fo-qb-portrait img { border-radius: 7px; }
 .application.folio.fo-compact .fo-qb-level { width: 17px; height: 19px; font-size: 10.5px; }
-.application.folio.fo-compact .fo-qb-pools { gap: 3px; }
+.application.folio.fo-compact .fo-qb-pools { width: 170px; gap: 3px; }
 .application.folio.fo-compact .fo-qb-pool .fo-bar { height: 5px; }
 .application.folio.fo-compact .fo-qb-value { font-size: 13px; }
 .application.folio.fo-compact .fo-qb-max { font-size: 10px; }

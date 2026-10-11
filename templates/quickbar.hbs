@@ -39,11 +39,26 @@
             {{/each}}
         </div>
 
+        {{#with @root.folio.defenses as |d|}}
+        <div class="fo-qb-defenses">
+            <span class="fo-qb-def physical" data-crucible-tooltip="tag" data-rule-id="defense.physical"><i class="fa-solid fa-shield-halved" inert></i>{{d.physical.value}}</span>
+            {{#each d.saves as |sv|}}
+            <span class="fo-qb-def {{sv.id}}" data-crucible-tooltip="tag" data-rule-id="{{sv.ruleId}}"><b inert>{{localize (concat "FOLIO.QB." sv.id)}}</b>{{sv.value}}</span>
+            {{/each}}
+        </div>
+        {{/with}}
+
         {{#if h.combat.canEnd}}
         <button type="button" class="fo-qb-endturn{{#if h.combat.endBlocked}} fo-blocked{{/if}}" data-action="foEndTurn"
                 data-tooltip="{{#if h.combat.endBlocked}}COMBAT.WARNINGS.CannotChangeRound{{else}}FOLIO.EndTurnHint{{/if}}">
             <i class="fa-solid fa-forward-step"></i><span>{{localize "FOLIO.EndTurn"}}</span></button>
         {{/if}}
+
+        <div class="fo-qb-tools">
+            <button type="button" class="fo-qb-tool{{#if @root.folio.quickbar.skillsOpen}} active{{/if}}" data-action="foQbSkills"
+                    data-tooltip="FOLIO.QB.Skills"><i class="fa-solid fa-dice-d20"></i></button>
+            <button type="button" class="fo-qb-tool" data-action="foQuickbar" data-tooltip="FOLIO.QB.Restore"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+        </div>
     </div>
 
     <div class="fo-qb-bar">
@@ -90,21 +105,6 @@
                 {{#if r.targetProblem}}<span class="fo-qb-invalid" data-tooltip="{{r.targetProblem}}"><i class="fa-solid fa-ban"></i></span>{{/if}}
             </button>
             {{/with}}
-        </div>
-
-        {{#with @root.folio.defenses as |d|}}
-        <div class="fo-qb-defenses">
-            <span class="fo-qb-def physical" data-crucible-tooltip="tag" data-rule-id="defense.physical"><i class="fa-solid fa-shield-halved" inert></i>{{d.physical.value}}</span>
-            {{#each d.saves as |sv|}}
-            <span class="fo-qb-def {{sv.id}}" data-crucible-tooltip="tag" data-rule-id="{{sv.ruleId}}"><b inert>{{localize (concat "FOLIO.QB." sv.id)}}</b>{{sv.value}}</span>
-            {{/each}}
-        </div>
-        {{/with}}
-
-        <div class="fo-qb-tools">
-            <button type="button" class="fo-qb-tool{{#if @root.folio.quickbar.skillsOpen}} active{{/if}}" data-action="foQbSkills"
-                    data-tooltip="FOLIO.QB.Skills"><i class="fa-solid fa-dice-d20"></i></button>
-            <button type="button" class="fo-qb-tool" data-action="foQuickbar" data-tooltip="FOLIO.QB.Restore"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
         </div>
     </div>
 
