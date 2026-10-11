@@ -87,26 +87,17 @@
       "RollQuick": "Roll now (skip dialog)",
       "Unpin": "Unpin"
     },
+    "LANGUAGE": {
+      "default": "Follow Foundry",
+      "de": "Deutsch",
+      "en": "English"
+    },
     "SETTINGS": {
-      "Menu": {
-        "name": "Sheet & Quickbar settings",
-        "label": "Open settings",
-        "hint": "Every option of Sephral’s Crucible Sheet & Quickbar in one place: sheet choice, display, controls, targets and combat – plus the default for everyone and the self-test for the GM."
+      "Open": "Sheet & Quickbar settings",
+      "UiLanguage": {
+        "name": "Language",
+        "hint": "Choose whether Sheet & Quickbar follows Foundry or uses a fixed module language."
       },
-      "GROUPS": {
-        "sheet": "Sheet",
-        "display": "Display",
-        "play": "Controls",
-        "targets": "Targets",
-        "combat": "Combat",
-        "maintenance": "Maintenance"
-      },
-      "Save": "Save",
-      "Reset": "Defaults",
-      "GMOnly": "GM",
-      "World": "World",
-      "WorldHint": "Applies to every player of this world.",
-      "ReloadHint": "Takes effect after a reload.",
       "QuickUse": {
         "name": "Quick mode",
         "hint": "Clicking actions and skills rolls at once without a dialog; with Shift the dialog appears. Off: the other way round."
@@ -199,13 +190,6 @@
         "none": "Nobody (everyone chooses)",
         "heroes": "Heroes",
         "all": "Heroes and adversaries"
-      },
-      "SheetActors": {
-        "name": "Chosen one by one",
-        "hint": "These characters open for you differently from the choice above. The cross removes the choice.",
-        "folio": "Sheet & Quickbar",
-        "standard": "Standard sheet",
-        "remove": "Remove the choice"
       }
     },
     "StatusNeedsSource": "“{name}” needs a source creature and cannot be applied directly here.",
@@ -280,7 +264,7 @@
       "Summary": "Sheet & Quickbar self-test: {count} sheets checked, {failed} with problems, {integrations} integration notes.",
       "Integrations": "Integration",
       "Failed": "Sheets with problems",
-      "NewVersions": "Sephral’s Crucible Sheet & Quickbar was tested with older versions. New: {versions}. Please run the self-test under Sheet & Quickbar settings → Maintenance.",
+      "NewVersions": "Sephral’s Crucible Sheet & Quickbar was tested with older versions. New: {versions}. Please run the self-test in the module settings (gear in the sheet header).",
       "PartMissing": "Part “{part}” is missing",
       "NoResources": "No resource bars",
       "QuickbarMissing": "Quickbar not rendered",

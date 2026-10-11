@@ -10,6 +10,12 @@ It is inspired by the principles of the Tidy5e sheet – dense lists, a play and
 
 Questions, feedback, and module support are welcome on [Discord](https://discord.gg/7BjCgDYaBP).
 
+## Demo
+
+![SCSQ demo](media/demo.gif)
+
+The demo uses Zarajah, one of Crucible's pregenerated heroes, and the arena of Crucible's playtest adventure. If the embedded preview is not available in your GitHub view, please check the media folder.
+
 ## Overview
 
 - Compact hero and adversary sheet with resources, defenses and action economy always in view
@@ -22,13 +28,13 @@ Questions, feedback, and module support are welcome on [Discord](https://discord
 - Backgrounds (transparent, solid, Crucible, Ember codex), dark and light theme, compact mode
 - Self-test that checks every sheet after Foundry, Crucible or Ember updates
 - Supports Foundry VTT v14 with Crucible 0.11
-- Includes English and German translations
+- Includes English and German translations; every user can follow Foundry's language or pick one for this module
 
 ## Who sees the sheet
 
 Enabling the module changes nothing for anyone. Each user chooses for themselves:
 
-- **For all their characters:** *Sheet & Quickbar settings → Sheet → Use Sheet & Quickbar for* – all heroes and adversaries, heroes only, only characters chosen one by one, or as set by the GM (default).
+- **For all their characters:** *Configure Settings → Sephral’s Crucible Sheet & Quickbar → Use Sheet & Quickbar for* – all heroes and adversaries, heroes only, only characters chosen one by one, or as set by the GM (default).
 - **For a single character:** right-click the actor in the actor directory → *Use Sheet & Quickbar (just for me)*, use the ⋮ menu of the Crucible sheet, or open Foundry's *Configure Sheet* dialog, which gets a section *just for you* at the top. The ⋮ menu of this sheet switches back to the standard sheet.
 - **For everyone (GM):** *Default for everyone* sets the sheet for heroes, or heroes and adversaries, for all users who follow the GM. The default is *Nobody*.
 
@@ -73,7 +79,7 @@ The adversary sheet uses the same layout, adapted to Crucible adversaries: taxon
 | Charges | −/+ next to charges in the inventory |
 | Keyboard | Every clickable element is reachable with Tab; Enter or Space triggers it |
 | Penalties | Negative values red, bonuses green |
-| Settings | Gear button in the sheet header (quickbar: in its title bar) |
+| Settings | Gear button in the sheet header (quickbar: in its title bar) opens the module's page in Foundry's settings |
 
 The module brings German skill and training names (Athletik, Wahrnehmung, Arkanes …).
 
@@ -110,18 +116,19 @@ If the hero no longer knows a component (e.g. after a talent respec), the entry 
 
 ## Settings
 
-All options are in the **Sheet & Quickbar settings** window: in the game settings under this module, or through the gear in the sheet header. Every option has a switch and a short explanation; *Defaults* resets the form, *Save* stores it.
+All options are in Foundry's settings dialog (*Configure Settings*) on the page of this module. The gear button in the sheet header, or in the title bar of the quickbar, opens that page directly. They appear in this order:
 
-| Group | Options |
+| Topic | Options |
 | --- | --- |
-| Sheet | Use Sheet & Quickbar for (all / heroes only / one by one / as set by the GM), characters chosen one by one; for the GM the default for everyone |
-| Display | Theme, background and its opacity, compact mode, quickbar opacity, double-click on the title bar, remaining rounds on conditions |
+| Language | *Follow Foundry* (default), *Deutsch* or *English*, for this module only |
+| Sheet | Use Sheet & Quickbar for (as set by the GM / all / heroes only / one by one); for the GM the default for everyone |
+| Display | Color scheme, background and its opacity, compact mode, quickbar opacity, double-click on the title bar, remaining rounds on conditions |
 | Controls | Quick mode, cost preview, repeat last spell, spellbook in the spell dialog, confirmation before healing adversaries |
 | Targets | Target in the quickbar, mark unsuitable actions |
 | Combat | Quickbar on your turn, announce your turn, combat bar (GM), fill adversary quickbars (GM) |
-| Maintenance (GM) | Run the self-test |
+| Self-test (GM) | Button *Run self-test* at the top of the page |
 
-Personal options apply per user on every device; world options apply to everyone.
+The language is stored per browser, like in every Sephral module. *Follow Foundry* uses Foundry's language, including community translations; a fixed choice switches the module's own texts only, Crucible keeps Foundry's language. Personal options apply per user on every device; world options apply to everyone.
 
 - **Background:** *Transparent* (default, opacity 0.3: the map shows through, blurred), *Solid*, *Crucible* (texture and arena motif of the standard Crucible sheet), *Ember codex* (only with the Ember module). Every variant exists in the dark and the light theme; the quickbar keeps its own background.
 - **Compact mode** (default: on) makes type, icons and spacing smaller in the sheet and the quickbar. New sheets open a little smaller; open windows switch immediately.
@@ -142,12 +149,12 @@ The module was previously called *Crucible Folio* (id `crucible-folio`). On the 
 
 ## Self-test after updates
 
-The sheet uses some Crucible and Ember internals. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then run *Sheet & Quickbar settings → Maintenance → Run self-test* (or `game.modules.get("sephrals-crucible-sheet-quickbar").api.runSelfTest()`): it opens every hero and adversary sheet invisibly (full and as quickbar), checks the integrations and whispers a report to the GM. The test changes no data and no stored window state.
+The sheet uses some Crucible and Ember internals. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then run *Configure Settings → Sephral’s Crucible Sheet & Quickbar → Run self-test* (or `game.modules.get("sephrals-crucible-sheet-quickbar").api.runSelfTest()`): it opens every hero and adversary sheet invisibly (full and as quickbar), checks the integrations and whispers a report to the GM. The test changes no data and no stored window state.
 
 ## Limitations
 
 - Crucible only. In worlds of other systems the module does nothing.
-- Crucible is not yet at 1.0 and changes internals between minor versions. The module builds on the Crucible hero and adversary sheet classes, `SpellCastDialog`, `CrucibleSpellAction` and the `SYSTEM` constants, and wraps Foundry's `Actor#_getSheetClass` for the personal sheet choice. Verified with Crucible 0.11.1, Ember 0.6.2 and Foundry 14.368; run the self-test after updates.
+- Crucible is not yet at 1.0 and changes internals between minor versions. The module builds on the Crucible hero and adversary sheet classes, `SpellCastDialog`, `CrucibleSpellAction` and the `SYSTEM` constants, and wraps Foundry's `Actor#_getSheetClass` for the personal sheet choice. Verified with Crucible 0.11.1, Ember 0.6.3 and Foundry 14.369; run the self-test after updates.
 - Character creation (level 0) keeps using the system's creation sheet.
 - The *Attunement* tab and the *Ember codex* background need the Ember module.
 
@@ -156,7 +163,8 @@ The sheet uses some Crucible and Ember internals. After an update of Foundry, Cr
 | File | Content |
 | --- | --- |
 | `scripts/scsq.mjs` | Entry point: registration, hooks, API |
-| `scripts/settings.mjs` | All settings and the settings window |
+| `scripts/settings.mjs` | All settings, the self-test button and the link to Foundry's settings dialog |
+| `scripts/language.mjs` | Module language: follow Foundry or a fixed German or English interface |
 | `scripts/sheet-choice.mjs` | Who sees which actor in this sheet: user setting, single choices, menu entries |
 | `scripts/migration.mjs` | One-time migration from the earlier id `crucible-folio` |
 | `scripts/config.mjs` | Constants, tested versions, browser UI state |

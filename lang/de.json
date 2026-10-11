@@ -87,26 +87,17 @@
       "RollQuick": "Sofort würfeln (ohne Dialog)",
       "Unpin": "Lösen"
     },
+    "LANGUAGE": {
+      "default": "Foundry folgen",
+      "de": "Deutsch",
+      "en": "English"
+    },
     "SETTINGS": {
-      "Menu": {
-        "name": "Sheet & Quickbar – Einstellungen",
-        "label": "Einstellungen öffnen",
-        "hint": "Alle Optionen von Sephral’s Crucible Sheet & Quickbar an einem Ort: Bogenwahl, Darstellung, Bedienung, Ziele und Kampf – für die SL zusätzlich die Vorgabe für alle und der Selbsttest."
+      "Open": "Sheet & Quickbar – Einstellungen",
+      "UiLanguage": {
+        "name": "Sprache",
+        "hint": "Festlegen, ob Sheet & Quickbar Foundry folgt oder eine feste Modulsprache verwendet."
       },
-      "GROUPS": {
-        "sheet": "Bogen",
-        "display": "Darstellung",
-        "play": "Bedienung",
-        "targets": "Ziele",
-        "combat": "Kampf",
-        "maintenance": "Wartung"
-      },
-      "Save": "Speichern",
-      "Reset": "Standardwerte",
-      "GMOnly": "SL",
-      "World": "Welt",
-      "WorldHint": "Gilt für alle Spieler dieser Welt.",
-      "ReloadHint": "Wird nach dem Neuladen wirksam.",
       "QuickUse": {
         "name": "Schnellmodus",
         "hint": "Ein Klick auf Aktionen und Fertigkeiten würfelt sofort ohne Dialog; mit Umschalt erscheint der Dialog. Aus: umgekehrt."
@@ -199,13 +190,6 @@
         "none": "Niemand (jeder wählt selbst)",
         "heroes": "Helden",
         "all": "Helden und Gegner"
-      },
-      "SheetActors": {
-        "name": "Einzeln festgelegt",
-        "hint": "Diese Charaktere öffnen sich für dich abweichend von der Auswahl oben. Das Kreuz hebt die Festlegung auf.",
-        "folio": "Sheet & Quickbar",
-        "standard": "Standardbogen",
-        "remove": "Festlegung aufheben"
       }
     },
     "StatusNeedsSource": "„{name}“ braucht eine verursachende Kreatur und kann hier nicht direkt gesetzt werden.",
@@ -280,7 +264,7 @@
       "Summary": "Selbsttest von Sheet & Quickbar: {count} Bögen geprüft, {failed} mit Problemen, {integrations} Anbindungshinweise.",
       "Integrations": "Anbindung",
       "Failed": "Bögen mit Problemen",
-      "NewVersions": "Sephral’s Crucible Sheet & Quickbar wurde mit älteren Versionen getestet. Neu: {versions}. Bitte unter Sheet & Quickbar – Einstellungen → Wartung den Selbsttest starten.",
+      "NewVersions": "Sephral’s Crucible Sheet & Quickbar wurde mit älteren Versionen getestet. Neu: {versions}. Bitte in den Moduleinstellungen (Zahnrad im Bogenkopf) den Selbsttest starten.",
       "PartMissing": "Teil „{part}“ fehlt",
       "NoResources": "Keine Ressourcenbalken",
       "QuickbarMissing": "Kompaktleiste nicht gerendert",

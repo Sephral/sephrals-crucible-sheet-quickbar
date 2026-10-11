@@ -5,7 +5,7 @@
 import {
   FLAGS, MODULE_ID, TEMPLATES, actorEntry, defaultBarPosition, loadUIState, setting, updateUIState
 } from "./config.mjs";
-import {FolioSettingsMenu} from "./settings.mjs";
+import {openSettings} from "./settings.mjs";
 import {setActorChoice} from "./sheet-choice.mjs";
 import {
   computeDefenses, getProgressIssues, prepareAbilities, prepareActionChips, prepareActions, prepareAttunements,
@@ -873,7 +873,7 @@ export function FolioSheetMixin(Base) {
     _getFrameButtons(options) {
       const buttons = super._getFrameButtons(options);
       // The full sheet has its own gear in the header; the title bar one serves the quickbar
-      buttons.unshift({icon: "fa-solid fa-gear", label: "FOLIO.SETTINGS.Menu.name", action: "foSettings"});
+      buttons.unshift({icon: "fa-solid fa-gear", label: "FOLIO.SETTINGS.Open", action: "foSettings"});
       return buttons;
     }
 
@@ -893,7 +893,7 @@ export function FolioSheetMixin(Base) {
 
     /** @this {FolioSheet} */
     static #onOpenSettings() {
-      new FolioSettingsMenu().render({force: true});
+      openSettings();
     }
 
     /** @this {FolioSheet} */

@@ -4,7 +4,8 @@ import {createFolioSheets} from "./folio-sheet.mjs";
 import {castSpellFavorite, getSpellFavorites, openSpellComposer, registerSpellDialogHooks} from "./spell-favorites.mjs";
 import {runSelfTest} from "./selftest.mjs";
 import {registerCombatHooks} from "./combat.mjs";
-import {FolioSettingsMenu, registerSettings} from "./settings.mjs";
+import {hideGMSettings, openSettings, registerSettings} from "./settings.mjs";
+import {applyModuleLanguage} from "./language.mjs";
 import {folioInUse, registerFolioSheets} from "./sheet-choice.mjs";
 
 /** The partial templates shared between several tabs of the sheet. */
@@ -48,9 +49,23 @@ Hooks.once("init", () => {
   }
 
   game.modules.get(MODULE_ID).api = {
-    devReload, runSelfTest, castSpellFavorite, getSpellFavorites, openSpellComposer,
-    openSettings: () => new FolioSettingsMenu().render({force: true})
+    devReload, runSelfTest, castSpellFavorite, getSpellFavorites, openSpellComposer, openSettings
   };
+});
+
+/* -------------------------------------------- */
+
+/** Applying a fixed module language loads its file; the sheets wait for it before they first render. */
+let languageReady = Promise.resolve();
+
+Hooks.once("i18nInit", () => {
+  if ( (game.system.id !== "crucible") || legacyActive() ) return;
+  languageReady = applyModuleLanguage(game.settings.get(MODULE_ID, "uiLanguage"));
+});
+
+Hooks.once("setup", () => {
+  if ( (game.system.id !== "crucible") || legacyActive() ) return;
+  hideGMSettings();
 });
 
 /* -------------------------------------------- */
@@ -61,6 +76,7 @@ Hooks.once("ready", async () => {
     if ( game.user.isGM ) ui.notifications.warn(_loc("FOLIO.MIGRATION.LegacyActive"), {permanent: true});
     return;
   }
+  await languageReady;
   await migrateLegacyData();
   reopenQuickbars();
   noticeNewVersions();

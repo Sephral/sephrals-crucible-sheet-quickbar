@@ -9,10 +9,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // settings.mjs and the modules it imports touch these Foundry APIs at import time
 globalThis.foundry = {
   utils: {debounce: fn => fn},
-  applications: {api: {ApplicationV2: class {}, HandlebarsApplicationMixin: Base => class extends Base {}}}
+  applications: {api: {ApplicationV2: class {}}}
 };
 
-const {SETTINGS} = await import("../scripts/settings.mjs");
+const {SETTINGS, labelKey} = await import("../scripts/settings.mjs");
 const {ACTION_SECTIONS, INVENTORY_COLUMNS} = await import("../scripts/config.mjs");
 
 /**
@@ -73,13 +73,11 @@ test("every key used by scripts and templates exists", async () => {
 
   // Keys built from a prefix at runtime
   for ( const group of SETTINGS ) {
-    used.add(`FOLIO.SETTINGS.GROUPS.${group.id}`);
     for ( const [key, def] of Object.entries(group.settings) ) {
       for ( const label of Object.values(def.choices ?? {}) ) used.add(label);
       if ( def.hidden ) continue;
-      const prefix = `FOLIO.SETTINGS.${key.charAt(0).toUpperCase()}${key.slice(1)}`;
-      used.add(`${prefix}.name`);
-      used.add(`${prefix}.hint`);
+      used.add(`${labelKey(key)}.name`);
+      used.add(`${labelKey(key)}.hint`);
     }
   }
   for ( const id of ["favorites", ...ACTION_SECTIONS] ) used.add(`FOLIO.ACTIONS.${id}`);
