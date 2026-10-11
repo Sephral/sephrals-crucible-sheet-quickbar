@@ -1,0 +1,46 @@
+{
+  "id": "sephrals-crucible-sheet-quickbar",
+  "title": "Sephral’s Crucible Sheet & Quickbar",
+  "description": "A compact, play-focused hero and adversary sheet for the Crucible system with a combat quickbar: persistent resources and defenses, searchable action lists, one-click skill checks, a spellbook and many quality-of-life shortcuts. Every user chooses for themselves which characters open in it, so one player can use it without affecting anyone else.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": 14,
+    "verified": "14.368"
+  },
+  "authors": [
+    {
+      "name": "Sephral"
+    }
+  ],
+  "url": "https://github.com/Sephral/sephrals-crucible-sheet-quickbar.git",
+  "relationships": {
+    "systems": [
+      {
+        "id": "crucible",
+        "type": "system",
+        "compatibility": {
+          "minimum": "0.11.0",
+          "verified": "0.11.1"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/scsq.mjs"
+  ],
+  "styles": [
+    "styles/scsq.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ]
+}

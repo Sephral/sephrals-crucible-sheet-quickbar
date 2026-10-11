@@ -1,0 +1,75 @@
+<section class="tab fo-tab fo-training {{tabs.training.cssClass}}" data-group="{{tabs.training.group}}" data-tab="{{tabs.training.id}}">
+    {{#with folio.training as |tr|}}
+    <div class="fo-toolbar">
+        <div class="fo-pill{{#if tr.pools.alert}} alert{{/if}}">
+            {{#if tr.pools.canAllocate}}
+            <span>{{localize "ACTOR.SHEET.PointsAvailable"}}</span><b>{{tr.pools.available}}</b>
+            <span>{{localize "ACTOR.SHEET.PointsSpent"}}</span><b>{{tr.pools.spent}}</b>
+            {{else}}
+            <span>{{localize "ACTOR.SHEET.PointsGranted"}}</span><b>{{tr.pools.granted}}</b>
+            {{/if}}
+        </div>
+        <span class="fo-toolbar-spacer"></span>
+        <button type="button" class="fo-tool-btn wide{{#if tr.trainedOnly}} active{{/if}}" data-action="foProfFilter">
+            <i class="fa-solid fa-filter"></i> {{localize "FOLIO.TrainedOnly"}}</button>
+        {{#if (and tr.pools.canAllocate @root.folio.unlocked)}}
+        <button type="button" class="fo-tool-btn" data-action="proficiencyReset" data-tooltip="ACTOR.ACTIONS.ResetProficiency"><i class="fa-solid fa-rotate-left"></i></button>
+        {{/if}}
+    </div>
+
+    <div class="fo-scroll">
+        <div class="fo-train-grid{{#if tr.showControls}} show-controls{{/if}}">
+            {{#each tr.sections as |section|}}
+            <div class="fo-card" style="--c: {{section.color}};">
+                <h3 class="fo-card-head">{{section.label}}</h3>
+                <ol class="fo-train-list" data-tooltip-direction="LEFT">
+                    {{#each section.types as |t|}}
+                    <li class="fo-train{{#if t.rollable}} rollable{{/if}}{{#if t.points}} invested{{/if}}" data-training="{{t.id}}" data-skill="{{t.id}}">
+                        <img src="{{t.icon}}" alt="" inert>
+                        {{#if t.rollable}}
+                        <a class="fo-train-name" data-action="foSkill" data-tooltip="FOLIO.RollHint">{{t.label}}</a>
+                        {{else}}
+                        <span class="fo-train-name">{{t.label}}</span>
+                        {{/if}}
+                        <span class="fo-train-rank">{{t.rank}}</span>
+                        <span class="fo-train-bar" data-tooltip-html="{{t.tooltips.points}}" data-tooltip-class="crucible">
+                            <i style="width: {{t.widthPct}}"></i>
+                            {{#each tr.ticks as |tick|}}<b style="left: {{tick}}"></b>{{/each}}
+                            {{#if t.capTick}}<b class="cap" style="left: {{t.capTick}}"></b>{{/if}}
+                        </span>
+                        <span class="fo-train-score {{t.scoreClass}}" data-tooltip="{{t.tooltips.value}}">{{numberFormat t.score sign=true}}</span>
+                        <span class="fo-train-passive"{{#if t.rollable}} data-tooltip="{{localize 'SKILL.PassiveSpecific' passive=t.tooltips.passive}}"{{/if}}>{{#if t.rollable}}{{t.passive}}{{/if}}</span>
+                        {{#if tr.showControls}}
+                        <span class="fo-steps">
+                            <button type="button" class="fo-step" data-action="foTraining" data-delta="-1" {{#unless t.canDecrease}}disabled{{/unless}}
+                                    aria-label="{{localize 'TRAINING.Decrease'}}"><i class="fa-solid fa-minus"></i></button>
+                            <button type="button" class="fo-step" data-action="foTraining" data-delta="1" {{#unless t.canIncrease}}disabled{{/unless}}
+                                    aria-label="{{localize 'TRAINING.Increase'}}"><i class="fa-solid fa-plus"></i></button>
+                        </span>
+                        {{/if}}
+                    </li>
+                    {{/each}}
+                </ol>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="fo-lore-cards">
+            <div class="fo-card">
+                <h3 class="fo-card-head">{{localize "ACTOR.LABELS.Knowledge"}}
+                    {{#if @root.folio.editable}}<a class="fo-btn" data-action="editDetailsProperty" data-property="knowledge"><i class="fa-solid fa-gear"></i></a>{{/if}}</h3>
+                <div class="fo-chips">
+                    {{#each tr.knowledge.known}}<span class="fo-tag{{#if fromBackground}} granted{{/if}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{label}}</span>{{else}}<p class="fo-hint">{{tr.knowledge.hint}}</p>{{/each}}
+                </div>
+            </div>
+            <div class="fo-card">
+                <h3 class="fo-card-head">{{localize "ACTOR.LABELS.Languages"}}
+                    {{#if @root.folio.editable}}<a class="fo-btn" data-action="editDetailsProperty" data-property="languages"><i class="fa-solid fa-gear"></i></a>{{/if}}</h3>
+                <div class="fo-chips">
+                    {{#each tr.languages.known}}<span class="fo-tag{{#if fromBackground}} granted{{/if}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{label}}</span>{{else}}<p class="fo-hint">{{tr.languages.hint}}</p>{{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/with}}
+</section>

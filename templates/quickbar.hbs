@@ -1,0 +1,147 @@
+{{#with folio.header as |h|}}
+<section class="fo-quickbar{{#if h.combat.isTurn}} is-turn{{/if}}">
+    <div class="fo-qb-status">
+        <div class="fo-qb-portrait{{#if h.health.state}} hp-{{h.health.state}}{{/if}}">
+            <img src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-tooltip="FOLIO.ShowPortrait">
+            <span class="fo-qb-level" data-tooltip="{{#if h.isHero}}{{h.milestones.tooltip}}{{else}}{{h.threat.label}}{{/if}}">{{h.levelDisplay}}</span>
+            {{#if h.combat}}
+            <span class="fo-qb-ini" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else}}FOLIO.InCombat{{/if}}">
+                <i class="fa-solid {{#if h.combat.isTurn}}fa-play{{else}}fa-swords{{/if}}"></i>{{h.combat.initiative}}</span>
+            {{/if}}
+        </div>
+
+        <div class="fo-qb-pools">
+            {{#each h.pools as |p|}}
+            <div class="fo-qb-pool {{p.id}}{{#if p.state}} is-{{p.state}}{{/if}}" style="--c: {{p.color}}; --c-low: {{p.colorLow}};">
+                <span class="fo-qb-label" data-tooltip="{{p.tooltip}}">{{p.label}}</span>
+                <div class="fo-bar"><span class="fo-fill" style="width: {{p.pct}}%"></span></div>
+                <span class="fo-qb-value">
+                    <input type="number" name="{{p.field}}" value="{{p.value}}" step="1" data-dtype="Number"
+                           aria-label="{{p.label}}" data-tooltip="FOLIO.RelativeHint" {{#unless @root.folio.editable}}disabled{{/unless}}>
+                    <span class="fo-qb-max">/{{p.max}}</span>
+                </span>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="fo-qb-economy">
+            {{#each h.currencies as |c|}}
+            <div class="fo-qb-cur {{c.id}}{{#if c.empty}} is-empty{{/if}}" style="--c: {{c.color}};" data-tooltip="{{c.label}}: {{c.value}}/{{c.max}}">
+                <span class="fo-qb-cur-label">{{localize (concat "FOLIO.QB." c.id)}}</span>
+                <div class="fo-pips">
+                    {{#each c.pips as |pip i|}}
+                    <a class="fo-pip {{pip.cssClass}}" data-action="resourcePip" data-resource="{{c.id}}" data-index="{{i}}"
+                       aria-label="{{c.label}} {{i}}"></a>
+                    {{/each}}
+                </div>
+                <span class="fo-qb-cur-value">{{c.value}}</span>
+            </div>
+            {{/each}}
+        </div>
+
+        {{#if h.combat.canEnd}}
+        <button type="button" class="fo-qb-endturn{{#if h.combat.endBlocked}} fo-blocked{{/if}}" data-action="foEndTurn"
+                data-tooltip="{{#if h.combat.endBlocked}}COMBAT.WARNINGS.CannotChangeRound{{else}}FOLIO.EndTurnHint{{/if}}">
+            <i class="fa-solid fa-forward-step"></i><span>{{localize "FOLIO.EndTurn"}}</span></button>
+        {{/if}}
+    </div>
+
+    <div class="fo-qb-bar">
+        <div class="fo-qb-actions" data-fav-container>
+            {{#each @root.folio.quickbar.buttons as |a|}}
+            {{#if a.spell}}
+            <button type="button" class="fo-qb-action is-spell{{#unless a.usable}} unusable{{/unless}}{{#if a.targetProblem}} fo-target-invalid{{/if}}" data-spell-index="{{a.index}}"
+                    data-action="foCastFavorite" data-key="{{a.key}}" data-fav-key="{{a.favKey}}" data-tooltip-direction="UP"{{#if a.costData}} data-cost="{{a.costData}}"{{/if}}
+                    data-tooltip-html="<strong>{{a.name}}</strong><br>{{a.costText}}{{#if a.target}} · {{a.target}}{{/if}}<br><em>{{localize 'FOLIO.SPELLFAV.CastHint'}}</em>">
+                <img src="{{a.img}}" alt="{{a.name}}" inert>
+                <i class="fa-solid fa-book-bookmark fo-qb-book" inert></i>
+                {{#if a.ap}}<span class="fo-qb-cost ap{{#if a.apUnmet}} unmet{{/if}}" inert>{{a.ap}}</span>{{/if}}
+                {{#if a.fp}}<span class="fo-qb-cost fp{{#if a.fpUnmet}} unmet{{/if}}" inert>{{a.fp}}</span>{{/if}}
+                {{#if a.targetProblem}}<span class="fo-qb-invalid" data-tooltip="{{a.targetProblem}}"><i class="fa-solid fa-ban"></i></span>{{/if}}
+            </button>
+            {{else if a.skill}}
+            <button type="button" class="fo-qb-action is-skill" data-pinned-skill data-skill="{{a.id}}" data-action="foSkill"
+                    data-key="{{a.key}}" data-fav-key="{{a.favKey}}" data-tooltip-direction="UP"
+                    data-tooltip-html="<strong>{{a.name}}</strong> {{a.scoreLabel}} · {{localize 'FOLIO.Passive'}} {{a.passive}}<br><em>{{localize 'FOLIO.SkillHint'}}</em>">
+                <img src="{{a.img}}" alt="{{a.name}}" inert>
+                <span class="fo-qb-cost skill {{a.scoreClass}}" inert>{{a.scoreLabel}}</span>
+            </button>
+            {{else}}
+            <button type="button" class="fo-qb-action{{#unless a.usable}} unusable{{/unless}}{{#if a.targetProblem}} fo-target-invalid{{/if}}{{#if a.autoFilled}} is-auto{{/if}}" data-action-id="{{a.id}}"
+                    data-action="foUse" data-crucible-tooltip="action" data-uuid="{{@root.actor.uuid}}"
+                    data-key="{{a.key}}"{{#if a.draggableFav}} data-fav-key="{{a.favKey}}"{{/if}} data-tooltip-direction="UP"{{#if a.costData}} data-cost="{{a.costData}}"{{/if}}>
+                <img src="{{a.img}}" alt="{{a.name}}" inert>
+                {{#if a.ap}}<span class="fo-qb-cost ap{{#if a.apUnmet}} unmet{{/if}}" inert>{{a.ap}}</span>{{/if}}
+                {{#if a.fp}}<span class="fo-qb-cost fp{{#if a.fpUnmet}} unmet{{/if}}" inert>{{a.fp}}</span>{{/if}}
+                {{#if a.targetProblem}}<span class="fo-qb-invalid" data-tooltip="{{a.targetProblem}}"><i class="fa-solid fa-ban"></i></span>{{/if}}
+            </button>
+            {{/if}}
+            {{else}}
+            {{#unless @root.folio.quickbar.repeat}}<span class="fo-qb-empty">{{localize "FOLIO.QB.NoFavorites"}}</span>{{/unless}}
+            {{/each}}
+            {{#with @root.folio.quickbar.repeat as |r|}}
+            <button type="button" class="fo-qb-action is-repeat{{#unless r.usable}} unusable{{/unless}}{{#if r.targetProblem}} fo-target-invalid{{/if}}"
+                    data-action="foRepeatSpell" data-tooltip-direction="UP"{{#if r.costData}} data-cost="{{r.costData}}"{{/if}}
+                    data-tooltip-html="<strong>{{localize 'FOLIO.LastSpell'}}</strong><br>{{r.name}} · {{r.costText}}<br><em>{{localize 'FOLIO.SPELLFAV.CastHint'}}</em>">
+                <img src="{{r.img}}" alt="{{r.name}}" inert>
+                <i class="fa-solid fa-rotate-right fo-qb-book" inert></i>
+                {{#if r.ap}}<span class="fo-qb-cost ap{{#if r.apUnmet}} unmet{{/if}}" inert>{{r.ap}}</span>{{/if}}
+                {{#if r.fp}}<span class="fo-qb-cost fp{{#if r.fpUnmet}} unmet{{/if}}" inert>{{r.fp}}</span>{{/if}}
+                {{#if r.targetProblem}}<span class="fo-qb-invalid" data-tooltip="{{r.targetProblem}}"><i class="fa-solid fa-ban"></i></span>{{/if}}
+            </button>
+            {{/with}}
+        </div>
+
+        {{#with @root.folio.defenses as |d|}}
+        <div class="fo-qb-defenses">
+            <span class="fo-qb-def physical" data-crucible-tooltip="tag" data-rule-id="defense.physical"><i class="fa-solid fa-shield-halved" inert></i>{{d.physical.value}}</span>
+            {{#each d.saves as |sv|}}
+            <span class="fo-qb-def {{sv.id}}" data-crucible-tooltip="tag" data-rule-id="{{sv.ruleId}}"><b inert>{{localize (concat "FOLIO.QB." sv.id)}}</b>{{sv.value}}</span>
+            {{/each}}
+        </div>
+        {{/with}}
+
+        <div class="fo-qb-tools">
+            <button type="button" class="fo-qb-tool{{#if @root.folio.quickbar.skillsOpen}} active{{/if}}" data-action="foQbSkills"
+                    data-tooltip="FOLIO.QB.Skills"><i class="fa-solid fa-dice-d20"></i></button>
+            <button type="button" class="fo-qb-tool" data-action="foQuickbar" data-tooltip="FOLIO.QB.Restore"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+        </div>
+    </div>
+
+    {{#if @root.folio.quickbar.targets.length}}
+    <div class="fo-qb-targets">
+        <i class="fa-solid fa-crosshairs fo-qb-targets-icon" data-tooltip="FOLIO.TARGET.Label"></i>
+        {{#each @root.folio.quickbar.targets as |t|}}
+        <button type="button" class="fo-qb-target {{t.disposition}}" data-action="foTarget" data-token-id="{{t.id}}"
+                data-tooltip-html="{{t.tooltip}}<br><em>{{localize 'FOLIO.TARGET.Pan'}}</em>">
+            <img src="{{t.img}}" alt="" inert>
+            <span class="fo-qb-target-name" inert>{{#if t.self}}{{localize "FOLIO.TARGET.Self"}}{{else}}{{t.name}}{{/if}}</span>
+            {{#if t.health}}<span class="fo-qb-target-hp" inert><i style="width: {{t.health.pct}}%"></i></span>{{/if}}
+            <span class="fo-qb-target-def" inert><i class="fa-solid fa-shield-halved"></i>{{t.physical}}</span>
+            {{#if t.distance includeZero=true}}<span class="fo-qb-target-dist" inert>{{t.distance}} ft</span>{{/if}}
+        </button>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if h.conditions.length}}
+    <div class="fo-qb-conditions">
+        {{#each h.conditions as |c|}}{{> "folio.condition" c=c}}{{/each}}
+    </div>
+    {{/if}}
+
+    <div class="fo-qb-skills"{{#unless @root.folio.quickbar.skillsOpen}} hidden{{/unless}}>
+        {{#each @root.folio.skills as |group|}}
+        <div class="fo-qb-skill-group" style="--c: {{group.color}};">
+            {{#each group.skills as |sk|}}
+            <button type="button" class="fo-qb-skill{{#if sk.trained}} trained{{/if}}" data-skill="{{sk.id}}" data-action="foSkill"
+                    data-tooltip="FOLIO.SkillHint">
+                <span class="fo-qb-skill-name" inert>{{sk.label}}</span>
+                <span class="fo-qb-skill-score {{sk.scoreClass}}" inert>{{numberFormat sk.score sign=true}}</span>
+            </button>
+            {{/each}}
+        </div>
+        {{/each}}
+    </div>
+</section>
+{{/with}}

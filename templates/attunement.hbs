@@ -1,0 +1,31 @@
+<section class="tab fo-tab fo-attunement {{tabs.attunement.cssClass}}" data-group="{{tabs.attunement.group}}" data-tab="{{tabs.attunement.id}}">
+    <div class="fo-scroll">
+        {{#if folio.attunements}}
+        <ol class="fo-attune-list">
+            {{#each folio.attunements.rows as |a|}}
+            <li class="fo-attune attunement{{#if a.active}} active{{/if}}" data-attunement="{{a.id}}"
+                style="--c: {{a.color}}; --bg: {{a.background}}; --bd: {{a.border}};">
+                <img src="{{a.icon}}" alt="" inert>
+                <div class="fo-attune-text">
+                    <span class="fo-attune-name">{{a.name}}{{#if a.active}} <span class="fo-tag granted">{{localize "FOLIO.Active"}}</span>{{/if}}</span>
+                    <span class="fo-attune-rank">{{localize "EMBER.ATTUNEMENT.Rank"}} {{a.rank}}</span>
+                </div>
+                <div class="fo-attune-progress">
+                    <span class="fo-attune-cur" data-tooltip="EMBER.ATTUNEMENT.CurrentTooltip">{{a.current}}</span>
+                    <div class="fo-bar"><span class="fo-fill" style="width: {{a.widthPct}}"></span></div>
+                    <span class="fo-attune-max" data-tooltip="EMBER.ATTUNEMENT.NextTooltip">{{a.end}}</span>
+                </div>
+                <div class="fo-cell fo-ctrl">
+                    {{#if ../folio.attunements.canModify}}
+                    <button type="button" class="fo-btn" data-action="attunementDecrease" {{#unless a.canDecrease}}disabled{{/unless}}><i class="fa-solid fa-arrow-down"></i></button>
+                    <button type="button" class="fo-btn" data-action="attunementIncrease"><i class="fa-solid fa-arrow-up"></i></button>
+                    {{/if}}
+                    <button type="button" class="fo-btn fo-sun{{#if a.active}} on{{/if}}" data-action="attunementActivate" data-tooltip="FOLIO.MakeActive"
+                            {{#unless a.canActivate}}disabled{{/unless}}><i class="fa-solid fa-sun"></i></button>
+                </div>
+            </li>
+            {{/each}}
+        </ol>
+        {{/if}}
+    </div>
+</section>

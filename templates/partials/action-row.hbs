@@ -1,0 +1,63 @@
+<li class="fo-row fo-action fo-kind-{{row.kind}}{{#unless row.usable}} unusable{{/unless}}{{#if row.pinned}} is-pinned{{/if}}{{#if row.expanded}} expanded{{/if}}"
+    {{#if row.spell}}data-spell-index="{{row.index}}"{{else if row.skill}}data-pinned-skill data-skill="{{row.id}}"{{else}}data-action-id="{{row.id}}"{{/if}}
+    data-key="{{row.key}}" data-section="{{row.section}}" data-usable="{{row.usable}}" data-search="{{row.search}}"
+    {{#if row.draggableFav}}data-fav-key="{{row.favKey}}"{{/if}}{{#if row.costData}} data-cost="{{row.costData}}"{{/if}}>
+    <div class="fo-row-main">
+        {{#if row.spell}}
+        <a class="fo-icon usable" data-action="foCastFavorite" data-tooltip="FOLIO.SPELLFAV.CastHint" data-tooltip-direction="LEFT">
+            <img src="{{row.img}}" alt="" inert><i class="fa-solid fa-wand-sparkles fo-use-hint" inert></i>
+            <i class="fa-solid fa-book-bookmark fo-book-badge" inert></i>
+        </a>
+        {{else if row.skill}}
+        <a class="fo-icon usable" data-action="foSkill" data-tooltip="FOLIO.SkillHint" data-tooltip-direction="LEFT">
+            <img src="{{row.img}}" alt="" inert><i class="fa-solid fa-dice-d20 fo-use-hint" inert></i>
+            <i class="fa-solid fa-thumbtack fo-book-badge" inert></i>
+        </a>
+        {{else}}
+        <a class="fo-icon usable draggable fo-action-drag" data-action="foUse" draggable="true" data-crucible-tooltip="action"
+           data-uuid="{{@root.actor.uuid}}" data-action-id="{{row.id}}" data-tooltip-direction="LEFT">
+            <img src="{{row.img}}" alt="" inert><i class="fa-solid fa-dice-d20 fo-use-hint" inert></i>
+        </a>
+        {{/if}}
+        <div class="fo-name" data-action="{{#if row.skill}}foSkill{{else}}foExpand{{/if}}">
+            <span class="fo-title">{{row.name}}</span>
+            {{#if row.subtitle.length}}
+            <span class="fo-sub">{{#each row.subtitle as |s|}}<span class="{{#if s.unmet}}unmet{{/if}}{{#if s.source}} source{{/if}}"{{#if s.tooltip}} data-crucible-tooltip="tag" data-crucible-tooltip-text="{{s.tooltip}}"{{/if}}>{{s.label}}</span>{{/each}}</span>
+            {{/if}}
+        </div>
+        {{#if row.skill}}
+        <div class="fo-cell fo-cost"><span class="fo-skill-badge {{row.scoreClass}}">{{row.scoreLabel}}</span></div>
+        <div class="fo-cell fo-target" data-tooltip="FOLIO.Passive">{{localize "FOLIO.Passive"}} {{row.passive}}</div>
+        {{else}}
+        <div class="fo-cell fo-cost">{{> "folio.cost" cost=row.cost}}</div>
+        <div class="fo-cell fo-target">{{row.target}}</div>
+        {{/if}}
+        <div class="fo-cell fo-ctrl">
+            {{#if row.draggableFav}}{{#if @root.folio.editable}}<span class="fo-grip" data-tooltip="FOLIO.DragToSort" inert><i class="fa-solid fa-grip-vertical"></i></span>{{/if}}{{/if}}
+            {{#if row.spell}}
+            {{#if @root.folio.unlocked}}
+            <button type="button" class="fo-btn" data-action="foSpellRename" data-tooltip="FOLIO.SPELLFAV.Rename"><i class="fa-solid fa-signature"></i></button>
+            {{/if}}
+            {{#if @root.folio.editable}}
+            <button type="button" class="fo-btn fo-fav on" data-action="foSpellRemove" data-tooltip="FOLIO.SPELLFAV.Remove">
+                <i class="fa-solid fa-star"></i></button>
+            {{/if}}
+            {{else if row.skill}}
+            {{#if @root.folio.editable}}
+            <button type="button" class="fo-btn fo-fav on" data-action="foPinSkill" data-tooltip="FOLIO.MENU.Unpin">
+                <i class="fa-solid fa-thumbtack"></i></button>
+            {{/if}}
+            {{else}}
+            {{#if (and row.canEdit @root.folio.unlocked)}}
+            <button type="button" class="fo-btn" data-action="foActionEdit" data-tooltip="TALENT.ACTIONS.ActionEdit"><i class="fa-solid fa-pen-to-square"></i></button>
+            {{/if}}
+            {{#if @root.folio.editable}}
+            <button type="button" class="fo-btn fo-fav{{#if row.favorite}} on{{/if}}" data-action="foFavorite"
+                    data-tooltip="{{#if row.favorite}}ACTION.ACTIONS.RemoveFavorite{{else}}ACTION.ACTIONS.AddFavorite{{/if}}">
+                <i class="{{#if row.favorite}}fa-solid{{else}}fa-regular{{/if}} fa-star"></i></button>
+            {{/if}}
+            {{/if}}
+        </div>
+    </div>
+    {{#if row.expanded}}<div class="fo-detail{{#if row.spell}} fo-card-detail{{/if}}">{{{row.description}}}</div>{{/if}}
+</li>

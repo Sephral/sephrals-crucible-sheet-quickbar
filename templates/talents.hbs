@@ -1,0 +1,69 @@
+<section class="tab fo-tab fo-talents {{tabs.talents.cssClass}}" data-group="{{tabs.talents.group}}" data-tab="{{tabs.talents.id}}">
+    <div class="fo-toolbar">
+        <label class="fo-search-box{{#if folio.filters.talents.text}} has-value{{/if}}">
+            <i class="fa-solid fa-magnifying-glass" inert></i>
+            <input class="fo-search" type="search" data-tab="talents" value="{{folio.filters.talents.text}}"
+                   placeholder="{{localize 'FOLIO.SearchTalents'}}" autocomplete="off" spellcheck="false">
+            <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
+        </label>
+        {{#if folio.talents.canPurchase}}
+        {{#with folio.talents.points as |pts|}}
+        <div class="fo-pill{{#if pts.alert}} alert{{/if}}" data-tooltip="FOLIO.TalentPoints">
+            <span>{{localize "ACTOR.SHEET.PointsAvailable"}}</span><b>{{pts.available}}</b>
+            <span>{{localize "ACTOR.SHEET.PointsSpent"}}</span><b>{{pts.spent}}</b>
+        </div>
+        {{/with}}
+        {{#if folio.editable}}
+        <button type="button" class="fo-tool-btn wide{{#if folio.talents.treeOpen}} active{{/if}}" data-action="talentTree">
+            <i class="fa-solid fa-diagram-project"></i> {{folio.talents.treeLabel}}</button>
+        {{/if}}
+        {{#if folio.unlocked}}
+        <button type="button" class="fo-tool-btn" data-action="talentReset" data-tooltip="ACTOR.ACTIONS.ResetTalents"><i class="fa-solid fa-rotate-left"></i></button>
+        {{/if}}
+        {{/if}}
+    </div>
+
+    <div class="fo-scroll fo-lists" style="--cols: 30px minmax(0, 1fr) 76px 78px 56px;">
+        {{#each folio.talents.sections as |section|}}
+        <section class="fo-section fo-talent-{{section.id}}{{#if section.collapsed}} collapsed{{/if}}" data-section="{{section.id}}"
+                 data-collapse-key="{{section.key}}" data-filterable>
+            {{#if section.hasActivation}}
+            {{> "folio.section-head" label=section.label icon=section.icon count=section.counter columns=@root.folio.actionColumns}}
+            {{else}}
+            {{> "folio.section-head" label=section.label icon=section.icon count=section.counter}}
+            {{/if}}
+            <ol class="fo-rows">
+                {{#each section.rows as |row|}}
+                <li class="fo-row fo-talent{{#if row.expanded}} expanded{{/if}}" data-item-id="{{row.id}}" data-key="{{row.key}}"
+                    data-search="{{row.search}}" {{#if row.actionId}}data-use-action="{{row.actionId}}"{{/if}} data-deletable="{{@root.folio.talents.canDelete}}">
+                    <div class="fo-row-main">
+                        <a class="fo-icon{{#if row.usable}} usable{{/if}}" data-action="foUse" data-crucible-tooltip="talent"
+                           data-uuid="{{row.uuid}}" data-tooltip-direction="LEFT">
+                            <img src="{{row.img}}" alt="" inert>{{#if row.usable}}<i class="fa-solid fa-dice-d20 fo-use-hint" inert></i>{{/if}}
+                        </a>
+                        <div class="fo-name" data-action="foExpand">
+                            <span class="fo-title">{{row.name}}</span>
+                            {{#if row.subtitle.length}}
+                            <span class="fo-sub">{{#each row.subtitle as |s|}}<span class="{{#if s.unmet}}unmet{{/if}}{{#if s.source}} source{{/if}}"{{#if s.tooltip}} data-crucible-tooltip="tag" data-crucible-tooltip-text="{{s.tooltip}}"{{/if}}>{{s.label}}</span>{{/each}}</span>
+                            {{/if}}
+                        </div>
+                        <div class="fo-cell fo-cost">{{> "folio.cost" cost=row.cost}}</div>
+                        <div class="fo-cell fo-target">{{row.target}}</div>
+                        <div class="fo-cell fo-ctrl">
+                            <button type="button" class="fo-btn" data-action="foItemEdit" data-tooltip="TALENT.ACTIONS.Edit"><i class="fa-solid fa-book-open"></i></button>
+                            {{#if (and @root.folio.talents.canDelete @root.folio.unlocked)}}
+                            <button type="button" class="fo-btn fo-danger" data-action="foItemDelete" data-tooltip="TALENT.ACTIONS.Delete"><i class="fa-solid fa-trash"></i></button>
+                            {{/if}}
+                        </div>
+                    </div>
+                    {{#if row.expanded}}<div class="fo-detail">{{{row.description}}}</div>{{/if}}
+                </li>
+                {{/each}}
+            </ol>
+        </section>
+        {{else}}
+        <p class="fo-hint">{{localize "FOLIO.NoTalents"}}</p>
+        {{/each}}
+        <p class="fo-no-results" hidden><i class="fa-solid fa-ghost"></i> {{localize "FOLIO.NoResults"}}</p>
+    </div>
+</section>

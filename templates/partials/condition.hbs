@@ -1,0 +1,6 @@
+<span class="fo-cond{{#if c.maintained}} maintained{{/if}}" data-tooltip-html="{{c.tooltip}}">
+    <img src="{{c.img}}" alt="{{c.name}}" data-action="foGoTab" data-tab="effects">
+    {{#if c.roundsLabel}}<span class="fo-cond-rounds" inert>{{c.roundsLabel}}</span>{{/if}}
+    {{#if c.canEnd}}<button type="button" class="fo-cond-end" data-action="foEndEffect" data-uuid="{{c.uuid}}"
+            data-tooltip="FOLIO.EndEffect" aria-label="{{localize 'FOLIO.EndEffect'}}"><i class="fa-solid fa-xmark"></i></button>{{/if}}
+</span>

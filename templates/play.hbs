@@ -1,0 +1,116 @@
+<section class="tab fo-tab fo-play {{tabs.play.cssClass}}" data-group="{{tabs.play.group}}" data-tab="{{tabs.play.id}}">
+
+    {{!-- Sidebar: equipment, skills, resistances, lore --}}
+    <aside class="fo-side">
+        <div class="fo-block{{#if folio.collapsed.[side.equipped]}} collapsed{{/if}}" data-collapse-key="side.equipped">
+            <h3 class="fo-block-head" data-action="foCollapse"><i class="fa-solid fa-chevron-down fo-chev" inert></i>{{localize "FOLIO.Equipped"}}</h3>
+            <ul class="fo-equipped" data-tooltip-direction="RIGHT">
+                {{#each folio.equipped as |e|}}
+                <li class="fo-equip" {{#if e.uuid}}data-crucible-tooltip="{{e.type}}" data-uuid="{{e.uuid}}"{{/if}}>
+                    <img src="{{e.img}}" alt="" inert>
+                    <span class="fo-equip-name" inert>{{e.name}}</span>
+                    <span class="fo-equip-tags" inert>{{#each e.tags}}<span>{{this}}</span>{{/each}}</span>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+
+        {{#each folio.skills as |group|}}
+        <div class="fo-block fo-skills{{#if group.collapsed}} collapsed{{/if}}" data-collapse-key="{{group.key}}" style="--c: {{group.color}};">
+            <h3 class="fo-block-head" data-action="foCollapse">
+                <i class="fa-solid fa-chevron-down fo-chev" inert></i><span class="fo-block-label">{{group.label}}</span>
+                <span class="fo-head-cols" inert><span>{{localize "FOLIO.Bonus"}}</span><span>{{localize "FOLIO.Passive"}}</span></span>
+            </h3>
+            <ol class="fo-skill-list" data-tooltip-direction="RIGHT">
+                {{#each group.skills as |sk|}}
+                <li class="fo-skill{{#if sk.trained}} trained{{/if}}{{#if sk.pinned}} pinned{{/if}}" data-skill="{{sk.id}}" data-action="foSkill"
+                    data-tooltip-html="<strong>{{sk.label}}</strong> ({{sk.abbrs}}) · {{sk.rankLabel}}<br>{{sk.tooltip}}<br><em>{{localize 'FOLIO.SkillHint'}}</em>">
+                    <span class="fo-rank" inert>{{#each sk.pips}}<i class="{{#if this}}on{{/if}}"></i>{{/each}}</span>
+                    <span class="fo-skill-name" inert>{{sk.label}}</span>
+                    <span class="fo-skill-score {{sk.scoreClass}}" inert>{{numberFormat sk.score sign=true}}</span>
+                    <span class="fo-skill-passive" inert>{{sk.passive}}</span>
+                    {{#if @root.folio.editable}}
+                    <button type="button" class="fo-skill-pin" data-action="foPinSkill"
+                            data-tooltip="{{#if sk.pinned}}FOLIO.MENU.Unpin{{else}}FOLIO.PinSkill{{/if}}"><i class="fa-solid fa-thumbtack"></i></button>
+                    {{/if}}
+                </li>
+                {{/each}}
+            </ol>
+        </div>
+        {{/each}}
+
+        <div class="fo-block fo-resists{{#if folio.resistances.collapsed}} collapsed{{/if}}" data-collapse-key="side.resistances">
+            <h3 class="fo-block-head" data-action="foCollapse"><i class="fa-solid fa-chevron-down fo-chev" inert></i>{{localize "ACTOR.FIELDS.resistances.label"}}</h3>
+            <div class="fo-resist-grid">
+                {{#each folio.resistances.groups as |g|}}
+                <div class="fo-resist-col">
+                    {{#each g.values as |r|}}
+                    <span class="fo-resist {{r.css}}" data-resistance="{{r.id}}"><span>{{r.label}}</span><b>{{r.total}}</b></span>
+                    {{/each}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="fo-block fo-lore{{#if folio.collapsed.[side.lore]}} collapsed{{/if}}" data-collapse-key="side.lore">
+            <h3 class="fo-block-head" data-action="foCollapse"><i class="fa-solid fa-chevron-down fo-chev" inert></i>{{localize "FOLIO.Lore"}}</h3>
+            <div class="fo-lore-body">
+                <div class="fo-chips">
+                    <i class="fa-solid fa-book" data-tooltip="ACTOR.LABELS.Knowledge"></i>
+                    {{#each knowledge.known}}<span class="fo-tag{{#if fromBackground}} granted{{/if}}">{{label}}</span>{{else}}<span class="fo-empty">–</span>{{/each}}
+                </div>
+                <div class="fo-chips">
+                    <i class="fa-solid fa-language" data-tooltip="ACTOR.LABELS.Languages"></i>
+                    {{#each languages.known}}<span class="fo-tag{{#if fromBackground}} granted{{/if}}">{{label}}</span>{{else}}<span class="fo-empty">–</span>{{/each}}
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    {{!-- Main: searchable action list --}}
+    <div class="fo-main">
+        <div class="fo-toolbar">
+            <label class="fo-search-box{{#if folio.filters.play.text}} has-value{{/if}}">
+                <i class="fa-solid fa-magnifying-glass" inert></i>
+                <input class="fo-search" type="search" data-tab="play" value="{{folio.filters.play.text}}"
+                       placeholder="{{localize 'FOLIO.SearchActions'}}" autocomplete="off" spellcheck="false">
+                <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
+            </label>
+            <div class="fo-chip-row">
+                {{#each folio.actions.chips as |chip|}}
+                <button type="button" class="fo-filter{{#if chip.active}} active{{/if}}{{#if chip.iconOnly}} icon-only{{/if}}"
+                        data-action="foFilter" data-tab="play" data-filter="{{chip.id}}" data-tooltip="{{chip.label}}">
+                    <i class="{{chip.icon}}" inert></i>{{#unless chip.iconOnly}}<span inert>{{chip.label}}</span>{{/unless}}
+                </button>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="fo-scroll fo-lists" style="--cols: 30px minmax(0, 1fr) 76px 78px 50px;">
+            {{#with folio.actions.favorites as |fav|}}
+            {{#if fav.rows.length}}
+            <section class="fo-section fo-favorites{{#if fav.collapsed}} collapsed{{/if}}" data-section="favorites"
+                     data-collapse-key="play.favorites" data-filterable>
+                {{> "folio.section-head" label=fav.label icon=fav.icon count=fav.rows.length
+                    columns=@root.folio.actionColumns}}
+                <ol class="fo-rows" data-fav-container>
+                    {{#each fav.rows as |row|}}{{> "folio.action-row" row=row}}{{/each}}
+                </ol>
+            </section>
+            {{/if}}
+            {{/with}}
+
+            {{#each folio.actions.sections as |section|}}
+            <section class="fo-section{{#if section.collapsed}} collapsed{{/if}}{{#if section.allPinned}} fo-all-pinned{{/if}}"
+                     data-section="{{section.id}}" data-collapse-key="play.{{section.id}}" data-filterable>
+                {{> "folio.section-head" label=section.label icon=section.icon count=section.count
+                    columns=@root.folio.actionColumns}}
+                <ol class="fo-rows">
+                    {{#each section.rows as |row|}}{{> "folio.action-row" row=row}}{{/each}}
+                </ol>
+            </section>
+            {{/each}}
+            <p class="fo-no-results" hidden><i class="fa-solid fa-ghost"></i> {{localize "FOLIO.NoResults"}}</p>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,431 @@
+{
+  "FOLIO": {
+    "SheetLabel": "Sheet & Quickbar (kompakter Heldenbogen)",
+    "Level": "Stufe",
+    "Name": "Name des Helden",
+    "Initiative": "Ini",
+    "YourTurn": "Du bist am Zug",
+    "InCombat": "Im Kampf",
+    "EditPortrait": "Porträt ändern",
+    "ShowPortrait": "Porträt allen zeigen",
+    "ViewAncestry": "Abstammung ansehen",
+    "ViewBackground": "Hintergrund ansehen",
+    "Signature": "Signaturtalent",
+    "RecoverTooltip": "Erholen (10 Minuten außerhalb des Kampfes)",
+    "RestTooltip": "Rasten (10 Stunden)",
+    "Lock": "Spielmodus: Bearbeitungsfunktionen ausblenden",
+    "Unlock": "Bearbeitungsmodus: Bogen entsperren",
+    "Equipped": "Ausgerüstet",
+    "Bonus": "Bonus",
+    "Passive": "Passiv",
+    "SkillHint": "Klick: Probe · Umschalt+Klick: ohne Dialog",
+    "RollHint": "Probe würfeln (Umschalt: ohne Dialog)",
+    "Lore": "Wissen & Sprachen",
+    "SearchActions": "Aktionen suchen …",
+    "SearchItems": "Gegenstände suchen …",
+    "SearchTalents": "Talente suchen …",
+    "SearchEffects": "Effekte suchen …",
+    "NoResults": "Keine Treffer",
+    "NoDescription": "Keine Beschreibung vorhanden.",
+    "NoTalents": "Noch keine Talente.",
+    "NoEffects": "Keine aktiven Effekte.",
+    "UsesLeft": "{value}/{max} übrig",
+    "ActionCount": "{count} Aktionen",
+    "TalentPoints": "Talentpunkte",
+    "TrainedOnly": "Nur trainierte",
+    "CastSpell": "Zauber wirken",
+    "SpellHint": "Runen, Gesten und Flexionen kombinierst du über „Zauber wirken“.",
+    "Conditions": "Zustände",
+    "Active": "Aktiv",
+    "MakeActive": "Als aktive Einstimmung festlegen",
+    "TABS": {
+      "play": "Spiel",
+      "inventory": "Inventar",
+      "talents": "Talente",
+      "training": "Training",
+      "spells": "Zauber",
+      "effects": "Effekte",
+      "attunement": "Einstimmung",
+      "biography": "Biografie"
+    },
+    "ACTIONS": {
+      "favorites": "Favoriten",
+      "attack": "Angriff",
+      "spell": "Zauberkunst",
+      "summon": "Beschwörung",
+      "reaction": "Reaktionen",
+      "movement": "Bewegung",
+      "consumable": "Verbrauchsgüter",
+      "general": "Allgemein"
+    },
+    "FILTER": {
+      "All": "Alle",
+      "Usable": "Jetzt nutzbar"
+    },
+    "COLUMNS": {
+      "cost": "Kosten",
+      "target": "Ziel",
+      "damage": "Schaden",
+      "range": "Reichw.",
+      "armor": "Rüstung",
+      "dodge": "Ausw.",
+      "uses": "Ladung",
+      "quantity": "Menge",
+      "weight": "Gewicht"
+    },
+    "MENU": {
+      "Use": "Benutzen",
+      "UseQuick": "Sofort benutzen (ohne Dialog)",
+      "Details": "Details ein-/ausklappen",
+      "Favorite": "Favorit umschalten",
+      "Edit": "Bearbeiten",
+      "Delete": "Löschen",
+      "Equip": "Ausrüsten",
+      "Unequip": "Ablegen",
+      "Toggle": "Aktivieren/Deaktivieren",
+      "Roll": "Probe würfeln",
+      "RollQuick": "Sofort würfeln (ohne Dialog)",
+      "Unpin": "Lösen"
+    },
+    "SETTINGS": {
+      "Menu": {
+        "name": "Sheet & Quickbar – Einstellungen",
+        "label": "Einstellungen öffnen",
+        "hint": "Alle Optionen von Sephral’s Crucible Sheet & Quickbar an einem Ort: Bogenwahl, Darstellung, Bedienung, Ziele und Kampf – für die SL zusätzlich die Vorgabe für alle und der Selbsttest."
+      },
+      "GROUPS": {
+        "sheet": "Bogen",
+        "display": "Darstellung",
+        "play": "Bedienung",
+        "targets": "Ziele",
+        "combat": "Kampf",
+        "maintenance": "Wartung"
+      },
+      "Save": "Speichern",
+      "Reset": "Standardwerte",
+      "GMOnly": "SL",
+      "World": "Welt",
+      "WorldHint": "Gilt für alle Spieler dieser Welt.",
+      "ReloadHint": "Wird nach dem Neuladen wirksam.",
+      "QuickUse": {
+        "name": "Schnellmodus",
+        "hint": "Ein Klick auf Aktionen und Fertigkeiten würfelt sofort ohne Dialog; mit Umschalt erscheint der Dialog. Aus: umgekehrt."
+      },
+      "Theme": {
+        "name": "Farbschema",
+        "hint": "Dunkles oder helles Erscheinungsbild der Bögen und Kompaktleisten dieses Moduls.",
+        "dark": "Dunkel (Glut)",
+        "light": "Hell (Pergament)"
+      },
+      "Background": {
+        "name": "Hintergrund",
+        "hint": "Hintergrund des Bogens: einfarbig, das Bild des normalen Crucible-Bogens, der Ember-Codex oder transparent, sodass die Karte durchscheint. Die Kompaktleiste behält ihren eigenen Hintergrund.",
+        "solid": "Einfarbig",
+        "crucible": "Crucible (Standardbogen)",
+        "ember": "Ember-Codex",
+        "glass": "Transparent"
+      },
+      "BackgroundOpacity": {
+        "name": "Deckkraft bei transparentem Hintergrund",
+        "hint": "Wie stark der Bogen die Karte abdeckt (0,3 = sehr durchsichtig, 1 = undurchsichtig). Wirkt nur beim Hintergrund „Transparent“."
+      },
+      "CompactMode": {
+        "name": "Kompakte Darstellung",
+        "hint": "Kleinere Schrift, Symbole und Abstände – mehr Inhalt auf weniger Platz. Gilt für Bogen und Kompaktleiste."
+      },
+      "QuickbarOpacity": {
+        "name": "Transparenz der Kompaktleiste",
+        "hint": "Deckkraft, solange die Maus nicht darüber ist (0,2 = sehr durchsichtig, 1 = undurchsichtig). Bei Mausberührung und am eigenen Zug ist sie immer voll sichtbar."
+      },
+      "HeaderDblClick": {
+        "name": "Doppelklick auf die Titelleiste",
+        "hint": "Wechselt zwischen Bogen und Kompaktleiste. Aus: Foundry-Standard (Fenster einklappen)."
+      },
+      "ConditionRounds": {
+        "name": "Restdauer an Zuständen",
+        "hint": "Zeigt im Kopf und in der Kompaktleiste die verbleibenden Runden eines Zustands."
+      },
+      "CostPreview": {
+        "name": "Kosten-Vorschau",
+        "hint": "Beim Überfahren einer Aktion pulsieren die Aktions-, Fokus- und Heldentum-Punkte, die sie kostet; fehlende Punkte werden rot."
+      },
+      "RepeatSpell": {
+        "name": "„Letzten Zauber wiederholen“",
+        "hint": "Knopf im Zauber-Tab und in der Kompaktleiste, der den zuletzt gewirkten Zauber erneut wirkt."
+      },
+      "SpellDialogStrip": {
+        "name": "Zauberbuch im Zauberdialog",
+        "hint": "Zeigt im Crucible-Zauberdialog die Leiste mit gespeicherten Zaubern zum Laden und Speichern."
+      },
+      "HostileHealConfirm": {
+        "name": "Rückfrage bei Heilung von Gegnern",
+        "hint": "Fragt nach, bevor eine Heilung (z. B. ein Heiltrank) auf einen Gegner angewendet wird."
+      },
+      "QuickbarTargets": {
+        "name": "Ziel in der Kompaktleiste",
+        "hint": "Zeigt anvisierte Tokens mit Verteidigung und Entfernung; Klick springt zum Token."
+      },
+      "TargetChecks": {
+        "name": "Unpassende Aktionen markieren",
+        "hint": "Markiert Knöpfe der Kompaktleiste, die auf das aktuelle Ziel nicht gehen (Reichweite, Flankieren …), und nennt den Grund."
+      },
+      "TurnQuickbar": {
+        "name": "Kompaktleiste am eigenen Zug",
+        "hint": "Öffnet die Kompaktleiste deines Helden automatisch, wenn er im Kampf an der Reihe ist."
+      },
+      "TurnAnnounce": {
+        "name": "Zugbeginn melden",
+        "hint": "Meldet „… ist am Zug!“ und lässt die Kompaktleiste kurz aufleuchten."
+      },
+      "CombatBar": {
+        "name": "Kampfleiste",
+        "hint": "Ist ein Gegner am Zug, öffnet sich dessen Kompaktleiste an fester Stelle und wechselt mit jedem Gegnerzug. Die Leiste merkt sich ihre Position."
+      },
+      "AutoFillAdversaries": {
+        "name": "Gegnerleisten automatisch füllen",
+        "hint": "Gegner ohne eigene Favoriten bekommen in der Kompaktleiste ihre Angriffe, Fähigkeiten und „Verteidigen“."
+      },
+      "SheetMode": {
+        "name": "Sheet & Quickbar verwenden für",
+        "hint": "Gilt nur für dich – andere Spieler und die SL sehen ihre eigene Wahl. Einzelne Charaktere schaltest du per Rechtsklick in der Akteursliste oder im ⋮-Menü ihres Bogens um.",
+        "world": "Wie von der SL vorgegeben",
+        "all": "Alle Helden und Gegner",
+        "heroes": "Nur Helden",
+        "chosen": "Nur einzeln ausgewählte Charaktere"
+      },
+      "WorldDefault": {
+        "name": "Vorgabe für alle",
+        "hint": "Gilt für alle, die „Wie von der SL vorgegeben“ gewählt haben. Bei „Niemand“ ändert das Modul für niemanden etwas, bis er es selbst wählt.",
+        "none": "Niemand (jeder wählt selbst)",
+        "heroes": "Helden",
+        "all": "Helden und Gegner"
+      },
+      "SheetActors": {
+        "name": "Einzeln festgelegt",
+        "hint": "Diese Charaktere öffnen sich für dich abweichend von der Auswahl oben. Das Kreuz hebt die Festlegung auf.",
+        "folio": "Sheet & Quickbar",
+        "standard": "Standardbogen",
+        "remove": "Festlegung aufheben"
+      }
+    },
+    "StatusNeedsSource": "„{name}“ braucht eine verursachende Kreatur und kann hier nicht direkt gesetzt werden.",
+    "DEFENSE": {
+      "physical": "Physisch",
+      "fortitude": "Standh.",
+      "reflex": "Reflex",
+      "willpower": "Wille"
+    },
+    "RelativeHint": "Wert eingeben – oder relativ: „-7“ für Schaden, „+5“ für Heilung",
+    "SPELLFAV": {
+      "Title": "Zauberbuch",
+      "Book": "Zauberbuch",
+      "Save": "Speichern",
+      "Saved": "Gespeichert",
+      "SaveHint": "Diese Kombination im Zauberbuch speichern",
+      "RemoveHint": "Gespeichert – klicken, um sie aus dem Zauberbuch zu entfernen",
+      "ApplyHint": "Kombination laden",
+      "Empty": "Noch leer: Rune, Geste und Flexion wählen, dann auf „Speichern“ klicken.",
+      "BookEmpty": "Noch keine gespeicherten Zauber. Lege sie mit „Zauber erstellen“ an oder speichere sie direkt im Zauberdialog.",
+      "Missing": "Nicht mehr bekannt: {components}",
+      "Unknown": "unbekannt: {components}",
+      "Cast": "Wirken (Dialog vorausgefüllt)",
+      "CastQuick": "Sofort wirken (ohne Dialog)",
+      "CastHint": "Wirken – Dialog öffnet sich vorausgefüllt (Umschalt: sofort)",
+      "Remove": "Aus dem Zauberbuch entfernen",
+      "Create": "Zauber erstellen",
+      "CreateHint": "Zauber zusammenstellen und im Zauberbuch speichern, ohne ihn zu wirken",
+      "ComposerTitle": "Zauber erstellen: {actor}",
+      "SaveToBook": "Im Zauberbuch speichern",
+      "AlreadySaved": "Bereits im Zauberbuch",
+      "Added": "„{name}“ im Zauberbuch gespeichert.",
+      "NoComponents": "Dieser Held kennt keine Runen oder Gesten.",
+      "Rename": "Umbenennen",
+      "RenameTitle": "Umbenennen: {name}",
+      "RenameHint": "Eigener Name für diesen Eintrag. Leer lassen für den Zaubernamen.",
+      "RenameSave": "Speichern",
+      "Name": "Eigener Name",
+      "NamePlaceholder": "optional, z. B. „Heilhand“"
+    },
+    "Cancel": "Abbrechen",
+    "NeedsToken": "„{name}“ wird auf der Karte platziert: Dein Token muss dafür auf der aktuellen Szene stehen.",
+    "QB": {
+      "ToQuickbar": "Zur Kompaktleiste (oder Doppelklick auf die Titelleiste)",
+      "Restore": "Vollen Bogen öffnen (oder Doppelklick auf die Titelleiste)",
+      "Skills": "Fertigkeitsproben",
+      "NoFavorites": "Keine Favoriten – markiere Aktionen mit ☆",
+      "action": "A",
+      "focus": "F",
+      "heroism": "H",
+      "fortitude": "Sta",
+      "reflex": "Ref",
+      "willpower": "Wil"
+    },
+    "SheetLabelAdversary": "Sheet & Quickbar (kompakter Gegnerbogen)",
+    "ViewTaxonomy": "Taxonomie ansehen",
+    "ViewArchetype": "Archetyp ansehen",
+    "ThreatRank": "Bedrohungsrang",
+    "LevelUp": "Stufe erhöhen",
+    "LevelDown": "Stufe senken",
+    "EndTurn": "Zug beenden",
+    "EndTurnHint": "Deinen Zug beenden und an den nächsten Kämpfer weitergeben",
+    "PinSkill": "An Favoriten und Kompaktleiste anheften",
+    "DragToSort": "Ziehen zum Sortieren",
+    "UseSpend": "Ladung verbrauchen",
+    "UseRestore": "Ladung wiederherstellen",
+    "SELFTEST": {
+      "Title": "Selbsttest",
+      "Run": "Selbsttest starten",
+      "Hint": "Öffnet alle Helden- und Gegnerbögen unsichtbar (voll und als Kompaktleiste) und prüft die Anbindung an Crucible und Ember. Nach jedem Update ausführen.",
+      "Started": "Selbsttest von Sheet & Quickbar läuft …",
+      "Summary": "Selbsttest von Sheet & Quickbar: {count} Bögen geprüft, {failed} mit Problemen, {integrations} Anbindungshinweise.",
+      "Integrations": "Anbindung",
+      "Failed": "Bögen mit Problemen",
+      "NewVersions": "Sephral’s Crucible Sheet & Quickbar wurde mit älteren Versionen getestet. Neu: {versions}. Bitte unter Sheet & Quickbar – Einstellungen → Wartung den Selbsttest starten.",
+      "PartMissing": "Teil „{part}“ fehlt",
+      "NoResources": "Keine Ressourcenbalken",
+      "QuickbarMissing": "Kompaktleiste nicht gerendert",
+      "QuickbarNarrow": "Kompaktleiste zu schmal",
+      "SheetClasses": "Crucible-Bogenklassen nicht gefunden",
+      "SpellDialog": "SpellCastDialog nicht gefunden, die Zauberbuch-Leiste im Dialog fehlt",
+      "SpellDialogHook": "Zauberdialog-Eingriff nicht aktiv (Fallback über Render-Hook)",
+      "SpellAction": "CrucibleSpellAction nicht gefunden, das Zauberbuch kann nicht wirken",
+      "Attunement": "Ember aktiv, aber kein Einstimmungs-Tab gefunden",
+      "SystemConfig": "SYSTEM.{key} fehlt",
+      "Version": "{id} {current} (getestet {tested})"
+    },
+    "SKILLGROUP": {
+      "exp": "Erkundung",
+      "kno": "Wissen",
+      "soc": "Soziales",
+      "trade": "Handwerk"
+    },
+    "MaintainedCost": "Aufrechterhalten: {cost} Fokus zu Beginn jedes Zuges",
+    "MaintainedHands": "Aufrechterhalten: belegt {hands} Hand",
+    "EndEffect": "Aufrechterhaltung beenden",
+    "LastSpell": "Letzten Zauber wiederholen",
+    "TurnStart": "{name} ist am Zug!",
+    "TARGET": {
+      "Label": "Ziel",
+      "Distance": "{distance} Fuß entfernt",
+      "Self": "Du selbst",
+      "Pan": "Klick: zum Token springen"
+    },
+    "HostileHeal": {
+      "Title": "Gegner heilen?",
+      "Content": "<strong>{action}</strong> stellt Gesundheit oder Moral wieder her, aber dein Ziel ist ein Gegner: {targets}. Trotzdem fortfahren?"
+    },
+    "SHEET": {
+      "UseFolio": "Sheet & Quickbar verwenden (nur für mich)",
+      "UseStandard": "Standardbogen verwenden (nur für mich)",
+      "ConfigLegend": "Sephral’s Crucible Sheet & Quickbar – nur für dich",
+      "ConfigLabel": "Bogen für mich",
+      "ConfigFolio": "Sheet & Quickbar",
+      "ConfigStandard": "Standardbogen",
+      "ConfigHint": "Wirkt sofort und nur für dich – andere Spieler und die SL sehen ihre eigene Wahl. Die Einstellungen unten gelten dagegen für alle."
+    },
+    "MIGRATION": {
+      "Done": "Sephral’s Crucible Sheet & Quickbar hat die Daten von „Crucible Folio“ übernommen ({actors} Akteure). Das alte Modul kann deaktiviert werden.",
+      "LegacyActive": "„Crucible Folio“ ist noch aktiv – das ist der frühere Name von Sephral’s Crucible Sheet & Quickbar. Bitte „Crucible Folio“ deaktivieren; das neue Modul übernimmt danach alle Daten."
+    }
+  },
+  "TRAINING": {
+    "LABELS": {
+      "alchemy": "Alchemie",
+      "arcana": "Arkanes",
+      "armor": "Rüstungskampf",
+      "armorShort": "Rüstung",
+      "athletics": "Athletik",
+      "awareness": "Wahrnehmung",
+      "cooking": "Kochen",
+      "deception": "Täuschung",
+      "diplomacy": "Diplomatie",
+      "elemental": "Elementare Zauberkunst",
+      "elementalShort": "Elementar",
+      "enchanting": "Verzaubern",
+      "fletching": "Pfeilmacherei",
+      "glyphweaving": "Glyphenweben",
+      "heavy": "Schwere Waffen",
+      "heavyShort": "Schwer",
+      "intimidation": "Einschüchtern",
+      "jewelcraft": "Juwelierskunst",
+      "light": "Leichte Waffen",
+      "lightShort": "Leicht",
+      "mechanical": "Mechanische Waffen",
+      "mechanicalShort": "Mechanisch",
+      "medicine": "Medizin",
+      "natural": "Natürliche Waffen",
+      "naturalShort": "Natürlich",
+      "performance": "Darbietung",
+      "physical": "Kinematische Zauberkunst",
+      "physicalShort": "Kinematisch",
+      "projectile": "Geschosswaffen",
+      "projectileShort": "Geschoss",
+      "science": "Wissenschaft",
+      "shield": "Schildkampf",
+      "shieldShort": "Schild",
+      "simpleShort": "Einfach",
+      "smithing": "Schmieden",
+      "society": "Gesellschaft",
+      "spiritual": "Spirituelle Zauberkunst",
+      "spiritualShort": "Spirituell",
+      "stealth": "Heimlichkeit",
+      "tailoring": "Schneidern",
+      "talisman": "Talismanwaffen",
+      "talismanShort": "Talisman",
+      "unarmed": "Waffenloser Kampf",
+      "unarmedShort": "Waffenlos",
+      "wilderness": "Wildnis"
+    },
+    "GROUPS": {
+      "Equipment": "Ausrüstungskunde",
+      "Exploration": "Erkundungsfertigkeiten",
+      "Knowledge": "Wissensfertigkeiten",
+      "Social": "Soziale Fertigkeiten",
+      "Spell": "Zauberkunst",
+      "Trade": "Handwerksfertigkeiten",
+      "Weapon": "Waffenkunde"
+    },
+    "BREAKDOWN": {
+      "Bonus": "Bonus",
+      "Cap": "Stufengrenze",
+      "Granted": "Gewährt",
+      "Increases": "Erhöhungen",
+      "Next": "Nächster Rang ({rank})",
+      "Talents": "Talente",
+      "Total": "Gesamt"
+    },
+    "Decrease": "Trainingspunkt zurücknehmen",
+    "Increase": "Trainingspunkt vergeben",
+    "PassiveTooltip": "Dein passiver Wert für dieses Training."
+  },
+  "ACTOR": {
+    "SHEET": {
+      "PointsGranted": "Trainiert"
+    },
+    "ACTIONS": {
+      "ResetProficiency": "Alle Trainingspunkte zurücknehmen",
+      "ResolveProgress": "Zum nächsten Schritt der Charakterentwicklung",
+      "SyncActor": "Aus Kompendium synchronisieren",
+      "ProficiencyFilterAll": "Alle Trainings anzeigen",
+      "ProficiencyFilterTrained": "Nur trainierte anzeigen"
+    },
+    "LABELS": {
+      "KnowledgeHintAdversary": "Wissensgebiete über das Zahnrad zuweisen.",
+      "LanguagesHintAdversary": "Sprachen über das Zahnrad zuweisen."
+    },
+    "ADVERSARY": {
+      "NoArchetype": "Kein Archetyp",
+      "NoTaxonomy": "Keine Taxonomie",
+      "ThreatLevelSpecific": "Bedrohungsstufe {threat}"
+    }
+  },
+  "ADVANCEMENT": {
+    "Important": "Wichtig",
+    "MarkImportant": "Als wichtig markieren",
+    "MarkNotImportant": "Nicht mehr als wichtig markieren"
+  },
+  "DEFENSES": {
+    "MadnessShort": "Sammeln",
+    "WoundsShort": "Heilung"
+  }
+}

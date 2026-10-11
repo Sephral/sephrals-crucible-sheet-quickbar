@@ -1,0 +1,215 @@
+{{#with folio.header as |h|}}
+<section class="fo-head{{#if h.combat.isTurn}} is-turn{{/if}}">
+    <div class="fo-hero">
+
+        {{!-- Portrait with level badge and milestone progress --}}
+        <div class="fo-portrait{{#if h.health.state}} hp-{{h.health.state}}{{/if}}">
+            <img class="fo-portrait-img" src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-edit="img"
+                 data-tooltip="{{#if @root.folio.unlocked}}FOLIO.EditPortrait{{else}}FOLIO.ShowPortrait{{/if}}">
+            {{#if h.isHero}}
+            <div class="fo-milestones" data-tooltip="{{h.milestones.tooltip}}">
+                <span style="width: {{h.milestones.pct}}%"></span>
+            </div>
+            {{/if}}
+            <div class="fo-level{{#if h.canLevelUp}}{{#if h.isHero}} can-level{{/if}}{{/if}}{{#if h.progress}} has-issues{{/if}}">
+                {{#if h.isHero}}
+                {{#if h.progress}}
+                <button type="button" class="fo-level-alert" data-action="foResolve"
+                        data-tooltip-html="{{h.progress.tooltip}}" data-tooltip-class="crucible crucible-tooltip incomplete"
+                        aria-label="{{localize 'ACTOR.ACTIONS.ResolveProgress'}}"><i class="fa-solid fa-triangle-exclamation"></i></button>
+                {{else if h.canLevelUp}}
+                <button type="button" class="fo-level-alert" data-action="levelUp"
+                        data-tooltip="ACTOR.ACTIONS.LevelUp"><i class="fa-solid fa-angles-up"></i></button>
+                {{/if}}
+                {{/if}}
+                <span class="fo-level-num" data-tooltip="{{#if h.isHero}}{{h.milestones.tooltip}}{{else}}{{h.threat.label}}{{/if}}">{{h.levelDisplay}}</span>
+                <span class="fo-level-label">{{localize "FOLIO.Level"}}</span>
+            </div>
+            {{#if h.combat}}
+            <div class="fo-turn" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else}}FOLIO.InCombat{{/if}}">
+                <i class="fa-solid {{#if h.combat.isTurn}}fa-play{{else}}fa-swords{{/if}}"></i>
+                <span>{{localize "FOLIO.Initiative"}} {{h.combat.initiative}}</span>
+            </div>
+            {{/if}}
+        </div>
+
+        {{!-- Identity and pools --}}
+        <div class="fo-ident">
+            <div class="fo-name-row">
+                {{#if @root.folio.unlocked}}
+                <input class="fo-heroname" name="name" type="text" value="{{@root.source.name}}"
+                       placeholder="{{localize 'FOLIO.Name'}}">
+                {{else}}
+                <h1 class="fo-heroname">{{h.name}}</h1>
+                {{/if}}
+                {{#if h.conditions.length}}
+                <div class="fo-conditions">
+                    {{#each h.conditions as |c|}}
+                    {{> "folio.condition" c=c}}
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
+            <div class="fo-origin">
+                {{#if h.isHero}}
+                <a class="{{#if h.ancestry.missing}}missing{{/if}}" data-action="editAncestry"
+                   data-tooltip="FOLIO.ViewAncestry">{{#if h.ancestry.missing}}<i class="fa-solid fa-circle-plus"></i> {{/if}}{{h.ancestry.name}}</a>
+                <a class="{{#if h.background.missing}}missing{{/if}}" data-action="editBackground"
+                   data-tooltip="FOLIO.ViewBackground">{{#if h.background.missing}}<i class="fa-solid fa-circle-plus"></i> {{/if}}{{h.background.name}}</a>
+                {{#if h.signature}}<span class="fo-signature" data-tooltip="FOLIO.Signature"><i class="fa-solid fa-crown"></i> {{h.signature}}</span>{{/if}}
+                {{else}}
+                <a class="{{#if h.taxonomy.missing}}missing{{/if}}" data-action="editTaxonomy"
+                   data-tooltip="FOLIO.ViewTaxonomy">{{#if h.taxonomy.missing}}<i class="fa-solid fa-circle-plus"></i> {{/if}}{{h.taxonomy.name}}</a>
+                <a class="{{#if h.archetype.missing}}missing{{/if}}" data-action="editArchetype"
+                   data-tooltip="FOLIO.ViewArchetype">{{#if h.archetype.missing}}<i class="fa-solid fa-circle-plus"></i> {{/if}}{{h.archetype.name}}</a>
+                {{#if @root.folio.unlocked}}
+                <span class="fo-threat-select">
+                    <select name="system.advancement.rank" aria-label="{{localize 'FOLIO.ThreatRank'}}">
+                        {{#each h.threatOptions as |t|}}<option value="{{t.id}}" {{#if t.selected}}selected{{/if}}>{{t.label}}</option>{{/each}}
+                    </select>
+                </span>
+                {{else if h.threat}}
+                <span class="fo-threat" data-tooltip="FOLIO.ThreatRank"><i class="{{h.threat.icon}}"></i> {{h.threat.label}}</span>
+                {{/if}}
+                {{/if}}
+            </div>
+
+            <div class="fo-pools">
+                {{#each h.pools as |p|}}
+                <div class="fo-pool {{p.id}}{{#if p.state}} is-{{p.state}}{{/if}}" style="--c: {{p.color}}; --c-low: {{p.colorLow}};">
+                    <div class="fo-pool-top">
+                        <span class="fo-pool-label" data-tooltip="{{p.tooltip}}">{{p.label}}</span>
+                        <span class="fo-pool-value">
+                            <input type="number" name="{{p.field}}" value="{{p.value}}" step="1" data-dtype="Number"
+                                   aria-label="{{p.label}}" data-tooltip="FOLIO.RelativeHint" {{#unless @root.folio.editable}}disabled{{/unless}}>
+                            <span class="fo-sep">/</span><span class="fo-max">{{p.max}}</span>
+                        </span>
+                    </div>
+                    <div class="fo-bar"><span class="fo-fill" style="width: {{p.pct}}%"></span></div>
+                    <div class="fo-pool-bottom">
+                        {{#if p.reserve}}
+                        <span class="fo-reserve-label" data-tooltip="{{p.reserve.tooltip}}">{{p.reserve.label}}</span>
+                        <div class="fo-bar fo-thin"><span class="fo-fill" style="width: {{p.reserve.pct}}%"></span></div>
+                        <span class="fo-reserve-value">
+                            <input type="number" name="{{p.reserve.field}}" value="{{p.reserve.value}}" step="1"
+                                   data-dtype="Number" aria-label="{{p.reserve.label}}" {{#unless @root.folio.editable}}disabled{{/unless}}>
+                            <span class="fo-sep">/</span><span class="fo-max">{{p.reserve.max}}</span>
+                        </span>
+                        {{else}}
+                        <span class="fo-reserve-spacer"></span>
+                        {{/if}}
+                        <span class="fo-threshold" data-crucible-tooltip="tag" data-rule-id="{{p.threshold.ruleId}}">{{p.threshold.value}}</span>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{!-- Action economy and header buttons --}}
+        <div class="fo-economy">
+            <div class="fo-head-buttons">
+                {{#if h.combat.canEnd}}
+                <button type="button" class="fo-hbtn fo-end-turn{{#if h.combat.endBlocked}} fo-blocked{{/if}}" data-action="foEndTurn"
+                        data-tooltip="{{#if h.combat.endBlocked}}COMBAT.WARNINGS.CannotChangeRound{{else}}FOLIO.EndTurnHint{{/if}}">
+                    <i class="fa-solid fa-forward-step"></i><span>{{localize "FOLIO.EndTurn"}}</span></button>
+                {{/if}}
+                <button type="button" class="fo-hbtn" data-action="foQuickbar" data-tooltip="FOLIO.QB.ToQuickbar">
+                    <i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
+                {{#if @root.folio.editable}}
+                {{#if h.isHero}}
+                <button type="button" class="fo-hbtn" data-action="foRest" data-rest="recover"
+                        data-tooltip="FOLIO.RecoverTooltip"><i class="fa-solid fa-heart-pulse"></i></button>
+                <button type="button" class="fo-hbtn" data-action="foRest" data-rest="rest"
+                        data-tooltip="FOLIO.RestTooltip"><i class="fa-solid fa-campground"></i></button>
+                {{else}}
+                <button type="button" class="fo-hbtn{{#if h.important}} active{{/if}}" data-action="toggleImportant"
+                        data-tooltip="{{#if h.important}}ADVANCEMENT.MarkNotImportant{{else}}ADVANCEMENT.MarkImportant{{/if}}">
+                    <i class="fa-{{#if h.important}}solid{{else}}regular{{/if}} fa-star"></i></button>
+                {{#if @root.folio.unlocked}}
+                <button type="button" class="fo-hbtn" data-action="levelDecrease" {{#unless h.canLevelDown}}disabled{{/unless}}
+                        data-tooltip="FOLIO.LevelDown"><i class="fa-solid fa-caret-down"></i></button>
+                <button type="button" class="fo-hbtn" data-action="levelIncrease" {{#unless h.canLevelUp}}disabled{{/unless}}
+                        data-tooltip="FOLIO.LevelUp"><i class="fa-solid fa-caret-up"></i></button>
+                {{/if}}
+                {{/if}}
+                <button type="button" class="fo-hbtn fo-lock{{#unless @root.folio.locked}} unlocked{{/unless}}" data-action="foLock"
+                        data-tooltip="{{#if @root.folio.locked}}FOLIO.Unlock{{else}}FOLIO.Lock{{/if}}">
+                    <i class="fa-solid {{#if @root.folio.locked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
+                </button>
+                {{/if}}
+                <button type="button" class="fo-hbtn fo-settings" data-action="foSettings" data-tooltip="FOLIO.SETTINGS.Menu.name">
+                    <i class="fa-solid fa-gear"></i></button>
+            </div>
+            {{#each h.currencies as |c|}}
+            <div class="fo-currency {{c.id}}{{#if c.empty}} is-empty{{/if}}" style="--c: {{c.color}};">
+                <span class="fo-cur-label" data-tooltip="{{c.tooltip}}">{{c.label}}</span>
+                <div class="fo-pips">
+                    {{#each c.pips as |pip i|}}
+                    <a class="fo-pip {{pip.cssClass}}" data-action="resourcePip" data-resource="{{c.id}}" data-index="{{i}}"
+                       aria-label="{{c.label}} {{i}}"></a>
+                    {{/each}}
+                </div>
+                <span class="fo-cur-value">
+                    <input type="number" name="{{c.field}}" value="{{c.value}}" step="1" data-dtype="Number"
+                           aria-label="{{c.label}}" {{#unless @root.folio.editable}}disabled{{/unless}}>
+                    <span class="fo-max">/ {{c.max}}</span>
+                </span>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    {{!-- Ability, defense and movement strip --}}
+    <div class="fo-stats">
+        <div class="fo-abilities{{#if @root.folio.abilities.showControls}} show-controls{{/if}}">
+            {{#each @root.folio.abilities.scores as |ab|}}
+            <div class="fo-stat fo-ability {{ab.type}}" data-ability="{{ab.id}}" style="--c: {{ab.color}};">
+                <span class="fo-stat-label" data-crucible-tooltip="tag" data-rule-id="ability.{{ab.id}}">{{ab.abbr}}</span>
+                <span class="fo-stat-value" data-crucible-tooltip="tag" data-rule-id="ability.{{ab.id}}">{{ab.value}}</span>
+                {{#if ab.canDecrease}}
+                <button type="button" class="fo-step down" data-action="foAbility" data-delta="-1"
+                        aria-label="{{localize 'ACTOR.ACTIONS.DecreaseAbilitySpecific' ability=ab.label}}" data-tooltip><i class="fa-solid fa-caret-down"></i></button>
+                {{/if}}
+                {{#if ab.canIncrease}}
+                <button type="button" class="fo-step up" data-action="foAbility" data-delta="1"
+                        aria-label="{{localize 'ACTOR.ACTIONS.IncreaseAbilitySpecific' ability=ab.label}}" data-tooltip><i class="fa-solid fa-caret-up"></i></button>
+                {{/if}}
+            </div>
+            {{/each}}
+            {{#if @root.folio.abilities.points}}
+            <span class="fo-points-badge" data-tooltip="ACTOR.SHEET.AbilityPoints">{{@root.folio.abilities.points.available}}</span>
+            {{/if}}
+        </div>
+
+        {{#with @root.folio.defenses as |d|}}
+        <div class="fo-defenses">
+            <div class="fo-stat fo-defense physical" data-tooltip="{{d.physical.tooltip}}">
+                <span class="fo-stat-label" data-crucible-tooltip="tag" data-rule-id="defense.physical">{{d.physical.label}}</span>
+                <span class="fo-stat-value">{{d.physical.value}}</span>
+                <span class="fo-segments">
+                    {{#each d.physical.segments as |seg|}}{{#if seg.value}}<i class="{{seg.id}}" style="flex: {{seg.value}}"></i>{{/if}}{{/each}}
+                </span>
+            </div>
+            {{#each d.saves as |sv|}}
+            <div class="fo-stat fo-defense {{sv.id}}">
+                <span class="fo-stat-label" data-crucible-tooltip="tag" data-rule-id="{{sv.ruleId}}">{{sv.label}}</span>
+                <span class="fo-stat-value">{{sv.value}}</span>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="fo-movement">
+            <a class="fo-move" data-action="editStride" data-tooltip="ACTOR.FIELDS.movement.stride.tooltip">
+                <i class="fa-solid fa-shoe-prints"></i><span class="fo-move-label">{{localize "ACTOR.FIELDS.movement.stride.label"}}</span><b>{{d.stride}}</b>
+            </a>
+            <a class="fo-move" data-action="editEngagement" data-tooltip="ACTOR.FIELDS.movement.engagement.tooltip">
+                <i class="fa-solid fa-crosshairs"></i><span class="fo-move-label">{{localize "ACTOR.FIELDS.movement.engagement.labelShort"}}</span><b>{{d.engagement}}</b>
+            </a>
+            <a class="fo-move" data-action="editSize" data-tooltip="ANCESTRY.FIELDS.movement.size.hint">
+                <i class="fa-solid fa-up-right-and-down-left-from-center"></i><span class="fo-move-label">{{localize "ANCESTRY.FIELDS.movement.size.label"}}</span><b>{{d.size}}</b>
+            </a>
+        </div>
+        {{/with}}
+    </div>
+</section>
+{{/with}}

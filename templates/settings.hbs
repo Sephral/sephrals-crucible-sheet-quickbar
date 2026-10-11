@@ -1,0 +1,66 @@
+<div class="fo-settings-groups">
+    {{#each groups as |group|}}
+    <fieldset class="fo-settings-group">
+        <legend><i class="{{group.icon}}" inert></i> {{group.label}}</legend>
+        {{#each group.fields as |f|}}
+        <div class="fo-setting{{#if f.isBoolean}} is-toggle{{/if}}">
+            <label class="fo-setting-text" for="folio-setting-{{f.key}}">
+                <span class="fo-setting-name">{{f.label}}
+                    {{#if f.gm}}<span class="fo-setting-badge">{{localize "FOLIO.SETTINGS.GMOnly"}}</span>{{/if}}
+                    {{#if f.world}}<span class="fo-setting-badge world" data-tooltip="FOLIO.SETTINGS.WorldHint">{{localize "FOLIO.SETTINGS.World"}}</span>{{/if}}
+                    {{#if f.reload}}<span class="fo-setting-badge reload" data-tooltip="FOLIO.SETTINGS.ReloadHint"><i class="fa-solid fa-rotate"></i></span>{{/if}}
+                </span>
+                <span class="fo-setting-hint">{{f.hint}}</span>
+            </label>
+            <div class="fo-setting-control">
+                {{#if f.isBoolean}}
+                <input type="checkbox" class="fo-switch" id="folio-setting-{{f.key}}" name="{{f.key}}" {{checked f.value}}>
+                {{else if f.choices}}
+                <select id="folio-setting-{{f.key}}" name="{{f.key}}">
+                    {{#each f.choices as |c|}}<option value="{{c.id}}" {{#if c.selected}}selected{{/if}}>{{c.label}}</option>{{/each}}
+                </select>
+                {{else if f.range}}
+                <range-picker id="folio-setting-{{f.key}}" name="{{f.key}}" value="{{f.value}}"
+                              min="{{f.range.min}}" max="{{f.range.max}}" step="{{f.range.step}}"></range-picker>
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
+        {{#if group.actorChoices}}
+        <div class="fo-setting fo-actor-choices">
+            <div class="fo-setting-text">
+                <span class="fo-setting-name">{{localize "FOLIO.SETTINGS.SheetActors.name"}}</span>
+                <span class="fo-setting-hint">{{localize "FOLIO.SETTINGS.SheetActors.hint"}}</span>
+            </div>
+            <ul class="fo-actor-choice-list">
+                {{#each group.actorChoices as |c|}}
+                <li class="fo-actor-choice{{#if c.folio}} is-folio{{/if}}">
+                    <i class="fa-solid {{#if c.folio}}fa-book-open{{else}}fa-scroll{{/if}}" inert></i>
+                    <span class="fo-actor-choice-name">{{c.name}}</span>
+                    <span class="fo-actor-choice-sheet">{{#if c.folio}}{{localize "FOLIO.SETTINGS.SheetActors.folio"}}{{else}}{{localize "FOLIO.SETTINGS.SheetActors.standard"}}{{/if}}</span>
+                    <button type="button" data-action="removeActorChoice" data-actor-id="{{c.id}}"
+                            data-tooltip="FOLIO.SETTINGS.SheetActors.remove" aria-label="{{localize 'FOLIO.SETTINGS.SheetActors.remove'}}">
+                        <i class="fa-solid fa-xmark" inert></i></button>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if}}
+    </fieldset>
+    {{/each}}
+
+    {{#if isGM}}
+    <fieldset class="fo-settings-group">
+        <legend><i class="fa-solid fa-stethoscope" inert></i> {{localize "FOLIO.SETTINGS.GROUPS.maintenance"}}</legend>
+        <div class="fo-setting">
+            <div class="fo-setting-text">
+                <span class="fo-setting-name">{{localize "FOLIO.SELFTEST.Title"}}</span>
+                <span class="fo-setting-hint">{{localize "FOLIO.SELFTEST.Hint"}}</span>
+            </div>
+            <div class="fo-setting-control">
+                <button type="button" data-action="selfTest"><i class="fa-solid fa-play" inert></i> {{localize "FOLIO.SELFTEST.Run"}}</button>
+            </div>
+        </div>
+    </fieldset>
+    {{/if}}
+</div>

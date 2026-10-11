@@ -1,0 +1,10 @@
+<header class="fo-section-head">
+    <a class="fo-head-title" data-action="foCollapse">
+        <i class="fa-solid fa-chevron-down fo-chev" inert></i>
+        {{#if icon}}<i class="{{icon}} fo-section-icon" inert></i>{{/if}}
+        <span class="fo-section-label">{{label}}</span>
+        {{#if count}}<span class="fo-count{{#if full}} full{{/if}}">{{count}}</span>{{/if}}
+    </a>
+    {{#each columns as |col|}}<span class="fo-col-label {{col.key}}">{{col.label}}</span>{{/each}}
+    <span class="fo-col-label fo-ctrl">{{#if add}}<button type="button" class="fo-btn fo-add" data-action="{{add.action}}" data-tooltip="{{add.tooltip}}"><i class="fa-solid fa-plus"></i></button>{{/if}}</span>
+</header>

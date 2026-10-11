@@ -1,0 +1,64 @@
+<section class="tab fo-tab fo-effects {{tabs.effects.cssClass}}" data-group="{{tabs.effects.group}}" data-tab="{{tabs.effects.id}}">
+    {{#with folio.effects as |fx|}}
+    <div class="fo-toolbar">
+        <label class="fo-search-box{{#if @root.folio.filters.effects.text}} has-value{{/if}}">
+            <i class="fa-solid fa-magnifying-glass" inert></i>
+            <input class="fo-search" type="search" data-tab="effects" value="{{@root.folio.filters.effects.text}}"
+                   placeholder="{{localize 'FOLIO.SearchEffects'}}" autocomplete="off" spellcheck="false">
+            <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
+        </label>
+        {{#if @root.folio.editable}}
+        <button type="button" class="fo-tool-btn" data-action="effectCreate" data-tooltip="ACTIVE_EFFECT.ACTIONS.Create"><i class="fa-solid fa-plus"></i></button>
+        {{/if}}
+    </div>
+
+    <div class="fo-scroll fo-lists" style="--cols: 30px minmax(0, 1fr) 92px;">
+        <section class="fo-section fo-conditions-block{{#if fx.conditionsCollapsed}} collapsed{{/if}}" data-collapse-key="effects.conditions">
+            {{> "folio.section-head" label=(localize "FOLIO.Conditions") icon="fa-solid fa-person-burst" count=fx.activeConditions}}
+            <div class="fo-condition-grid">
+                {{#each fx.conditions as |c|}}
+                <button type="button" class="fo-condition{{#if c.active}} active{{/if}}" data-action="foStatus" data-status="{{c.id}}"
+                        {{#unless @root.folio.editable}}disabled{{/unless}}>
+                    <img src="{{c.img}}" alt="" inert><span inert>{{c.label}}</span>
+                </button>
+                {{/each}}
+            </div>
+        </section>
+
+        {{#each fx.sections as |section|}}
+        <section class="fo-section fo-effects-{{section.id}}{{#if section.collapsed}} collapsed{{/if}}" data-section="{{section.id}}"
+                 data-collapse-key="{{section.key}}" data-filterable>
+            {{> "folio.section-head" label=section.label icon="fa-solid fa-bolt" count=section.counter}}
+            <ol class="fo-rows">
+                {{#each section.rows as |row|}}
+                <li class="fo-row fo-effect draggable{{#if row.disabled}} disabled{{/if}}{{#if row.expanded}} expanded{{/if}}"
+                    data-effect-id="{{row.id}}" data-effect-uuid="{{row.uuid}}" data-key="{{row.key}}" data-search="{{row.search}}">
+                    <div class="fo-row-main">
+                        <span class="fo-icon" data-crucible-tooltip="activeEffect" data-uuid="{{row.uuid}}" data-tooltip-direction="LEFT">
+                            <img src="{{row.img}}" alt="" inert></span>
+                        <div class="fo-name" data-action="foExpand">
+                            <span class="fo-title">{{row.name}}</span>
+                            {{#if row.subtitle.length}}
+                            <span class="fo-sub">{{#each row.subtitle as |s|}}<span class="{{#if s.source}}source{{/if}}">{{s.label}}</span>{{/each}}</span>
+                            {{/if}}
+                        </div>
+                        <div class="fo-cell fo-ctrl">
+                            {{#if @root.folio.editable}}
+                            <button type="button" class="fo-btn" data-action="foEffectToggle" data-tooltip="{{row.toggle.tooltip}}"><i class="{{row.toggle.icon}}"></i></button>
+                            <button type="button" class="fo-btn" data-action="foEffectEdit" data-tooltip="ACTIVE_EFFECT.ACTIONS.Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button type="button" class="fo-btn fo-danger" data-action="foEffectDelete" data-tooltip="ACTIVE_EFFECT.ACTIONS.Delete"><i class="fa-solid fa-trash"></i></button>
+                            {{/if}}
+                        </div>
+                    </div>
+                    {{#if row.expanded}}<div class="fo-detail">{{{row.description}}}</div>{{/if}}
+                </li>
+                {{/each}}
+            </ol>
+        </section>
+        {{else}}
+        <p class="fo-hint fo-center">{{localize "FOLIO.NoEffects"}}</p>
+        {{/each}}
+        <p class="fo-no-results" hidden><i class="fa-solid fa-ghost"></i> {{localize "FOLIO.NoResults"}}</p>
+    </div>
+    {{/with}}
+</section>

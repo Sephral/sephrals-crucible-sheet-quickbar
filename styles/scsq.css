@@ -1,0 +1,4235 @@
+/* ==========================================================================
+   Crucible Folio – compact hero sheet
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Design tokens
+   -------------------------------------------------------------------------- */
+
+.application.folio {
+  --fo-bg: #141110;
+  --fo-bg-2: #1a1615;
+  --fo-panel: #1f1a18;
+  --fo-panel-2: #26201d;
+  --fo-hover: rgb(211 154 92 / 7%);
+  --fo-line: #3a2f29;
+  --fo-line-soft: rgb(211 154 92 / 13%);
+  --fo-line-faint: rgb(255 255 255 / 4.5%);
+  --fo-text: #ede5d9;
+  --fo-text-2: #bcae9b;
+  --fo-text-3: #8a7c6d;
+  --fo-title: #e6d3b3;
+  --fo-accent: #d39a5c;
+  --fo-accent-2: #f0c27b;
+  --fo-accent-soft: rgb(211 154 92 / 16%);
+  --fo-good: #7ccf54;
+  --fo-bad: #ee5a43;
+  --fo-gold: #f2c14e;
+  --fo-input: rgb(0 0 0 / 28%);
+  --fo-head-1: #241b17;
+  --fo-head-2: #171312;
+  --fo-shadow: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 2px 6px rgb(0 0 0 / 35%);
+  --fo-c-action: #ffa31a;
+  --fo-c-focus: #4d94ff;
+  --fo-c-heroism: #ff3d7a;
+  --fo-font-ui: "Signika", var(--font-sans, sans-serif);
+  --fo-font-display: "AwerySmallcaps", var(--font-h1, serif);
+  --fo-font-read: "Vollkorn", var(--font-body, serif);
+  --fo-fs: 13px;
+  background: var(--fo-bg);
+  min-width: 740px;
+  min-height: 560px;
+}
+
+.application.folio.fo-light {
+  --fo-bg: #f3ece0;
+  --fo-bg-2: #ebe2d3;
+  --fo-panel: #faf6ef;
+  --fo-panel-2: #f1e9dc;
+  --fo-hover: rgb(140 84 32 / 7%);
+  --fo-line: #d2c2a9;
+  --fo-line-soft: rgb(140 84 32 / 16%);
+  --fo-line-faint: rgb(60 40 20 / 7%);
+  --fo-text: #2b221b;
+  --fo-text-2: #5d4f41;
+  --fo-text-3: #8c7c69;
+  --fo-title: #5a3416;
+  --fo-accent: #a3601f;
+  --fo-accent-2: #7d4410;
+  --fo-accent-soft: rgb(163 96 31 / 13%);
+  --fo-good: #3c8a1c;
+  --fo-bad: #c0371f;
+  --fo-gold: #c58a0a;
+  --fo-input: rgb(255 255 255 / 70%);
+  --fo-head-1: #e9dcc6;
+  --fo-head-2: #f3ece0;
+  --fo-shadow: 0 1px 2px rgb(60 40 20 / 12%);
+  --fo-c-action: #d17a00;
+  --fo-c-focus: #2f6fd6;
+  --fo-c-heroism: #d61c5a;
+}
+
+/* --------------------------------------------------------------------------
+   Window frame and resets
+   -------------------------------------------------------------------------- */
+
+.application.crucible.folio {
+  background: var(--fo-bg) !important;
+}
+
+.application.crucible.folio::before {
+  display: none !important;
+}
+
+.application.crucible.folio .window-header {
+  background: var(--fo-head-1);
+  border-bottom: 1px solid var(--fo-line-soft);
+  color: var(--fo-text-2);
+}
+
+.application.crucible.folio .window-header :is(.window-title, .header-control) {
+  color: var(--fo-text-2);
+}
+
+.application.crucible.folio .window-header .header-control:hover {
+  color: var(--fo-accent-2);
+}
+
+.application.crucible.folio .window-content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 0;
+  background: var(--fo-bg);
+  color: var(--fo-text);
+  font-family: var(--fo-font-ui);
+  font-size: var(--fo-fs);
+  letter-spacing: 0.1px;
+}
+
+.folio .window-content :is(h1, h2, h3, h4) {
+  margin: 0;
+  border: none;
+  font-weight: normal;
+}
+
+.folio .window-content button.fo-btn,
+.folio .window-content button.fo-hbtn,
+.folio .window-content button.fo-step,
+.folio .window-content button.fo-filter,
+.folio .window-content button.fo-tool-btn,
+.folio .window-content button.fo-condition,
+.folio .window-content button.fo-clear,
+.folio .window-content button.fo-level-alert {
+  flex: none;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 120ms, background-color 120ms, border-color 120ms, opacity 120ms;
+}
+
+/* Crucible dims every button of a .crucible application to 50 % until hovered. Folio buttons carry
+   their own states, so they start fully visible; :where keeps this below every specific rule. */
+:where(.application.folio .window-content, .application.fo-composer-dialog, .application .fo-spellfav) button {
+  opacity: 1;
+}
+
+:where(.application.fo-composer-dialog, .application .fo-spellfav) button:disabled {
+  opacity: 0.35;
+}
+
+.folio .window-content button:focus-visible,
+.folio .window-content a:focus-visible {
+  outline: 2px solid var(--fo-accent);
+  outline-offset: 1px;
+}
+
+.folio .window-content button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.folio .window-content a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.folio .fo-hidden {
+  display: none !important;
+}
+
+.folio .fo-hint {
+  margin: 4px 0;
+  padding: 6px 10px;
+  color: var(--fo-text-3);
+  font-size: 12px;
+  font-style: italic;
+  list-style: none;
+}
+
+.folio .fo-center {
+  text-align: center;
+}
+
+.folio .fo-empty {
+  color: var(--fo-text-3);
+}
+
+/* Numeric inputs which read as text until focused */
+.folio .window-content :is(.fo-pool, .fo-currency) input[type="number"],
+.folio .window-content :is(.fo-pool, .fo-currency) input.number-input {
+  width: 3ch;
+  height: auto;
+  min-height: 0;
+  padding: 0 2px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--fo-text);
+  font: inherit;
+  text-align: right;
+  box-shadow: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.folio .window-content :is(.fo-pool, .fo-currency) input::-webkit-inner-spin-button,
+.folio .window-content :is(.fo-pool, .fo-currency) input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.folio .window-content :is(.fo-pool, .fo-currency) input:hover:not(:disabled) {
+  border-color: var(--fo-line);
+  background: var(--fo-input);
+}
+
+.folio .window-content :is(.fo-pool, .fo-currency) input:focus {
+  width: 5ch;
+  border-color: var(--fo-accent);
+  background: var(--fo-input);
+  outline: none;
+  text-align: center;
+}
+
+.folio .window-content :is(.fo-pool, .fo-currency) input:disabled {
+  color: var(--fo-text);
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.folio .fo-head {
+  flex: none;
+  position: relative;
+  background:
+    radial-gradient(120% 140% at 0% 0%, var(--fo-accent-soft), transparent 55%),
+    linear-gradient(180deg, var(--fo-head-1), var(--fo-head-2));
+  border-bottom: 1px solid var(--fo-line);
+}
+
+.folio:not(.fo-locked) .fo-head {
+  box-shadow: inset 0 2px 0 var(--fo-accent);
+}
+
+.folio .fo-hero {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr) 224px;
+  gap: 16px;
+  padding: 12px 14px 10px;
+}
+
+/* Portrait */
+.folio .fo-portrait {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  align-self: start;
+}
+
+.folio .fo-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid var(--fo-line);
+  border-radius: 10px;
+  background: rgb(0 0 0 / 30%);
+  box-shadow: var(--fo-shadow);
+  cursor: pointer;
+}
+
+.folio .fo-portrait.hp-low .fo-portrait-img {
+  border-color: rgb(238 90 67 / 55%);
+}
+
+.folio .fo-portrait.hp-critical .fo-portrait-img,
+.folio .fo-portrait.hp-empty .fo-portrait-img {
+  border-color: var(--fo-bad);
+  box-shadow: 0 0 0 1px var(--fo-bad), 0 0 14px rgb(238 90 67 / 45%);
+}
+
+.folio .fo-head.is-turn .fo-portrait-img {
+  border-color: var(--fo-accent-2);
+  box-shadow: 0 0 0 1px var(--fo-accent-2), 0 0 16px rgb(240 194 123 / 50%);
+}
+
+.folio .fo-milestones {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 6px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 55%);
+  overflow: hidden;
+}
+
+.folio .fo-milestones span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--fo-accent), var(--fo-accent-2));
+}
+
+.folio .fo-level {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 42px;
+  height: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: linear-gradient(160deg, var(--fo-accent-2), var(--fo-accent) 55%, #8a5326);
+  color: #1b120c;
+}
+
+.folio .fo-level::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  clip-path: inherit;
+  background: linear-gradient(160deg, #3a2a20, #1b1411);
+  z-index: 0;
+}
+
+.folio .fo-level > * {
+  position: relative;
+  z-index: 1;
+}
+
+.folio.fo-light .fo-level::before {
+  background: linear-gradient(160deg, #fffaf1, #efe2cc);
+}
+
+.folio .fo-level-num {
+  font-family: var(--fo-font-display);
+  font-size: 21px;
+  line-height: 1;
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-level-label {
+  margin-top: 1px;
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fo-text-2);
+}
+
+.folio .fo-level .fo-level-alert {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  opacity: 0;
+}
+
+.folio .fo-level.can-level::before,
+.folio .fo-level.has-issues::before {
+  background: linear-gradient(160deg, #6b3d16, #2b1a0f);
+}
+
+.folio.fo-light .fo-level.can-level::before,
+.folio.fo-light .fo-level.has-issues::before {
+  background: linear-gradient(160deg, #ffe7b8, #f2c98a);
+}
+
+.folio .fo-level.can-level,
+.folio .fo-level.has-issues {
+  animation: fo-pulse 1.8s ease-in-out infinite;
+}
+
+.folio .fo-level.can-level .fo-level-alert,
+.folio .fo-level.has-issues .fo-level-alert {
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-level.can-level:hover .fo-level-alert,
+.folio .fo-level.has-issues:hover .fo-level-alert {
+  opacity: 1;
+  background: rgb(27 18 12 / 85%);
+}
+
+.folio .fo-level.has-issues .fo-level-label::after {
+  content: " !";
+  color: var(--fo-gold);
+}
+
+@keyframes fo-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 6px var(--fo-accent-2)); }
+}
+
+.folio .fo-turn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 70%);
+  color: #f1e6d6; /* Always on a dark plate, also in the light theme */
+  font-size: 10.5px;
+}
+
+.folio .fo-head.is-turn .fo-turn {
+  background: var(--fo-accent);
+  color: #1b120c;
+  font-weight: 600;
+}
+
+/* Identity */
+.folio .fo-ident {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.folio .fo-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+}
+
+.folio .window-content .fo-heroname {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--fo-font-display);
+  font-size: 28px;
+  line-height: 34px;
+  color: var(--fo-title);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 35%);
+}
+
+.folio .window-content input.fo-heroname {
+  height: 34px;
+  padding: 0 6px;
+  border: 1px dashed var(--fo-line);
+  border-radius: 6px;
+  background: var(--fo-input);
+}
+
+.folio .fo-conditions {
+  flex: none;
+  display: flex;
+  gap: 3px;
+  max-width: 45%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.folio .fo-conditions img {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  border: 1px solid var(--fo-line);
+  border-radius: 5px;
+  background: rgb(0 0 0 / 35%);
+  cursor: pointer;
+}
+
+.folio .fo-origin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 4px;
+  margin: 1px 0 10px;
+  color: var(--fo-text-2);
+  font-size: 12.5px;
+}
+
+.folio .fo-origin > * + *::before {
+  content: "·";
+  margin-right: 5px;
+  color: var(--fo-text-3);
+}
+
+.folio .fo-origin a:hover {
+  color: var(--fo-accent-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.folio .fo-origin a.missing {
+  color: var(--fo-gold);
+}
+
+.folio .fo-signature i {
+  font-size: 10px;
+  color: var(--fo-accent);
+}
+
+/* Pools: Health/Wounds and Morale/Madness */
+.folio .fo-pools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: auto;
+}
+
+.folio .fo-pool {
+  --c: #d72828;
+  --c-low: #5e0000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.folio .fo-pool-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.folio .fo-pool-label,
+.folio .fo-cur-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: color-mix(in srgb, var(--c) 55%, var(--fo-text));
+}
+
+.folio .fo-pool-value {
+  display: flex;
+  align-items: baseline;
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-pool-value .fo-sep,
+.folio .fo-reserve-value .fo-sep {
+  margin: 0 2px;
+  color: var(--fo-text-3);
+  font-weight: 400;
+}
+
+.folio .fo-pool-value .fo-max {
+  color: var(--fo-text-2);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.folio .fo-bar {
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  background: rgb(0 0 0 / 35%);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 45%), 0 0 0 1px var(--fo-line-faint);
+  overflow: hidden;
+}
+
+.folio.fo-light .fo-bar {
+  background: rgb(60 40 20 / 10%);
+  box-shadow: inset 0 1px 2px rgb(60 40 20 / 15%);
+}
+
+.folio .fo-bar .fo-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--c-low), var(--c));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+  transition: width 300ms ease;
+}
+
+.folio .fo-pool.is-critical .fo-bar:not(.fo-thin) .fo-fill {
+  animation: fo-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes fo-blink {
+  50% { filter: brightness(1.5); }
+}
+
+.folio .fo-bar.fo-thin {
+  height: 4px;
+  flex: 1;
+}
+
+.folio .fo-bar.fo-thin .fo-fill {
+  background: color-mix(in srgb, var(--c-low) 70%, var(--c));
+  box-shadow: none;
+}
+
+.folio .fo-pool-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fo-text-3);
+  font-size: 11px;
+}
+
+.folio .fo-reserve-label {
+  flex: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 9.5px;
+}
+
+.folio .fo-reserve-value {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-threshold {
+  flex: none;
+  width: 22px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: color-mix(in srgb, var(--c) 22%, var(--fo-panel-2));
+  color: var(--fo-text);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: help;
+}
+
+/* Economy: Action, Focus, Heroism */
+.folio .fo-economy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.folio .fo-head-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 26px;
+  margin-bottom: 2px;
+}
+
+.folio .window-content button.fo-hbtn {
+  width: 28px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--fo-line);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 22%);
+  color: var(--fo-text-2);
+  font-size: 12.5px;
+}
+
+.folio.fo-light .window-content button.fo-hbtn {
+  background: rgb(255 255 255 / 55%);
+}
+
+.folio .window-content button.fo-hbtn:hover {
+  border-color: var(--fo-accent);
+  color: var(--fo-accent-2);
+}
+
+.folio .window-content button.fo-hbtn.fo-lock.unlocked {
+  border-color: var(--fo-accent);
+  background: var(--fo-accent-soft);
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-currency {
+  --c: #ff9900;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 6px;
+  row-gap: 3px;
+}
+
+.folio .fo-currency.action { --c: var(--fo-c-action); }
+.folio .fo-currency.focus { --c: var(--fo-c-focus); }
+.folio .fo-currency.heroism { --c: var(--fo-c-heroism); }
+
+.folio .fo-cur-label {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.folio .fo-cur-value {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: baseline;
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-cur-value .fo-max {
+  margin-left: 2px;
+  color: var(--fo-text-3);
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.folio .fo-pips {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.folio .fo-pip {
+  width: 11px;
+  height: 12px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: rgb(255 255 255 / 10%);
+  cursor: pointer;
+  transition: transform 100ms, background-color 150ms;
+}
+
+.folio.fo-light .fo-pip {
+  background: rgb(60 40 20 / 14%);
+}
+
+.folio .fo-pip:hover {
+  transform: scale(1.2);
+}
+
+.folio .fo-pip.full {
+  background: var(--c);
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--c) 70%, transparent));
+}
+
+.folio .fo-pip.double {
+  background: radial-gradient(circle, #fff 0 22%, var(--c) 26%);
+}
+
+.folio .fo-currency.is-empty .fo-cur-value input {
+  color: var(--fo-text-3);
+}
+
+/* Stats strip: abilities, defenses, movement */
+.folio .fo-stats {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 8px 14px 10px;
+  border-top: 1px solid var(--fo-line-soft);
+}
+
+.folio .fo-abilities,
+.folio .fo-defenses {
+  flex: none;
+  position: relative;
+  display: flex;
+  gap: 4px;
+}
+
+.folio .fo-stat {
+  --c: var(--fo-accent);
+  flex: none;
+  position: relative;
+  width: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0 4px;
+  border: 1px solid var(--fo-line);
+  border-radius: 7px;
+  background: linear-gradient(180deg, var(--fo-panel-2), var(--fo-panel));
+  box-shadow: var(--fo-shadow);
+  overflow: hidden;
+}
+
+.folio .fo-ability::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--c);
+  opacity: 0.85;
+}
+
+.folio .fo-ability:nth-child(2n):not(:last-child) {
+  margin-right: 5px;
+}
+
+.folio .fo-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fo-text-2);
+  cursor: help;
+}
+
+.folio .fo-ability .fo-stat-label {
+  color: color-mix(in srgb, var(--c) 45%, var(--fo-text-2));
+}
+
+.folio .fo-stat-value {
+  font-family: var(--fo-font-display);
+  font-size: 22px;
+  line-height: 24px;
+  color: var(--fo-text);
+  cursor: help;
+}
+
+.folio .window-content .fo-ability button.fo-step {
+  position: absolute;
+  bottom: 1px;
+  width: 16px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--fo-accent);
+  font-size: 12px;
+  opacity: 0;
+}
+
+.folio .fo-ability .fo-step.down { left: 1px; }
+.folio .fo-ability .fo-step.up { right: 1px; }
+
+.folio .fo-abilities.show-controls .fo-step,
+.folio .fo-ability:hover .fo-step {
+  opacity: 1 !important;
+}
+
+.folio .window-content .fo-ability button.fo-step:hover {
+  background: var(--fo-accent-soft);
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-points-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--fo-gold);
+  color: #1b120c;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 8px rgb(242 193 78 / 60%);
+}
+
+.folio .fo-defense {
+  width: auto;
+  min-width: 52px;
+  padding-left: 9px;
+  padding-right: 9px;
+}
+
+.folio .fo-defense.physical {
+  min-width: 70px;
+  padding-bottom: 7px;
+}
+
+.folio .fo-defense.physical .fo-stat-value {
+  color: var(--fo-title);
+}
+
+.folio .fo-segments {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 4px;
+  height: 3px;
+  display: flex;
+  gap: 1px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.folio .fo-segments i {
+  display: block;
+  height: 100%;
+}
+
+.folio .fo-segments .armor { background: #9aa3ad; }
+.folio .fo-segments .dodge { background: #7ccf54; }
+.folio .fo-segments .parry { background: #f2c14e; }
+.folio .fo-segments .block { background: #4d94ff; }
+
+.folio .fo-movement {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 112px;
+  padding-left: 12px;
+  border-left: 1px solid var(--fo-line-soft);
+}
+
+.folio .fo-move {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: var(--fo-text-2);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.folio .fo-move i {
+  color: var(--fo-text-3);
+  font-size: 10px;
+  text-align: center;
+}
+
+.folio .fo-move b {
+  color: var(--fo-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-move:hover {
+  background: var(--fo-hover);
+  color: var(--fo-text);
+}
+
+/* --------------------------------------------------------------------------
+   Tabs
+   -------------------------------------------------------------------------- */
+
+.folio .fo-tabs {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--fo-line);
+  background: var(--fo-bg-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.folio .fo-tab-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 7px;
+  border-bottom: 2px solid transparent;
+  color: var(--fo-text-3);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms;
+}
+
+.folio .fo-tab-link i {
+  font-size: 11.5px;
+}
+
+.folio .fo-tab-link:hover {
+  color: var(--fo-text);
+}
+
+.folio .fo-tab-link.active {
+  border-bottom-color: var(--fo-accent);
+  color: var(--fo-text);
+}
+
+.folio .fo-tab-link.active i {
+  color: var(--fo-accent);
+}
+
+.folio .fo-badge {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--fo-panel-2);
+  color: var(--fo-text-2);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.folio .fo-badge.alert {
+  background: var(--fo-gold);
+  color: #1b120c;
+}
+
+/* --------------------------------------------------------------------------
+   Tab bodies
+   -------------------------------------------------------------------------- */
+
+.folio .fo-tab {
+  flex: 1;
+  min-height: 0;
+  display: none;
+  flex-direction: column;
+}
+
+.folio .fo-tab.active {
+  display: flex;
+}
+
+.folio .fo-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--fo-line) transparent;
+}
+
+.folio .fo-tab.fo-play.active {
+  flex-direction: row;
+}
+
+.folio .fo-side {
+  flex: 0 0 246px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 10px 14px 12px;
+  border-right: 1px solid var(--fo-line);
+  background: var(--fo-bg-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--fo-line) transparent;
+}
+
+.folio .fo-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toolbar with search and filter chips */
+.folio .fo-toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--fo-line);
+}
+
+.folio .fo-toolbar-spacer {
+  flex: 1;
+}
+
+.folio .fo-toolbar-note {
+  color: var(--fo-text-3);
+  font-size: 11.5px;
+  font-style: italic;
+}
+
+.folio .fo-search-box {
+  position: relative;
+  flex: 1 1 160px;
+  max-width: 250px;
+  display: flex;
+  align-items: center;
+}
+
+.folio .fo-search-box > i {
+  position: absolute;
+  left: 9px;
+  color: var(--fo-text-3);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.folio .window-content input.fo-search {
+  width: 100%;
+  height: 28px;
+  padding: 0 26px 0 27px;
+  border: 1px solid var(--fo-line);
+  border-radius: 7px;
+  background: var(--fo-input);
+  color: var(--fo-text);
+  font: inherit;
+  font-size: 12.5px;
+  box-shadow: none;
+}
+
+.folio .window-content input.fo-search::-webkit-search-cancel-button {
+  display: none;
+}
+
+.folio .window-content input.fo-search:focus {
+  border-color: var(--fo-accent);
+  outline: none;
+}
+
+.folio .window-content button.fo-clear {
+  position: absolute;
+  right: 6px;
+  width: 16px;
+  height: 16px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--fo-text-3);
+  font-size: 10px;
+}
+
+.folio .fo-search-box.has-value button.fo-clear {
+  display: flex;
+}
+
+.folio .window-content button.fo-clear:hover {
+  background: var(--fo-hover);
+  color: var(--fo-text);
+}
+
+.folio .fo-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.folio .window-content button.fo-filter {
+  height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid var(--fo-line);
+  border-radius: 13px;
+  color: var(--fo-text-2);
+  font-size: 12px;
+}
+
+.folio .window-content button.fo-filter.icon-only {
+  width: 28px;
+  justify-content: center;
+  padding: 0;
+}
+
+.folio .window-content button.fo-filter i {
+  font-size: 10.5px;
+}
+
+.folio .window-content button.fo-filter:hover {
+  border-color: var(--fo-accent);
+  color: var(--fo-text);
+}
+
+.folio .window-content button.fo-filter.active {
+  border-color: var(--fo-accent);
+  background: var(--fo-accent-soft);
+  color: var(--fo-accent-2);
+}
+
+.folio .window-content button.fo-tool-btn {
+  height: 28px;
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 8px;
+  border: 1px solid var(--fo-line);
+  border-radius: 7px;
+  color: var(--fo-text-2);
+  font-size: 12px;
+}
+
+.folio .window-content button.fo-tool-btn:hover {
+  border-color: var(--fo-accent);
+  color: var(--fo-text);
+}
+
+.folio .window-content button.fo-tool-btn.active {
+  border-color: var(--fo-accent);
+  background: var(--fo-accent-soft);
+  color: var(--fo-accent-2);
+}
+
+.folio .window-content button.fo-tool-btn.primary {
+  border-color: var(--fo-accent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fo-accent) 32%, transparent), var(--fo-accent-soft));
+  color: var(--fo-text);
+  font-weight: 600;
+}
+
+.folio .fo-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--fo-line);
+  border-radius: 14px;
+  color: var(--fo-text-3);
+  font-size: 11.5px;
+}
+
+.folio .fo-pill b {
+  color: var(--fo-text);
+  font-size: 13px;
+  margin-right: 4px;
+}
+
+.folio .fo-pill.alert {
+  border-color: var(--fo-gold);
+  background: rgb(242 193 78 / 10%);
+}
+
+.folio .fo-pill.alert b:first-of-type {
+  color: var(--fo-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Sections and rows (actions, items, talents, effects)
+   -------------------------------------------------------------------------- */
+
+.folio .fo-lists {
+  padding: 0 4px 12px 8px;
+}
+
+.folio .fo-section {
+  margin-bottom: 6px;
+}
+
+.folio .fo-section-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: end;
+  column-gap: 8px;
+  padding: 9px 6px 4px;
+  border-bottom: 1px solid var(--fo-line);
+  background: var(--fo-bg);
+}
+
+.folio .fo-head-title {
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--fo-title);
+  cursor: pointer;
+  user-select: none;
+}
+
+.folio .fo-section-label {
+  font-family: var(--fo-font-display);
+  font-size: 15.5px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.folio .fo-section-icon {
+  width: 14px;
+  color: var(--fo-accent);
+  font-size: 11px;
+  text-align: center;
+}
+
+.folio .fo-chev {
+  width: 10px;
+  color: var(--fo-text-3);
+  font-size: 9px;
+  transition: transform 150ms;
+}
+
+.folio .collapsed > .fo-section-head .fo-chev,
+.folio .collapsed > .fo-block-head .fo-chev {
+  transform: rotate(-90deg);
+}
+
+.folio .fo-count {
+  padding: 0 5px;
+  border-radius: 7px;
+  background: var(--fo-panel-2);
+  color: var(--fo-text-3);
+  font-family: var(--fo-font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 14px;
+}
+
+.folio .fo-count.full {
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-col-label {
+  color: var(--fo-text-3);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.folio .fo-col-label.fo-ctrl {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.folio .section-collapsed,
+.folio .collapsed > .fo-rows,
+.folio .collapsed > .fo-condition-grid,
+.folio .collapsed > :not(.fo-block-head):not(.fo-section-head) {
+  display: none;
+}
+
+.folio .fo-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.folio .fo-row {
+  border-bottom: 1px solid var(--fo-line-faint);
+  border-radius: 4px;
+}
+
+.folio .fo-row:hover {
+  background: var(--fo-hover);
+}
+
+.folio .fo-row.expanded {
+  background: var(--fo-panel);
+  box-shadow: inset 2px 0 0 var(--fo-accent);
+}
+
+.folio .fo-row-main {
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: center;
+  column-gap: 8px;
+  min-height: 36px;
+  padding: 3px 6px;
+}
+
+.folio .fo-icon {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: block;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--fo-line);
+}
+
+.folio .fo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+  display: block;
+}
+
+.folio .fo-icon.usable {
+  cursor: pointer;
+}
+
+.folio .fo-use-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20 14 10 / 72%);
+  color: var(--fo-accent-2);
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 100ms;
+}
+
+.folio .fo-icon.usable:hover .fo-use-hint {
+  opacity: 1;
+}
+
+.folio .fo-icon.usable:hover {
+  box-shadow: 0 0 0 1px var(--fo-accent), 0 0 8px rgb(211 154 92 / 40%);
+}
+
+.folio .fo-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  align-self: stretch;
+  cursor: pointer;
+}
+
+.folio .fo-title {
+  overflow: hidden;
+  color: var(--fo-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 17px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-stack {
+  margin-right: 4px;
+  color: var(--fo-accent-2);
+  font-weight: 600;
+}
+
+.folio .fo-sub {
+  overflow: hidden;
+  color: var(--fo-text-3);
+  font-size: 11px;
+  line-height: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-sub > span + span::before {
+  content: " · ";
+  color: var(--fo-text-3);
+  opacity: 0.7;
+}
+
+.folio .fo-sub .source {
+  color: var(--fo-text-2);
+}
+
+.folio .fo-sub .unmet {
+  color: var(--fo-bad);
+}
+
+.folio .fo-cell {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--fo-text-2);
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-val {
+  color: var(--fo-text);
+}
+
+.folio .fo-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1px;
+}
+
+.folio .window-content button.fo-btn,
+.folio .window-content a.fo-btn {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: var(--fo-text-3);
+  font-size: 11.5px;
+}
+
+.folio .window-content button.fo-btn:hover:not(:disabled),
+.folio .window-content a.fo-btn:hover {
+  background: var(--fo-hover);
+  color: var(--fo-accent-2);
+}
+
+.folio .window-content button.fo-btn.fo-danger:hover {
+  color: var(--fo-bad);
+}
+
+.folio .window-content button.fo-btn.fo-fav.on,
+.folio .window-content button.fo-btn.fo-sun.on {
+  color: var(--fo-gold);
+}
+
+.folio .window-content button.fo-btn.fo-equip.on {
+  color: var(--fo-accent);
+}
+
+/* Cost chips */
+.folio .fo-costs {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.folio .fo-chip {
+  --c: var(--fo-accent);
+  min-width: 24px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  color: color-mix(in srgb, var(--c) 70%, var(--fo-text));
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.folio .fo-chip.action { --c: var(--fo-c-action); }
+.folio .fo-chip.focus { --c: var(--fo-c-focus); }
+.folio .fo-chip.heroism { --c: var(--fo-c-heroism); }
+
+.folio .fo-chip.free {
+  opacity: 0.55;
+  font-weight: 500;
+}
+
+.folio .fo-chip.unmet {
+  border-color: var(--fo-bad);
+  background: rgb(238 90 67 / 12%);
+  color: var(--fo-bad);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* Unusable actions read as dimmed */
+.folio .fo-row.unusable .fo-icon img {
+  filter: grayscale(0.75) brightness(0.7);
+}
+
+.folio .fo-row.unusable .fo-title {
+  color: var(--fo-text-2);
+}
+
+/* Favorites: pinned copies hide in their category until filtering */
+.folio .fo-play[data-filtering="false"] .fo-section:not(.fo-favorites) .fo-row.is-pinned,
+.folio .fo-play:not([data-filtering]) .fo-section:not(.fo-favorites) .fo-row.is-pinned,
+.folio .fo-play[data-filtering="false"] .fo-section.fo-all-pinned,
+.folio .fo-play:not([data-filtering]) .fo-section.fo-all-pinned,
+.folio .fo-play[data-filtering="true"] .fo-section.fo-favorites {
+  display: none;
+}
+
+.folio .fo-favorites .fo-section-icon {
+  color: var(--fo-gold);
+}
+
+/* Inline details */
+.folio .fo-detail {
+  padding: 2px 14px 10px 50px;
+  color: var(--fo-text);
+  font-family: var(--fo-font-read);
+  font-size: 13.5px;
+  line-height: 1.45;
+  cursor: auto;
+}
+
+.folio .fo-detail > :first-child { margin-top: 0; }
+.folio .fo-detail > :last-child { margin-bottom: 0; }
+
+.folio .fo-detail p {
+  margin: 0 0 0.5em;
+}
+
+.folio .fo-detail ul {
+  margin: 0.25em 0 0.5em;
+  padding-left: 1.2em;
+}
+
+.folio .fo-detail strong {
+  color: var(--fo-title);
+}
+
+.folio .fo-no-results {
+  margin: 24px 0;
+  color: var(--fo-text-3);
+  text-align: center;
+  font-style: italic;
+}
+
+.folio .fo-no-results[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar blocks (play tab)
+   -------------------------------------------------------------------------- */
+
+.folio .fo-block {
+  margin-bottom: 4px;
+}
+
+/* Foundry spaces every list item; the sidebar lists are dense on purpose */
+.folio :is(.fo-equipped, .fo-skill-list) > li {
+  margin: 0;
+}
+
+.folio .fo-block-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 6px 2px 3px;
+  border-bottom: 1px solid var(--fo-line);
+  color: var(--fo-text-2);
+  font-family: var(--fo-font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  cursor: pointer;
+  user-select: none;
+}
+
+.folio .fo-skills .fo-block-head {
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--c) 35%, transparent);
+}
+
+.folio .fo-block-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-head-cols {
+  margin: 0 24px 0 auto;
+  display: flex;
+  gap: 6px;
+  color: var(--fo-text-3);
+  font-size: 8.5px;
+  letter-spacing: 0.02em;
+}
+
+/* Aligned with the score and passive columns of the skill rows; a longer label grows to the left */
+.folio .fo-head-cols span {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.folio .fo-head-cols span:first-child { width: 30px; }
+.folio .fo-head-cols span:last-child { width: 24px; }
+
+.folio .fo-equipped {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.folio .fo-equip {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+
+.folio .fo-equip:hover {
+  background: var(--fo-hover);
+}
+
+.folio .fo-equip img {
+  grid-row: 1 / span 2;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px var(--fo-line);
+}
+
+.folio .fo-equip-name {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-equip-tags {
+  color: var(--fo-text-3);
+  font-size: 10.5px;
+}
+
+.folio .fo-equip-tags span + span::before {
+  content: " · ";
+}
+
+.folio .fo-skill-list {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.folio .fo-skill {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 30px 24px;
+  align-items: center;
+  column-gap: 6px;
+  height: 22px;
+  padding: 0 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.folio .fo-skill:hover {
+  background: var(--fo-hover);
+}
+
+.folio .fo-skill:hover .fo-skill-name {
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-rank {
+  display: flex;
+  gap: 2px;
+}
+
+.folio .fo-rank i {
+  width: 3px;
+  height: 9px;
+  border-radius: 1px;
+  background: rgb(255 255 255 / 12%);
+}
+
+.folio.fo-light .fo-rank i {
+  background: rgb(60 40 20 / 15%);
+}
+
+.folio .fo-rank i.on {
+  background: var(--c);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--c) 60%, transparent);
+}
+
+.folio .fo-skill-name {
+  overflow: hidden;
+  font-size: 12.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-skill:not(.trained) .fo-skill-name {
+  color: var(--fo-text-2);
+}
+
+.folio .fo-skill-abbr {
+  color: var(--fo-text-3);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.folio .fo-skill-score {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* Modifiers: penalties must be readable at a glance */
+.folio :is(.fo-skill-score, .fo-train-score).neg {
+  color: var(--fo-bad) !important;
+}
+
+.folio :is(.fo-skill-score, .fo-train-score).zero {
+  color: var(--fo-text-2);
+}
+
+.folio :is(.fo-skill-score, .fo-train-score).pos {
+  color: var(--fo-good);
+}
+
+.folio .fo-skill-passive {
+  color: var(--fo-text-3);
+  font-size: 11.5px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-resist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 6px;
+  padding-top: 4px;
+}
+
+.folio .fo-resist {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 2px 2px;
+  color: var(--fo-text-3);
+  font-size: 10.5px;
+}
+
+.folio .fo-resist span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-resist b {
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-resist.none b { opacity: 0.5; }
+.folio .fo-resist.res { color: var(--fo-text); }
+.folio .fo-resist.res b { color: var(--fo-good); }
+.folio .fo-resist.vuln { color: var(--fo-text); }
+.folio .fo-resist.vuln b { color: var(--fo-bad); }
+.folio .fo-resist.immunity b { color: var(--fo-gold); }
+
+.folio .fo-lore-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.folio .fo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.folio .fo-chips > i {
+  width: 16px;
+  color: var(--fo-text-3);
+  font-size: 11px;
+  text-align: center;
+}
+
+.folio .fo-tag {
+  padding: 1px 7px;
+  border: 1px solid var(--fo-line);
+  border-radius: 9px;
+  color: var(--fo-text-2);
+  font-size: 11px;
+}
+
+.folio .fo-tag.granted {
+  border-color: color-mix(in srgb, var(--fo-accent) 55%, transparent);
+  color: var(--fo-accent-2);
+}
+
+/* --------------------------------------------------------------------------
+   Inventory
+   -------------------------------------------------------------------------- */
+
+.folio .fo-capacity {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  color: var(--fo-text-2);
+  font-size: 12px;
+}
+
+.folio .fo-capacity .fo-bar {
+  --c: var(--fo-accent);
+  --c-low: #7a4a22;
+  width: 110px;
+  height: 7px;
+}
+
+.folio .fo-capacity.over .fo-bar {
+  --c: var(--fo-bad);
+  --c-low: #7a1d10;
+}
+
+.folio .fo-capacity.over {
+  color: var(--fo-bad);
+}
+
+.folio .fo-cap-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-item.dropped .fo-title {
+  color: var(--fo-text-3);
+  text-decoration: line-through;
+}
+
+.folio .window-content input.fo-qty {
+  width: 44px;
+  height: 22px;
+  padding: 0 4px;
+  border: 1px solid var(--fo-line);
+  border-radius: 4px;
+  background: var(--fo-input);
+  color: var(--fo-text);
+  font: inherit;
+  text-align: center;
+}
+
+.folio .fo-footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 12px;
+  border-top: 1px solid var(--fo-line);
+  background: var(--fo-bg-2);
+}
+
+.folio .fo-currency-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.folio .fo-footer-label {
+  color: var(--fo-text-3);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* --------------------------------------------------------------------------
+   Training
+   -------------------------------------------------------------------------- */
+
+.folio .fo-train-grid {
+  columns: 2 340px;
+  column-gap: 10px;
+  padding: 10px 10px 4px;
+}
+
+.folio .fo-train-grid > .fo-card {
+  break-inside: avoid;
+  margin-bottom: 10px;
+}
+
+.folio .fo-card {
+  --c: var(--fo-accent);
+  padding: 6px 8px 8px;
+  border: 1px solid var(--fo-line);
+  border-radius: 9px;
+  background: var(--fo-panel);
+  box-shadow: var(--fo-shadow);
+}
+
+.folio .fo-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+  padding: 2px 2px 5px;
+  border-bottom: 1px solid var(--fo-line-soft);
+  color: var(--fo-title);
+  font-family: var(--fo-font-display);
+  font-size: 15.5px;
+}
+
+.folio .fo-train-grid .fo-card-head::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--c);
+  transform: rotate(45deg);
+}
+
+.folio .fo-card-head .fo-btn {
+  margin-left: auto;
+}
+
+.folio .fo-card-head > i {
+  color: var(--fo-accent);
+  font-size: 12px;
+}
+
+.folio .fo-card-head .fo-count {
+  margin-left: 2px;
+}
+
+.folio .fo-train-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.folio .fo-train {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 72px 70px 30px 22px;
+  align-items: center;
+  column-gap: 7px;
+  height: 26px;
+  padding: 0 2px;
+  border-radius: 4px;
+}
+
+.folio .fo-train-grid.show-controls .fo-train {
+  grid-template-columns: 20px minmax(0, 1fr) 72px 56px 30px 22px 40px;
+}
+
+.folio .fo-train:hover {
+  background: var(--fo-hover);
+}
+
+.folio .fo-train img {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.folio .fo-train-name {
+  overflow: hidden;
+  font-size: 12.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-train:not(.invested) .fo-train-name {
+  color: var(--fo-text-2);
+}
+
+.folio a.fo-train-name {
+  cursor: pointer;
+}
+
+.folio a.fo-train-name:hover {
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-train-rank {
+  color: var(--fo-text-3);
+  font-size: 11px;
+}
+
+.folio .fo-train.invested .fo-train-rank {
+  color: color-mix(in srgb, var(--c) 60%, var(--fo-text));
+}
+
+.folio .fo-train-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 35%);
+  overflow: hidden;
+}
+
+.folio.fo-light .fo-train-bar {
+  background: rgb(60 40 20 / 12%);
+}
+
+.folio .fo-train-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--c);
+}
+
+.folio .fo-train-bar b {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgb(0 0 0 / 55%);
+}
+
+.folio .fo-train-bar b.cap {
+  width: 2px;
+  background: var(--fo-bad);
+}
+
+.folio .fo-train-score {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-train-passive {
+  color: var(--fo-text-3);
+  font-size: 11.5px;
+  text-align: right;
+}
+
+.folio .fo-steps {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.folio .window-content .fo-steps button.fo-step {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--fo-line);
+  border-radius: 4px;
+  color: var(--fo-text-2);
+  font-size: 8px;
+}
+
+.folio .window-content .fo-steps button.fo-step:hover:not(:disabled) {
+  border-color: var(--fo-accent);
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-lore-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 6px 10px 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Spells
+   -------------------------------------------------------------------------- */
+
+.folio .fo-spells .fo-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.folio .fo-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.folio .fo-tile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border: 1px solid var(--fo-line-soft);
+  border-radius: 7px;
+  background: var(--fo-panel-2);
+}
+
+.folio .fo-tile img {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+}
+
+.folio .fo-tile-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.folio .fo-tile-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.folio .fo-tile-tags {
+  overflow: hidden;
+  color: var(--fo-text-3);
+  font-size: 10.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-tile-tags span + span::before {
+  content: " · ";
+}
+
+.folio .fo-iconic .fo-row-main {
+  min-height: 34px;
+}
+
+/* --------------------------------------------------------------------------
+   Effects
+   -------------------------------------------------------------------------- */
+
+.folio .fo-condition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 4px;
+  padding: 6px 2px 4px;
+}
+
+.folio .window-content button.fo-condition {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  height: 26px;
+  padding: 0 7px;
+  border: 1px solid var(--fo-line-faint);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 12%);
+  color: var(--fo-text-2);
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.folio .fo-condition img {
+  width: 16px;
+  height: 16px;
+  border: none;
+  opacity: 0.7;
+}
+
+.folio.fo-light .fo-condition img {
+  filter: invert(0.8);
+}
+
+.folio .window-content button.fo-condition:hover {
+  border-color: var(--fo-line);
+  color: var(--fo-text);
+}
+
+.folio .window-content button.fo-condition.active {
+  border-color: var(--fo-accent);
+  background: var(--fo-accent-soft);
+  color: var(--fo-text);
+}
+
+.folio .fo-condition.active img {
+  opacity: 1;
+}
+
+.folio .fo-row.fo-effect.disabled .fo-title {
+  color: var(--fo-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Attunement (Ember)
+   -------------------------------------------------------------------------- */
+
+.folio .fo-attune-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 10px;
+  list-style: none;
+}
+
+.folio .fo-attune {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 220px auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--fo-line);
+  border-left: 3px solid var(--c);
+  border-radius: 8px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 18%, var(--fo-panel)), var(--fo-panel) 45%);
+}
+
+.folio .fo-attune.active {
+  border-color: var(--fo-accent);
+  border-left-color: var(--c);
+  box-shadow: 0 0 10px rgb(211 154 92 / 18%);
+}
+
+.folio .fo-attune img {
+  width: 40px;
+  height: 40px;
+  border: none;
+}
+
+.folio .fo-attune-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.folio .fo-attune-name {
+  font-family: var(--fo-font-display);
+  font-size: 16px;
+  color: var(--fo-title);
+}
+
+.folio .fo-attune-rank {
+  color: var(--fo-text-3);
+  font-size: 11px;
+}
+
+.folio .fo-attune-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-attune-progress .fo-bar {
+  --c-low: color-mix(in srgb, var(--c) 50%, #000);
+  flex: 1;
+  height: 6px;
+}
+
+.folio .fo-attune-progress .fo-bar .fo-fill {
+  background: linear-gradient(90deg, var(--c-low), color-mix(in srgb, var(--c) 70%, #fff));
+}
+
+.folio .fo-attune-max {
+  color: var(--fo-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Biography
+   -------------------------------------------------------------------------- */
+
+.folio .fo-bio-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px;
+  align-items: start;
+}
+
+.folio .fo-bio-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.folio .fo-fields .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  margin: 0 0 6px;
+}
+
+.folio .fo-fields .form-group label {
+  color: var(--fo-text-3);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.folio .fo-fields input {
+  height: 28px;
+  border-color: var(--fo-line);
+  background: var(--fo-input);
+  color: var(--fo-text);
+}
+
+.folio .fo-editor-card prose-mirror {
+  min-height: 90px;
+  font-family: var(--fo-font-read);
+  font-size: 14px;
+  color: var(--fo-text);
+}
+
+.folio .fo-editor-card prose-mirror .editor-content {
+  padding: 2px 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive: narrow windows drop secondary columns
+   -------------------------------------------------------------------------- */
+
+@container (max-width: 860px) {
+  .folio .fo-movement .fo-move-label { display: none; }
+}
+
+.application.folio .window-content {
+  container-type: inline-size;
+}
+
+@container (max-width: 820px) {
+  .folio .fo-hero { grid-template-columns: 100px minmax(0, 1fr) 196px; gap: 12px; }
+  .folio .fo-portrait { width: 100px; height: 100px; }
+  .folio .fo-side { flex-basis: 220px; }
+  .folio .fo-ability { width: 46px; }
+  .folio .fo-defense { padding-left: 6px; padding-right: 6px; }
+  .folio .fo-defense.physical { min-width: 60px; }
+  .folio .fo-movement { min-width: 60px; }
+  .folio .fo-move { grid-template-columns: 14px auto; }
+}
+
+/* --------------------------------------------------------------------------
+   Context menu inside the sheet
+   -------------------------------------------------------------------------- */
+
+.folio #context-menu {
+  min-width: 190px;
+  padding: 4px;
+  border: 1px solid var(--fo-line);
+  border-radius: 8px;
+  background: var(--fo-panel);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 45%);
+  color: var(--fo-text);
+  font-family: var(--fo-font-ui);
+  font-size: 12.5px;
+}
+
+.folio #context-menu .context-items {
+  margin: 0;
+  padding: 0;
+}
+
+.folio #context-menu .context-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  line-height: 18px;
+}
+
+.folio #context-menu .context-item i {
+  width: 16px;
+  color: var(--fo-accent);
+  text-align: center;
+}
+
+.folio #context-menu .context-item:hover {
+  background: var(--fo-accent-soft);
+  color: var(--fo-text);
+}
+
+.folio .collapsed > .fo-block-head .fo-head-cols {
+  visibility: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Spellbook rows in the sheet
+   -------------------------------------------------------------------------- */
+
+.folio .fo-book-badge {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  padding: 1px 2px;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 70%);
+  color: var(--fo-accent-2);
+  font-size: 7.5px;
+}
+
+.folio .fo-icon.usable:hover .fo-book-badge {
+  opacity: 0;
+}
+
+.folio .fo-spellbook .fo-rows {
+  padding: 0;
+}
+
+.folio .fo-detail.fo-card-detail {
+  font-family: var(--fo-font-ui);
+  font-size: 12.5px;
+}
+
+.folio .fo-detail.fo-card-detail .line-item {
+  --icon-size: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   Spellbook strip inside Crucible's spell casting dialog
+   -------------------------------------------------------------------------- */
+
+.fo-spellfav {
+  margin: 4px 0 8px;
+  padding: 7px 8px 8px;
+  border: 1px solid rgb(211 154 92 / 30%);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgb(211 154 92 / 10%), rgb(0 0 0 / 15%));
+  font-family: "Signika", var(--font-sans, sans-serif);
+}
+
+.fo-spellfav-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.fo-spellfav-title {
+  color: #e6d3b3;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.fo-spellfav-title i {
+  color: #f2c14e;
+  font-size: 10px;
+}
+
+.application .fo-spellfav button.fo-spellfav-save,
+.application .fo-spellfav button.fo-spellfav-chip {
+  flex: none;
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  box-shadow: none;
+  font-family: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.application .fo-spellfav button.fo-spellfav-save {
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid #5a4636;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 25%);
+  color: #bcae9b;
+  font-size: 12px;
+}
+
+.application .fo-spellfav button.fo-spellfav-save:hover:not(:disabled) {
+  border-color: #d39a5c;
+  color: #f0c27b;
+}
+
+.application .fo-spellfav button.fo-spellfav-save.active {
+  border-color: #f2c14e;
+  background: rgb(242 193 78 / 14%);
+  color: #f2c14e;
+}
+
+.fo-spellfav-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.application .fo-spellfav button.fo-spellfav-chip {
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px 0 3px;
+  border: 1px solid #3a2f29;
+  border-radius: 14px;
+  background: #1f1a18;
+  color: #ede5d9;
+  font-size: 12.5px;
+}
+
+.application .fo-spellfav button.fo-spellfav-chip img {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.application .fo-spellfav button.fo-spellfav-chip:hover:not(:disabled) {
+  border-color: #d39a5c;
+  background: rgb(211 154 92 / 14%);
+}
+
+.application .fo-spellfav button.fo-spellfav-chip.active {
+  border-color: #f0c27b;
+  background: rgb(211 154 92 / 22%);
+  box-shadow: 0 0 6px rgb(240 194 123 / 30%);
+}
+
+.application .fo-spellfav button.fo-spellfav-chip.missing {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.fo-spellfav-empty {
+  margin: 0;
+  color: #8a7c6d;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   Spell composer dialog
+   -------------------------------------------------------------------------- */
+
+.application.fo-composer-dialog .window-content {
+  padding: 12px 14px 10px;
+}
+
+/* The save button is the point of this dialog */
+.application.fo-composer-dialog .form-footer button[data-action="save"] {
+  border: 1px solid #c8945a;
+  color: #f3e3c3;
+}
+
+.fo-composer-dialog .fo-composer .form-group label {
+  flex: 0 0 190px;
+  white-space: nowrap;
+}
+
+.fo-composer-dialog .fo-composer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fo-composer-dialog .fo-composer .form-group[hidden] {
+  display: none;
+}
+
+.fo-composer-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid rgb(211 154 92 / 30%);
+  border-radius: 8px;
+  background: rgb(0 0 0 / 22%);
+  font-family: "Signika", var(--font-sans, sans-serif);
+}
+
+.fo-composer-preview img {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+}
+
+.fo-composer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fo-composer-text strong {
+  color: #e6d3b3;
+  font-family: "AwerySmallcaps", serif;
+  font-size: 17px;
+  font-weight: normal;
+}
+
+.fo-composer-text small {
+  color: #8a7c6d;
+  font-size: 11.5px;
+}
+
+.fo-composer-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.fo-composer-chip {
+  --c: #8a7c6d;
+  padding: 1px 5px;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  color: color-mix(in srgb, var(--c) 70%, #ede5d9);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.fo-composer-chip.action { --c: #ffa31a; }
+.fo-composer-chip.focus { --c: #4d94ff; }
+.fo-composer-chip.heroism { --c: #ff3d7a; }
+
+.fo-composer-saved {
+  color: #f2c14e;
+  font-size: 11.5px;
+}
+
+/* ==========================================================================
+   Quickbar – compact, semi-transparent HUD mode of the sheet
+   ========================================================================== */
+
+.application.folio.fo-qb {
+  --fo-qb-bg: rgb(18 14 13 / 58%);
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgb(211 154 92 / 28%);
+  border-radius: 10px;
+  background: var(--fo-qb-bg) !important;
+  backdrop-filter: blur(7px) saturate(1.15);
+  box-shadow: 0 6px 22px rgb(0 0 0 / 40%);
+  opacity: var(--fo-qb-idle, 0.6);
+  transition: opacity 220ms ease, box-shadow 220ms ease;
+}
+
+.application.folio.fo-qb.fo-light {
+  --fo-qb-bg: rgb(243 236 224 / 72%);
+  border-color: rgb(140 84 32 / 30%);
+}
+
+.application.folio.fo-qb:hover,
+.application.folio.fo-qb:focus-within,
+.application.folio.fo-qb:has(.fo-quickbar.is-turn) {
+  opacity: 1;
+}
+
+.application.folio.fo-qb:has(.fo-quickbar.is-turn) {
+  border-color: var(--fo-accent-2);
+  box-shadow: 0 0 0 1px var(--fo-accent-2), 0 0 18px rgb(240 194 123 / 35%);
+}
+
+.application.crucible.folio.fo-qb .window-header {
+  height: 24px;
+  min-height: 24px;
+  padding: 0 4px 0 10px;
+  border-bottom: none;
+  background: transparent;
+  font-size: 12px;
+  cursor: move;
+}
+
+.application.crucible.folio.fo-qb .window-header .window-title {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.application.crucible.folio.fo-qb .window-header .header-control {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.application.crucible.folio.fo-qb:hover .window-header .header-control {
+  opacity: 1;
+}
+
+.application.crucible.folio.fo-qb .window-content {
+  padding: 0 8px 8px;
+  background: transparent;
+  overflow: visible;
+  container-type: normal;
+}
+
+.application.folio.fo-qb .window-resize-handle {
+  display: none;
+}
+
+.folio .fo-quickbar {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--fo-text);
+  font-family: var(--fo-font-ui);
+}
+
+/* Status row: portrait, pools, action economy */
+.folio .fo-qb-status {
+  display: grid;
+  grid-template-columns: 52px 200px max-content;
+  justify-content: start;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.folio .fo-qb-portrait {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.folio .fo-qb-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid var(--fo-line);
+  border-radius: 9px;
+  background: rgb(0 0 0 / 30%);
+  cursor: pointer;
+}
+
+.folio .fo-qb-portrait.hp-critical img,
+.folio .fo-qb-portrait.hp-empty img {
+  border-color: var(--fo-bad);
+  box-shadow: 0 0 10px rgb(238 90 67 / 55%);
+}
+
+.folio .fo-quickbar.is-turn .fo-qb-portrait img {
+  border-color: var(--fo-accent-2);
+  box-shadow: 0 0 10px rgb(240 194 123 / 55%);
+}
+
+.folio .fo-qb-level {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 20px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: linear-gradient(160deg, var(--fo-accent-2), var(--fo-accent));
+  color: #1b120c;
+  font-family: var(--fo-font-display);
+  font-size: 12px;
+}
+
+.folio .fo-qb-ini {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 75%);
+  color: #f1e6d6;
+  font-size: 9.5px;
+}
+
+.folio .fo-quickbar.is-turn .fo-qb-ini {
+  background: var(--fo-accent);
+  color: #1b120c;
+  font-weight: 700;
+}
+
+.folio .fo-qb-pools {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.folio .fo-qb-pool {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.folio .fo-qb-pool .fo-qb-label {
+  grid-column: 1;
+  grid-row: 1;
+  color: color-mix(in srgb, var(--c) 55%, var(--fo-text));
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.folio .fo-qb-pool .fo-bar {
+  grid-column: 1;
+  grid-row: 2;
+  height: 7px;
+}
+
+.folio .fo-qb-value {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: baseline;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-qb-max {
+  color: var(--fo-text-3);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.folio .window-content .fo-qb-value input[type="number"],
+.folio .window-content .fo-qb-value input.number-input {
+  width: 3ch;
+  height: auto;
+  min-height: 0;
+  padding: 0 1px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--fo-text);
+  font: inherit;
+  text-align: right;
+  box-shadow: none;
+  appearance: textfield;
+}
+
+.folio .window-content .fo-qb-value input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.folio .window-content .fo-qb-value input:hover {
+  border-color: var(--fo-line);
+  background: var(--fo-input);
+}
+
+.folio .window-content .fo-qb-value input:focus {
+  width: 5ch;
+  border-color: var(--fo-accent);
+  background: var(--fo-input);
+  outline: none;
+  text-align: center;
+}
+
+.folio .fo-qb-economy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.folio .fo-qb-cur {
+  --c: var(--fo-accent);
+  display: grid;
+  grid-template-columns: 12px auto 18px;
+  align-items: center;
+  gap: 5px;
+}
+
+.folio .fo-qb-cur.action { --c: var(--fo-c-action); }
+.folio .fo-qb-cur.focus { --c: var(--fo-c-focus); }
+.folio .fo-qb-cur.heroism { --c: var(--fo-c-heroism); }
+
+.folio .fo-qb-cur-label {
+  color: color-mix(in srgb, var(--c) 60%, var(--fo-text));
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.folio .fo-qb-cur .fo-pips {
+  grid-column: auto;
+  grid-row: auto;
+  flex-wrap: nowrap;
+  gap: 2px;
+}
+
+.folio .fo-qb-cur .fo-pip {
+  width: 9px;
+  height: 10px;
+}
+
+.folio .fo-qb-cur-value {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-qb-cur.is-empty .fo-qb-cur-value {
+  color: var(--fo-text-3);
+}
+
+/* Action bar */
+.folio .fo-qb-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.folio .fo-qb-actions {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+  max-width: 440px;
+}
+
+.folio .window-content button.fo-qb-action {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--fo-line);
+  border-radius: 8px;
+  background: rgb(0 0 0 / 30%);
+  overflow: hidden;
+  box-shadow: none;
+  cursor: pointer;
+  transition: transform 100ms, border-color 120ms, box-shadow 120ms;
+}
+
+.folio .window-content button.fo-qb-action img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+.folio .window-content button.fo-qb-action:hover {
+  transform: translateY(-1px);
+  border-color: var(--fo-accent);
+  box-shadow: 0 0 8px rgb(211 154 92 / 45%);
+}
+
+.folio .window-content button.fo-qb-action.unusable img {
+  filter: grayscale(0.8) brightness(0.6);
+}
+
+.folio .fo-qb-cost {
+  position: absolute;
+  bottom: 1px;
+  min-width: 12px;
+  height: 13px;
+  padding: 0 2px;
+  border-radius: 3px;
+  font-size: 9.5px;
+  font-weight: 800;
+  line-height: 13px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.folio .fo-qb-cost.ap {
+  right: 1px;
+  background: rgb(0 0 0 / 78%);
+  color: var(--fo-c-action);
+}
+
+.folio .fo-qb-cost.fp {
+  left: 1px;
+  background: rgb(0 0 0 / 78%);
+  color: #7fb2ff;
+}
+
+.folio .fo-qb-cost.unmet {
+  color: var(--fo-bad);
+  text-decoration: line-through;
+}
+
+.folio .fo-qb-book {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  padding: 1px 2px;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 70%);
+  color: var(--fo-accent-2);
+  font-size: 7px;
+  pointer-events: none;
+}
+
+.folio .fo-qb-empty {
+  color: var(--fo-text-3);
+  font-size: 11.5px;
+  font-style: italic;
+}
+
+.folio .fo-qb-defenses {
+  display: flex;
+  gap: 4px;
+}
+
+.folio .fo-qb-def {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--fo-line);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 22%);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: help;
+}
+
+.folio .fo-qb-def i,
+.folio .fo-qb-def b {
+  color: var(--fo-text-3);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.folio .fo-qb-def.physical {
+  color: var(--fo-title);
+}
+
+.folio .fo-qb-tools {
+  display: flex;
+  gap: 3px;
+}
+
+.folio .window-content button.fo-qb-tool {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--fo-line);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 22%);
+  color: var(--fo-text-2);
+  font-size: 12px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.folio .window-content button.fo-qb-tool:hover,
+.folio .window-content button.fo-qb-tool.active {
+  border-color: var(--fo-accent);
+  color: var(--fo-accent-2);
+}
+
+.folio .fo-qb-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.folio .fo-qb-conditions img {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border: 1px solid var(--fo-line);
+  border-radius: 5px;
+  background: rgb(0 0 0 / 35%);
+}
+
+/* Skill drawer */
+.folio .fo-qb-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--fo-line-soft);
+}
+
+.folio .fo-qb-skills[hidden] {
+  display: none;
+}
+
+.folio .fo-qb-skill-group {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.folio .window-content button.fo-qb-skill {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 0;
+  padding: 0 6px;
+  border: 1px solid var(--fo-line-faint);
+  border-left: 2px solid color-mix(in srgb, var(--c) 70%, transparent);
+  border-radius: 4px;
+  background: rgb(0 0 0 / 20%);
+  color: var(--fo-text-2);
+  font-size: 11.5px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.folio .window-content button.fo-qb-skill.trained {
+  color: var(--fo-text);
+}
+
+.folio .window-content button.fo-qb-skill:hover {
+  border-color: var(--fo-accent);
+  color: var(--fo-text);
+}
+
+.folio .fo-qb-skill-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-qb-skill-score {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-qb-skill-score.neg { color: var(--fo-bad); }
+.folio .fo-qb-skill-score.pos { color: var(--fo-good); }
+.folio .fo-qb-skill-score.zero { color: var(--fo-text-3); }
+
+.folio.fo-light .fo-qb-def,
+.folio.fo-light .window-content button.fo-qb-tool,
+.folio.fo-light .window-content button.fo-qb-skill,
+.folio.fo-light .window-content button.fo-qb-action {
+  background: rgb(255 255 255 / 55%);
+}
+
+.folio.fo-light .fo-qb-def i,
+.folio.fo-light .fo-qb-def b {
+  color: var(--fo-text-2);
+}
+
+/* ==========================================================================
+   Round 2: end turn, adversaries, pinned skills, favorite ordering, uses,
+   keyboard focus
+   ========================================================================== */
+
+/* End turn */
+.folio .window-content button.fo-hbtn.fo-end-turn {
+  width: auto;
+  gap: 6px;
+  padding: 0 10px;
+  border-color: var(--fo-accent-2);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fo-accent) 45%, transparent), var(--fo-accent-soft));
+  color: var(--fo-text);
+  font-size: 12px;
+  font-weight: 600;
+  animation: fo-pulse 1.8s ease-in-out infinite;
+}
+
+.folio .window-content button.fo-hbtn.active {
+  border-color: var(--fo-gold);
+  color: var(--fo-gold);
+}
+
+.folio .window-content button.fo-hbtn:disabled {
+  opacity: 0.35;
+}
+
+/* Adversary identity */
+.folio .fo-threat {
+  color: var(--fo-text-2);
+}
+
+.folio .fo-threat i {
+  color: var(--fo-accent);
+  font-size: 11px;
+}
+
+.folio .window-content .fo-threat-select select {
+  height: 22px;
+  padding: 0 4px;
+  border: 1px solid var(--fo-line);
+  border-radius: 5px;
+  background: var(--fo-input);
+  color: var(--fo-text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.folio .fo-reserve-spacer {
+  flex: 1;
+}
+
+/* Pinned skills in the sidebar */
+.folio .fo-skill {
+  grid-template-columns: 22px minmax(0, 1fr) 30px 24px 16px;
+}
+
+.folio .window-content button.fo-skill-pin {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: var(--fo-text-3);
+  font-size: 9px;
+  opacity: 0;
+  cursor: pointer;
+  transform: rotate(35deg);
+}
+
+.folio .fo-skill:hover button.fo-skill-pin,
+.folio .fo-skill.pinned button.fo-skill-pin {
+  opacity: 1;
+}
+
+.folio .fo-skill.pinned button.fo-skill-pin {
+  color: var(--fo-gold);
+  transform: none;
+}
+
+.folio .window-content button.fo-skill-pin:hover {
+  color: var(--fo-accent-2);
+}
+
+/* Pinned skill rows among the favorites */
+.folio .fo-skill-badge {
+  display: inline-block;
+  min-width: 30px;
+  padding: 0 5px;
+  border: 1px solid var(--fo-line);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 17px;
+}
+
+.folio .fo-skill-badge.pos { color: var(--fo-good); }
+.folio .fo-skill-badge.neg { color: var(--fo-bad); }
+.folio .fo-skill-badge.zero { color: var(--fo-text-2); }
+
+/* Ordering favorites by drag and drop */
+.folio [data-fav-key] {
+  cursor: grab;
+}
+
+.folio [data-fav-key] :is(.fo-icon, .fo-name, button) {
+  cursor: pointer;
+}
+
+.folio .fo-grip {
+  width: 14px;
+  color: var(--fo-text-3);
+  font-size: 10px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+
+.folio .fo-row:hover .fo-grip {
+  opacity: 0.8;
+}
+
+.folio .fo-row.fo-drop-before {
+  box-shadow: inset 0 2px 0 var(--fo-accent-2);
+}
+
+.folio .fo-row.fo-drop-after {
+  box-shadow: inset 0 -2px 0 var(--fo-accent-2);
+}
+
+.folio .window-content button.fo-qb-action.fo-drop-before {
+  box-shadow: -3px 0 0 var(--fo-accent-2);
+}
+
+.folio .window-content button.fo-qb-action.fo-drop-after {
+  box-shadow: 3px 0 0 var(--fo-accent-2);
+}
+
+/* Quickbar: end turn and pinned skills */
+.folio .window-content button.fo-qb-endturn {
+  align-self: center;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--fo-accent-2);
+  border-radius: 8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fo-accent) 50%, transparent), var(--fo-accent-soft));
+  box-shadow: 0 0 10px rgb(240 194 123 / 30%);
+  color: var(--fo-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.folio .fo-qb-status:has(.fo-qb-endturn) {
+  grid-template-columns: 52px 200px max-content max-content;
+}
+
+.folio .fo-qb-cost.skill {
+  right: 1px;
+  background: rgb(0 0 0 / 78%);
+  color: var(--fo-text);
+}
+
+.folio .fo-qb-cost.skill.pos { color: var(--fo-good); }
+.folio .fo-qb-cost.skill.neg { color: var(--fo-bad); }
+
+.folio .window-content button.fo-qb-action.is-skill {
+  border-style: dashed;
+}
+
+/* Uses of consumables */
+.folio .fo-uses {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.folio .window-content button.fo-use-step {
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--fo-line);
+  border-radius: 4px;
+  background: var(--fo-input);
+  box-shadow: none;
+  color: var(--fo-text-2);
+  font-size: 7.5px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.folio .fo-row:hover button.fo-use-step:not(:disabled) {
+  opacity: 1;
+}
+
+.folio .window-content button.fo-use-step:hover {
+  border-color: var(--fo-accent);
+  color: var(--fo-accent-2);
+}
+
+/* Biography without personal details (adversaries) */
+.folio .fo-bio-layout.no-details {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Keyboard focus for elements which act like buttons */
+.folio .window-content [role="button"]:focus-visible {
+  outline: 2px solid var(--fo-accent);
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+/* Light theme: Foundry and Crucible controls inside the sheet */
+.folio.fo-light .window-content crucible-currency input,
+.folio.fo-light .window-content .fo-fields input,
+.folio.fo-light .window-content .fo-biography .form-fields input,
+.folio.fo-light .window-content .fo-threat-select select {
+  border-color: var(--fo-line);
+  box-shadow: none;
+  background: rgb(255 255 255 / 70%);
+  color: var(--fo-text);
+}
+
+.folio.fo-light .fo-editor-card prose-mirror .editor-menu {
+  background: var(--fo-panel-2);
+  color: var(--fo-text);
+}
+
+/* Numeric fields grow with their value, so three-digit pools stay readable */
+.folio .window-content :is(.fo-pool, .fo-currency, .fo-qb-value) input[type="number"],
+.folio .window-content :is(.fo-pool, .fo-currency, .fo-qb-value) input.number-input {
+  width: 4ch;
+}
+
+@supports (field-sizing: content) {
+  .folio .window-content :is(.fo-pool, .fo-currency, .fo-qb-value) input[type="number"],
+  .folio .window-content :is(.fo-pool, .fo-currency, .fo-qb-value) input.number-input {
+    width: auto;
+    min-width: 2ch;
+    field-sizing: content;
+  }
+}
+
+/* Light theme: Crucible's inset input shadow is meant for dark backgrounds */
+.folio.fo-light .window-content input:is([type="text"], [type="number"]) {
+  box-shadow: none;
+}
+
+.folio.fo-light .fo-qb-level {
+  color: #fff8ec;
+}
+
+/* ==========================================================================
+   Round 3: cost preview, turn announcement, condition durations,
+   repeat last spell, targets in the quickbar
+   ========================================================================== */
+
+/* Pips an action would spend pulse; pips it lacks turn red */
+.folio .fo-pip.fo-spend {
+  background: color-mix(in srgb, var(--c) 45%, #fff);
+  animation: fo-pip-spend 0.8s ease-in-out infinite alternate;
+}
+
+.folio .fo-pip.fo-short {
+  background: var(--fo-bad);
+  opacity: 0.85;
+}
+
+@keyframes fo-pip-spend {
+  from { opacity: 1; }
+  to { opacity: 0.25; }
+}
+
+/* Announcement when the actor's turn begins */
+.application.folio.fo-announce {
+  opacity: 1;
+  animation: fo-announce 1.2s ease-in-out 3;
+}
+
+@keyframes fo-announce {
+  0%, 100% { box-shadow: 0 0 0 1px var(--fo-accent-2), 0 0 12px rgb(240 194 123 / 30%); }
+  50% { box-shadow: 0 0 0 2px var(--fo-accent-2), 0 0 34px rgb(240 194 123 / 85%); }
+}
+
+/* Conditions with remaining rounds and maintained effects */
+.folio .fo-cond {
+  position: relative;
+  display: inline-flex;
+}
+
+.folio .fo-conditions .fo-cond img {
+  display: block;
+}
+
+.folio .fo-qb-conditions .fo-cond img {
+  display: block;
+  cursor: pointer;
+}
+
+.folio .fo-cond.maintained img {
+  border-color: var(--fo-accent-2);
+  box-shadow: 0 0 6px rgb(240 194 123 / 45%);
+}
+
+.folio .fo-cond-rounds {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  min-width: 11px;
+  height: 11px;
+  padding: 0 2px;
+  border-radius: 6px;
+  background: var(--fo-accent);
+  color: #1b120c;
+  font-size: 8.5px;
+  font-weight: 800;
+  line-height: 11px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.folio .window-content button.fo-cond-end {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 13px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--fo-bad);
+  border-radius: 50%;
+  background: #2a1310;
+  box-shadow: none;
+  color: #ffb3a6;
+  font-size: 7.5px;
+  line-height: 1;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 120ms;
+}
+
+.folio .fo-cond:hover button.fo-cond-end,
+.folio .window-content button.fo-cond-end:focus-visible {
+  opacity: 1;
+}
+
+.folio .window-content button.fo-cond-end:hover {
+  background: var(--fo-bad);
+  color: #fff;
+}
+
+/* Repeat the last spell */
+.folio .window-content button.fo-qb-action.is-repeat {
+  border-style: dashed;
+  border-color: var(--fo-accent);
+}
+
+.folio .window-content button.fo-tool-btn.fo-repeat-spell img {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 4px;
+}
+
+/* Buttons which cannot be used on the current targets */
+.folio .window-content button.fo-qb-action.fo-target-invalid {
+  border-color: color-mix(in srgb, var(--fo-bad) 70%, transparent);
+}
+
+.folio .window-content button.fo-qb-action.fo-target-invalid img {
+  filter: grayscale(0.6) brightness(0.7);
+}
+
+.folio .fo-qb-invalid {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 13px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 80%);
+  color: var(--fo-bad);
+  font-size: 8.5px;
+}
+
+/* Targets of the current user */
+.folio .fo-qb-targets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  max-width: 640px;
+}
+
+.folio .fo-qb-targets-icon {
+  color: var(--fo-text-3);
+  font-size: 11px;
+}
+
+.folio .window-content button.fo-qb-target {
+  --d: var(--fo-text-3);
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  padding: 0 7px 0 2px;
+  border: 1px solid var(--fo-line);
+  border-left: 3px solid var(--d);
+  border-radius: 6px;
+  background: rgb(0 0 0 / 28%);
+  box-shadow: none;
+  color: var(--fo-text);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.folio .window-content button.fo-qb-target.hostile { --d: var(--fo-bad); }
+.folio .window-content button.fo-qb-target.friendly { --d: var(--fo-good); }
+.folio .window-content button.fo-qb-target.neutral { --d: #e0c35a; }
+
+.folio .window-content button.fo-qb-target:hover {
+  border-color: var(--fo-accent);
+  border-left-color: var(--d);
+}
+
+.folio .fo-qb-target img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border: none;
+  border-radius: 4px;
+}
+
+.folio .fo-qb-target-name {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folio .fo-qb-target-hp {
+  position: relative;
+  width: 34px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 12%);
+  overflow: hidden;
+}
+
+.folio .fo-qb-target-hp i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--fo-c-health, #d23a2c);
+}
+
+.folio .fo-qb-target-def,
+.folio .fo-qb-target-dist {
+  color: var(--fo-text-2);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.folio .fo-qb-target-def i {
+  margin-right: 2px;
+  color: var(--fo-text-3);
+  font-size: 9px;
+}
+
+.folio.fo-light .window-content button.fo-qb-target,
+.folio.fo-light .fo-qb-invalid {
+  background: rgb(255 255 255 / 55%);
+}
+
+/* A player cannot end the last turn of a round: Crucible leaves the new round to the GM */
+.folio .window-content button.fo-blocked:is(.fo-end-turn, .fo-qb-endturn) {
+  border-color: var(--fo-line);
+  background: rgb(0 0 0 / 25%);
+  box-shadow: none;
+  color: var(--fo-text-3);
+  animation: none;
+  cursor: help;
+}
+
+/* ==========================================================================
+   Folio settings window
+   ========================================================================== */
+
+.application.folio-settings .window-content {
+  gap: 10px;
+  padding: 10px 14px 12px;
+}
+
+.folio-settings .fo-settings-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: min(70vh, 720px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.folio-settings .fo-settings-group {
+  margin: 0;
+  padding: 4px 12px 6px;
+  border: 1px solid rgb(127 127 127 / 30%);
+  border-radius: 8px;
+}
+
+.folio-settings .fo-settings-group legend {
+  padding: 0 6px;
+  font-size: var(--font-size-14, 14px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.folio-settings .fo-settings-group legend i {
+  margin-right: 3px;
+  color: #c8945a;
+}
+
+.folio-settings .fo-setting {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 18px;
+  padding: 7px 0;
+  border-top: 1px solid rgb(127 127 127 / 18%);
+}
+
+.folio-settings .fo-settings-group legend + .fo-setting {
+  border-top: none;
+}
+
+.folio-settings .fo-setting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.folio-settings .fo-setting-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.folio-settings .fo-setting-hint {
+  color: var(--color-text-secondary, rgb(127 127 127));
+  font-size: var(--font-size-12, 12px);
+  line-height: 1.35;
+}
+
+.folio-settings .fo-setting-badge {
+  padding: 0 5px;
+  border: 1px solid rgb(127 127 127 / 45%);
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.folio-settings .fo-setting-badge.world {
+  border-color: #c8945a;
+  color: #c8945a;
+}
+
+.folio-settings .fo-setting-control {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.folio-settings .fo-setting-control select {
+  min-width: 160px;
+}
+
+.folio-settings .fo-setting-control range-picker {
+  width: 200px;
+}
+
+.folio-settings .fo-setting-control button {
+  white-space: nowrap;
+}
+
+/* On/off switches */
+.folio-settings input.fo-switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 22px;
+  margin: 0;
+  border: 1px solid rgb(127 127 127 / 50%);
+  border-radius: 11px;
+  background: rgb(127 127 127 / 30%);
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.folio-settings input.fo-switch::before {
+  content: none;
+  display: none;
+}
+
+.folio-settings input.fo-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f1e6d6;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 40%);
+  font-size: 0;
+  line-height: 0;
+  transition: transform 150ms;
+}
+
+.folio-settings input.fo-switch:checked {
+  border-color: #d39a5c;
+  background: #b8813f;
+}
+
+.folio-settings input.fo-switch:checked::after {
+  transform: translateX(18px);
+  color: transparent;
+}
+
+.folio-settings input.fo-switch:focus-visible {
+  outline: 2px solid #d39a5c;
+  outline-offset: 2px;
+}
+
+/* Characters switched one by one */
+.folio-settings .fo-actor-choices {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.folio-settings .fo-actor-choice-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.folio-settings .fo-actor-choice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 2px 2px 2px 8px;
+  border: 1px solid rgb(127 127 127 / 35%);
+  border-radius: 12px;
+  font-size: var(--font-size-12, 12px);
+}
+
+.folio-settings .fo-actor-choice.is-folio {
+  border-color: #c8945a;
+}
+
+.folio-settings .fo-actor-choice > i {
+  color: #c8945a;
+  font-size: 10px;
+}
+
+.folio-settings .fo-actor-choice-name {
+  font-weight: 600;
+}
+
+.folio-settings .fo-actor-choice-sheet {
+  opacity: 0.7;
+}
+
+.folio-settings .fo-actor-choice button {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 10px;
+  line-height: 20px;
+}
+
+.folio-settings .fo-actor-choice button:hover {
+  background: rgb(127 127 127 / 25%);
+}
+
+/* ==========================================================================
+   Compact mode – smaller type, icons and gaps for more content on less space
+   ========================================================================== */
+
+.application.folio.fo-compact {
+  --fo-fs: 12px;
+}
+
+.application.folio.fo-compact:not(.fo-qb) {
+  min-width: 660px;
+  min-height: 460px;
+}
+
+.application.crucible.folio.fo-compact:not(.fo-qb) .window-header {
+  height: 30px;
+  min-height: 30px;
+  font-size: 12.5px;
+}
+
+/* Header */
+.application.folio.fo-compact .fo-hero { grid-template-columns: 84px minmax(0, 1fr) 196px; gap: 12px; padding: 6px 10px 5px; }
+.application.folio.fo-compact .fo-portrait { width: 84px; height: 84px; }
+.application.folio.fo-compact .fo-level { right: -6px; bottom: -7px; width: 34px; height: 37px; }
+.application.folio.fo-compact .fo-level-num { font-size: 17px; }
+.application.folio.fo-compact .fo-level-label { font-size: 6.5px; }
+.application.folio.fo-compact .fo-level .fo-level-alert { font-size: 15px; }
+.application.folio.fo-compact .fo-turn { top: 4px; padding: 1px 4px; font-size: 9.5px; }
+.application.folio.fo-compact .fo-name-row { gap: 8px; min-height: 26px; }
+.application.folio.fo-compact .window-content .fo-heroname { font-size: 21px; line-height: 26px; }
+.application.folio.fo-compact .window-content input.fo-heroname { height: 26px; }
+.application.folio.fo-compact .fo-conditions img { width: 18px; height: 18px; padding: 1px; }
+.application.folio.fo-compact .fo-origin { margin: 0 0 5px; font-size: 11.5px; }
+.application.folio.fo-compact .fo-pools { gap: 10px; }
+.application.folio.fo-compact .fo-pool { gap: 2px; }
+.application.folio.fo-compact .fo-pool-label,
+.application.folio.fo-compact .fo-cur-label { font-size: 9.5px; }
+.application.folio.fo-compact .fo-pool-value { font-size: 15px; }
+.application.folio.fo-compact .fo-pool-value .fo-max { font-size: 12px; }
+.application.folio.fo-compact .fo-bar { height: 7px; }
+.application.folio.fo-compact .fo-bar.fo-thin { height: 3px; }
+.application.folio.fo-compact .fo-pool-bottom { font-size: 10px; }
+.application.folio.fo-compact .fo-reserve-label { font-size: 8.5px; }
+.application.folio.fo-compact .fo-threshold { width: 19px; height: 17px; font-size: 9.5px; }
+.application.folio.fo-compact .fo-economy { gap: 3px; }
+.application.folio.fo-compact .fo-head-buttons { gap: 3px; min-height: 22px; }
+.application.folio.fo-compact .window-content button.fo-hbtn { width: 24px; height: 22px; font-size: 11px; }
+.application.folio.fo-compact .window-content button.fo-hbtn.fo-end-turn { width: auto; padding: 0 8px; font-size: 11px; }
+.application.folio.fo-compact .fo-cur-value { font-size: 14px; }
+.application.folio.fo-compact .fo-cur-value .fo-max { font-size: 11px; }
+.application.folio.fo-compact .fo-pips { gap: 2px; }
+.application.folio.fo-compact .fo-pip { width: 9px; height: 10px; }
+
+/* Ability, defense and movement strip */
+.application.folio.fo-compact .fo-stats { gap: 8px; padding: 4px 10px 5px; }
+.application.folio.fo-compact .fo-abilities,
+.application.folio.fo-compact .fo-defenses { gap: 3px; }
+.application.folio.fo-compact .fo-stat { width: 42px; padding: 2px 0; }
+.application.folio.fo-compact .fo-ability { width: 40px; }
+.application.folio.fo-compact .fo-defense { width: auto; min-width: 42px; padding-left: 6px; padding-right: 6px; }
+.application.folio.fo-compact .fo-defense.physical { min-width: 56px; padding-bottom: 5px; }
+.application.folio.fo-compact .fo-segments { bottom: 2px; }
+.application.folio.fo-compact .fo-stat-label { font-size: 9px; }
+.application.folio.fo-compact .fo-stat-value { font-size: 17px; line-height: 19px; }
+.application.folio.fo-compact .fo-points-badge { height: 15px; font-size: 10px; line-height: 15px; }
+.application.folio.fo-compact .fo-movement { gap: 1px; min-width: 96px; padding-left: 8px; }
+.application.folio.fo-compact .fo-move { gap: 4px; padding: 0 3px; font-size: 10.5px; }
+
+/* Tabs and toolbars */
+.application.folio.fo-compact .fo-tabs { padding: 0 6px; }
+.application.folio.fo-compact .fo-tab-link { gap: 5px; padding: 5px 8px 4px; font-size: 11.5px; }
+.application.folio.fo-compact .fo-tab-link i { font-size: 10.5px; }
+.application.folio.fo-compact .fo-toolbar { gap: 6px; padding: 5px 8px; }
+.application.folio.fo-compact .window-content input.fo-search { height: 24px; font-size: 11.5px; }
+.application.folio.fo-compact .window-content button.fo-filter { height: 22px; padding: 0 7px; font-size: 11px; }
+.application.folio.fo-compact .window-content button.fo-filter.icon-only { width: 24px; padding: 0; }
+.application.folio.fo-compact .window-content button.fo-tool-btn { height: 24px; padding: 0 7px; font-size: 11px; }
+.application.folio.fo-compact .fo-pill { height: 24px; padding: 0 8px; font-size: 11px; }
+.application.folio.fo-compact .fo-pill b { font-size: 12px; }
+
+/* Lists and rows */
+.application.folio.fo-compact .fo-side { flex-basis: 214px; padding: 3px 6px 8px 8px; }
+.application.folio.fo-compact .fo-lists { padding: 0 2px 8px 4px; }
+.application.folio.fo-compact .fo-section-head { padding: 5px 4px 2px; }
+.application.folio.fo-compact .fo-section-label { font-size: 13.5px; line-height: 16px; }
+.application.folio.fo-compact .fo-row-main { min-height: 27px; padding: 1px 4px; }
+.application.folio.fo-compact .fo-iconic .fo-row-main { min-height: 27px; }
+.application.folio.fo-compact .fo-icon { width: 23px; height: 23px; }
+.application.folio.fo-compact .fo-use-hint { font-size: 12px; }
+.application.folio.fo-compact .fo-title { font-size: 12.5px; line-height: 15px; }
+.application.folio.fo-compact .fo-sub { font-size: 10px; line-height: 12.5px; }
+.application.folio.fo-compact .fo-cell { font-size: 11px; }
+.application.folio.fo-compact .window-content button.fo-btn,
+.application.folio.fo-compact .window-content a.fo-btn { width: 19px; height: 19px; font-size: 10.5px; }
+.application.folio.fo-compact .fo-chip { height: 16px; padding: 0 4px; font-size: 10.5px; line-height: 14px; }
+.application.folio.fo-compact .fo-detail { padding: 2px 10px 6px 34px; font-size: 12.5px; }
+.application.folio.fo-compact .fo-block-head { padding: 4px 2px 2px; font-size: 10px; }
+.application.folio.fo-compact .fo-equip { grid-template-columns: 20px 1fr; padding: 1px 3px; }
+.application.folio.fo-compact .fo-equip img { width: 20px; height: 20px; }
+.application.folio.fo-compact .fo-equip-name { font-size: 11.5px; }
+.application.folio.fo-compact .fo-equip-tags { font-size: 9.5px; }
+.application.folio.fo-compact .fo-skill { grid-template-columns: 18px minmax(0, 1fr) 28px 24px 14px; column-gap: 4px; height: 19px; }
+.application.folio.fo-compact .window-content button.fo-skill-pin { width: 14px; }
+.application.folio.fo-compact .fo-block { margin-bottom: 2px; }
+.application.folio.fo-compact .fo-head-cols { gap: 4px; margin-right: 20px; font-size: 8px; }
+.application.folio.fo-compact .fo-head-cols span:first-child { width: 28px; }
+.application.folio.fo-compact :is(.fo-rows, .fo-train-list) > li { margin-bottom: 1px; }
+.application.folio.fo-compact .fo-attune-list > li { margin-bottom: 0; }
+.application.folio.fo-compact .fo-skill-name { font-size: 11.5px; }
+.application.folio.fo-compact .fo-skill-score { font-size: 12px; }
+.application.folio.fo-compact .fo-skill-passive { font-size: 10.5px; }
+.application.folio.fo-compact .fo-resist { padding: 1px; font-size: 10px; }
+.application.folio.fo-compact .fo-tag { padding: 0 6px; font-size: 10.5px; }
+.application.folio.fo-compact .window-content input.fo-qty { width: 38px; height: 19px; }
+.application.folio.fo-compact .window-content button.fo-use-step { width: 13px; height: 13px; }
+.application.folio.fo-compact .fo-footer { gap: 10px; padding: 4px 8px; }
+
+/* Training, spells, effects, attunement, biography */
+.application.folio.fo-compact .fo-train-grid { padding: 6px 6px 2px; }
+.application.folio.fo-compact .fo-card { padding: 3px 6px 5px; }
+.application.folio.fo-compact .fo-card-head { margin: 0 0 2px; padding: 1px 2px 3px; font-size: 13.5px; }
+.application.folio.fo-compact .fo-train { height: 21px; }
+.application.folio.fo-compact .fo-train img { width: 16px; height: 16px; }
+.application.folio.fo-compact .fo-train-name { font-size: 11.5px; }
+.application.folio.fo-compact .fo-train-score { font-size: 12px; }
+.application.folio.fo-compact .fo-train-passive { font-size: 10.5px; }
+.application.folio.fo-compact .window-content .fo-steps button.fo-step { width: 16px; height: 16px; }
+.application.folio.fo-compact .fo-lore-cards { gap: 6px; padding: 4px 6px 8px; }
+.application.folio.fo-compact .fo-spells .fo-scroll { gap: 6px; padding: 6px; }
+.application.folio.fo-compact .fo-tiles { gap: 4px; }
+.application.folio.fo-compact .fo-tile { gap: 6px; padding: 3px 5px; }
+.application.folio.fo-compact .fo-tile img { width: 24px; height: 24px; }
+.application.folio.fo-compact .fo-tile-name { font-size: 12px; }
+.application.folio.fo-compact .fo-tile-tags { font-size: 9.5px; }
+.application.folio.fo-compact .fo-condition-grid { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 3px; padding: 4px 2px 2px; }
+.application.folio.fo-compact .window-content button.fo-condition { gap: 5px; height: 22px; padding: 0 6px; font-size: 11px; }
+.application.folio.fo-compact .fo-condition img { width: 14px; height: 14px; }
+.application.folio.fo-compact .fo-attune-list { gap: 4px; padding: 6px; }
+.application.folio.fo-compact .fo-attune { grid-template-columns: 30px minmax(0, 1fr) 200px auto; gap: 8px; padding: 3px 8px; }
+.application.folio.fo-compact .fo-attune img { width: 30px; height: 30px; }
+.application.folio.fo-compact .fo-attune-name { font-size: 14px; }
+.application.folio.fo-compact .fo-bio-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 6px; padding: 6px; }
+.application.folio.fo-compact .fo-bio-layout.no-details { grid-template-columns: minmax(0, 1fr); }
+.application.folio.fo-compact .fo-bio-main { gap: 6px; }
+.application.folio.fo-compact .fo-fields .form-group { margin: 0 0 4px; }
+.application.folio.fo-compact .fo-fields input { height: 24px; }
+.application.folio.fo-compact .fo-editor-card prose-mirror { min-height: 70px; font-size: 13px; }
+
+/* Quickbar */
+.application.crucible.folio.fo-compact.fo-qb .window-header { height: 20px; min-height: 20px; font-size: 11px; }
+.application.crucible.folio.fo-compact.fo-qb .window-header .window-title { font-size: 11px; }
+.application.crucible.folio.fo-compact.fo-qb .window-content { padding: 0 6px 6px; }
+.application.folio.fo-compact .fo-quickbar { gap: 4px; }
+.application.folio.fo-compact .fo-qb-status { grid-template-columns: 42px 170px max-content; gap: 6px 10px; }
+.application.folio.fo-compact .fo-qb-status:has(.fo-qb-endturn) { grid-template-columns: 42px 170px max-content max-content; }
+.application.folio.fo-compact .fo-qb-portrait { width: 42px; height: 42px; }
+.application.folio.fo-compact .fo-qb-portrait img { border-radius: 7px; }
+.application.folio.fo-compact .fo-qb-level { width: 17px; height: 19px; font-size: 10.5px; }
+.application.folio.fo-compact .fo-qb-pools { gap: 3px; }
+.application.folio.fo-compact .fo-qb-pool .fo-bar { height: 5px; }
+.application.folio.fo-compact .fo-qb-value { font-size: 13px; }
+.application.folio.fo-compact .fo-qb-max { font-size: 10px; }
+.application.folio.fo-compact .fo-qb-economy { gap: 2px; }
+.application.folio.fo-compact .fo-qb-cur .fo-pip { width: 8px; height: 9px; }
+.application.folio.fo-compact .fo-qb-cur-value { font-size: 11px; }
+.application.folio.fo-compact .window-content button.fo-qb-endturn { height: 26px; padding: 0 9px; border-radius: 6px; font-size: 11.5px; }
+.application.folio.fo-compact .fo-qb-bar { gap: 6px; }
+.application.folio.fo-compact .fo-qb-actions { gap: 3px; }
+.application.folio.fo-compact .window-content button.fo-qb-action { width: 32px; height: 32px; border-radius: 6px; }
+.application.folio.fo-compact .fo-qb-cost { height: 12px; font-size: 8.5px; line-height: 12px; }
+.application.folio.fo-compact .fo-qb-defenses { gap: 3px; }
+.application.folio.fo-compact .fo-qb-def { height: 20px; padding: 0 4px; border-radius: 5px; font-size: 11.5px; }
+.application.folio.fo-compact .fo-qb-tools { gap: 2px; }
+.application.folio.fo-compact .window-content button.fo-qb-tool { width: 22px; height: 22px; border-radius: 5px; font-size: 11px; }
+.application.folio.fo-compact .fo-qb-conditions img { width: 17px; height: 17px; padding: 1px; }
+.application.folio.fo-compact .fo-qb-skills { gap: 3px; }
+.application.folio.fo-compact .fo-qb-skill-group { gap: 2px; }
+.application.folio.fo-compact .window-content button.fo-qb-skill { height: 19px; padding: 0 5px; font-size: 11px; }
+.application.folio.fo-compact .fo-qb-targets { gap: 3px; }
+.application.folio.fo-compact .window-content button.fo-qb-target { height: 20px; font-size: 10.5px; }
+.application.folio.fo-compact .fo-qb-target img { width: 16px; height: 16px; }
+
+/* The full sheet shows the settings gear among its header buttons, the quickbar in its title bar */
+.application.folio:not(.fo-qb) .window-header [data-action="foSettings"] {
+  display: none;
+}
+
+/* ==========================================================================
+   Sheet backgrounds – Crucible image, Ember codex or transparent
+   The quickbar keeps its own translucent look in every mode.
+   ========================================================================== */
+
+/* Large surfaces turn translucent so the background shows through */
+.application.folio.fo-bg-image:not(.fo-qb) {
+  --fo-bg-2: rgb(16 13 12 / 50%);
+  --fo-panel: rgb(31 26 24 / 72%);
+  --fo-panel-2: rgb(38 32 29 / 78%);
+  --fo-head-1: rgb(30 23 20 / 55%);
+  --fo-head-2: rgb(20 16 15 / 30%);
+  --fo-sticky: rgb(20 17 16 / 80%);
+}
+
+.application.folio.fo-light.fo-bg-image:not(.fo-qb) {
+  --fo-bg-2: rgb(235 226 211 / 55%);
+  --fo-panel: rgb(250 246 239 / 76%);
+  --fo-panel-2: rgb(241 233 220 / 82%);
+  --fo-head-1: rgb(233 220 198 / 62%);
+  --fo-head-2: rgb(243 236 224 / 35%);
+  --fo-sticky: rgb(243 236 224 / 85%);
+}
+
+.application.crucible.folio.fo-bg-image:not(.fo-qb) .window-content {
+  background: transparent;
+}
+
+/* Sticky section heads stay readable while rows scroll underneath */
+.application.folio.fo-bg-image:not(.fo-qb) .fo-section-head {
+  background: var(--fo-sticky);
+  backdrop-filter: blur(4px);
+}
+
+.application.folio.fo-bg-image:not(.fo-qb) #context-menu {
+  background: #1f1a18;
+}
+
+.application.folio.fo-light.fo-bg-image:not(.fo-qb) #context-menu {
+  background: #faf6ef;
+}
+
+/* Crucible: the texture and arena overlay of the standard Crucible sheet */
+.application.crucible.folio.fo-bg-crucible:not(.fo-qb) {
+  background: url("../../../systems/crucible/ui/journal/background-texture.webp") center / cover no-repeat, #141110 !important;
+}
+
+.application.crucible.folio.fo-bg-crucible:not(.fo-qb)::before {
+  display: block !important;
+  background: url("../../../systems/crucible/ui/journal/overlay-dark.webp") top center / 100% auto no-repeat;
+}
+
+.application.crucible.folio.fo-light.fo-bg-crucible:not(.fo-qb) {
+  background:
+    linear-gradient(rgb(243 236 224 / 40%), rgb(243 236 224 / 40%)),
+    url("../../../systems/crucible/ui/journal/background-light.webp") center / cover no-repeat,
+    #f3ece0 !important;
+}
+
+.application.crucible.folio.fo-light.fo-bg-crucible:not(.fo-qb)::before {
+  background-image: url("../../../systems/crucible/ui/journal/overlay-light.webp");
+}
+
+/* Ember codex: dark codex texture, a faint ember glow and the cosmos design of Ember's full-screen pages */
+.application.crucible.folio.fo-bg-ember:not(.fo-qb) {
+  background:
+    linear-gradient(to bottom, transparent 70%, rgb(178 50 53 / 14%)),
+    url("../../ember/ui/elements/codex-background-dark.webp") center repeat,
+    #15121a !important;
+}
+
+.application.crucible.folio.fo-bg-ember:not(.fo-qb)::before {
+  display: block !important;
+  inset: 4% 0 0;
+  height: auto;
+  background: url("../../ember/ui/elements/cosmos-design-weathered.webp") center / auto 100% no-repeat;
+  opacity: 0.08;
+}
+
+.application.crucible.folio.fo-light.fo-bg-ember:not(.fo-qb) {
+  background:
+    linear-gradient(rgb(243 236 224 / 55%), rgb(243 236 224 / 55%)),
+    url("../../../systems/crucible/ui/journal/background-light.webp") center / cover no-repeat,
+    #f3ece0 !important;
+}
+
+.application.crucible.folio.fo-light.fo-bg-ember:not(.fo-qb)::before {
+  filter: invert(1);
+  opacity: 0.1;
+}
+
+/* Transparent: the map stays visible behind the sheet */
+.application.crucible.folio.fo-bg-glass:not(.fo-qb) {
+  background: rgb(20 17 16 / var(--fo-glass, 0.3)) !important;
+  backdrop-filter: blur(6px) saturate(1.1);
+}
+
+.application.crucible.folio.fo-light.fo-bg-glass:not(.fo-qb) {
+  background: rgb(243 236 224 / var(--fo-glass, 0.3)) !important;
+}
+
+.application.folio.fo-bg-glass:not(.fo-qb) {
+  --fo-bg-2: rgb(16 13 12 / 30%);
+  --fo-head-1: rgb(30 23 20 / 40%);
+  --fo-head-2: transparent;
+}
+
+.application.folio.fo-light.fo-bg-glass:not(.fo-qb) {
+  --fo-bg-2: rgb(235 226 211 / 35%);
+  --fo-head-1: rgb(233 220 198 / 45%);
+  --fo-head-2: transparent;
+}

@@ -1,0 +1,331 @@
+{
+  "FOLIO": {
+    "SheetLabel": "Sheet & Quickbar (compact hero sheet)",
+    "Level": "Level",
+    "Name": "Hero name",
+    "Initiative": "Init",
+    "YourTurn": "It is your turn",
+    "InCombat": "In combat",
+    "EditPortrait": "Change portrait",
+    "ShowPortrait": "Show portrait to players",
+    "ViewAncestry": "View ancestry",
+    "ViewBackground": "View background",
+    "Signature": "Signature talent",
+    "RecoverTooltip": "Recover (10 minutes outside of combat)",
+    "RestTooltip": "Rest (10 hours)",
+    "Lock": "Play mode: hide editing controls",
+    "Unlock": "Edit mode: unlock the sheet",
+    "Equipped": "Equipped",
+    "Bonus": "Bonus",
+    "Passive": "Passive",
+    "SkillHint": "Click: roll · Shift+click: skip dialog",
+    "RollHint": "Roll check (Shift: skip dialog)",
+    "Lore": "Knowledge & Languages",
+    "SearchActions": "Search actions …",
+    "SearchItems": "Search items …",
+    "SearchTalents": "Search talents …",
+    "SearchEffects": "Search effects …",
+    "NoResults": "No matches",
+    "NoDescription": "No description available.",
+    "NoTalents": "No talents yet.",
+    "NoEffects": "No active effects.",
+    "UsesLeft": "{value}/{max} left",
+    "ActionCount": "{count} actions",
+    "TalentPoints": "Talent points",
+    "TrainedOnly": "Trained only",
+    "CastSpell": "Cast Spell",
+    "SpellHint": "Combine runes, gestures and inflections via “Cast Spell”.",
+    "Conditions": "Conditions",
+    "Active": "Active",
+    "MakeActive": "Make active attunement",
+    "TABS": {
+      "play": "Play",
+      "inventory": "Inventory",
+      "talents": "Talents",
+      "training": "Training",
+      "spells": "Spells",
+      "effects": "Effects",
+      "attunement": "Attunement",
+      "biography": "Biography"
+    },
+    "ACTIONS": {
+      "favorites": "Favorites",
+      "attack": "Attack",
+      "spell": "Spellcraft",
+      "summon": "Summon",
+      "reaction": "Reactions",
+      "movement": "Movement",
+      "consumable": "Consumables",
+      "general": "General"
+    },
+    "FILTER": {
+      "All": "All",
+      "Usable": "Usable now"
+    },
+    "COLUMNS": {
+      "cost": "Cost",
+      "target": "Target",
+      "damage": "Damage",
+      "range": "Range",
+      "armor": "Armor",
+      "dodge": "Dodge",
+      "uses": "Uses",
+      "quantity": "Qty",
+      "weight": "Weight"
+    },
+    "MENU": {
+      "Use": "Use",
+      "UseQuick": "Use now (skip dialog)",
+      "Details": "Toggle details",
+      "Favorite": "Toggle favorite",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "Equip": "Equip",
+      "Unequip": "Unequip",
+      "Toggle": "Enable/disable",
+      "Roll": "Roll check",
+      "RollQuick": "Roll now (skip dialog)",
+      "Unpin": "Unpin"
+    },
+    "SETTINGS": {
+      "Menu": {
+        "name": "Sheet & Quickbar settings",
+        "label": "Open settings",
+        "hint": "Every option of Sephral’s Crucible Sheet & Quickbar in one place: sheet choice, display, controls, targets and combat – plus the default for everyone and the self-test for the GM."
+      },
+      "GROUPS": {
+        "sheet": "Sheet",
+        "display": "Display",
+        "play": "Controls",
+        "targets": "Targets",
+        "combat": "Combat",
+        "maintenance": "Maintenance"
+      },
+      "Save": "Save",
+      "Reset": "Defaults",
+      "GMOnly": "GM",
+      "World": "World",
+      "WorldHint": "Applies to every player of this world.",
+      "ReloadHint": "Takes effect after a reload.",
+      "QuickUse": {
+        "name": "Quick mode",
+        "hint": "Clicking actions and skills rolls at once without a dialog; with Shift the dialog appears. Off: the other way round."
+      },
+      "Theme": {
+        "name": "Color scheme",
+        "hint": "Dark or light look of this module's sheets and quickbars.",
+        "dark": "Dark (ember)",
+        "light": "Light (parchment)"
+      },
+      "Background": {
+        "name": "Background",
+        "hint": "Background of the sheet: a solid color, the image of the standard Crucible sheet, the Ember codex, or transparent so the map shows through. The quickbar keeps its own background.",
+        "solid": "Solid",
+        "crucible": "Crucible (standard sheet)",
+        "ember": "Ember codex",
+        "glass": "Transparent"
+      },
+      "BackgroundOpacity": {
+        "name": "Opacity of the transparent background",
+        "hint": "How much the sheet covers the map (0.3 = very see-through, 1 = opaque). Only applies to the “Transparent” background."
+      },
+      "CompactMode": {
+        "name": "Compact mode",
+        "hint": "Smaller type, icons and spacing – more content in less space. Applies to the sheet and the quickbar."
+      },
+      "QuickbarOpacity": {
+        "name": "Quickbar opacity",
+        "hint": "Opacity while the mouse is elsewhere (0.2 = very transparent, 1 = opaque). Fully visible on hover and on your turn."
+      },
+      "HeaderDblClick": {
+        "name": "Double-click the title bar",
+        "hint": "Switches between sheet and quickbar. Off: Foundry default (minimize the window)."
+      },
+      "ConditionRounds": {
+        "name": "Remaining rounds on conditions",
+        "hint": "Shows the remaining rounds of a condition in the header and the quickbar."
+      },
+      "CostPreview": {
+        "name": "Cost preview",
+        "hint": "Hovering an action pulses the action, focus and heroism points it spends; missing points turn red."
+      },
+      "RepeatSpell": {
+        "name": "“Repeat last spell”",
+        "hint": "A button in the spells tab and the quickbar which casts the last spell again."
+      },
+      "SpellDialogStrip": {
+        "name": "Spellbook in the spell dialog",
+        "hint": "Shows the strip of saved spells in Crucible's spell dialog, to load and save compositions."
+      },
+      "HostileHealConfirm": {
+        "name": "Ask before healing enemies",
+        "hint": "Asks before healing (e.g. a healing elixir) is applied to an enemy."
+      },
+      "QuickbarTargets": {
+        "name": "Target in the quickbar",
+        "hint": "Shows targeted tokens with defense and distance; click pans to the token."
+      },
+      "TargetChecks": {
+        "name": "Mark unsuitable actions",
+        "hint": "Marks quickbar buttons which cannot be used on the current target (range, flanking …) and names the reason."
+      },
+      "TurnQuickbar": {
+        "name": "Quickbar on your turn",
+        "hint": "Opens your hero's quickbar automatically when it is their turn in combat."
+      },
+      "TurnAnnounce": {
+        "name": "Announce your turn",
+        "hint": "Announces “It's …'s turn!” and lets the quickbar glow briefly."
+      },
+      "CombatBar": {
+        "name": "Combat bar",
+        "hint": "When an adversary's turn begins, its quickbar opens in a fixed place and follows each adversary turn. The bar remembers its position."
+      },
+      "AutoFillAdversaries": {
+        "name": "Fill adversary quickbars",
+        "hint": "Adversaries without own favorites get their attacks, abilities and Defend in the quickbar."
+      },
+      "SheetMode": {
+        "name": "Use Sheet & Quickbar for",
+        "hint": "Applies to you only – other players and the GM see their own choice. Switch single characters by right-clicking them in the actor directory or in the ⋮ menu of their sheet.",
+        "world": "As set by the GM",
+        "all": "All heroes and adversaries",
+        "heroes": "Heroes only",
+        "chosen": "Only characters chosen one by one"
+      },
+      "WorldDefault": {
+        "name": "Default for everyone",
+        "hint": "Applies to everyone who chose “As set by the GM”. With “Nobody” the module changes nothing for anyone until they choose it themselves.",
+        "none": "Nobody (everyone chooses)",
+        "heroes": "Heroes",
+        "all": "Heroes and adversaries"
+      },
+      "SheetActors": {
+        "name": "Chosen one by one",
+        "hint": "These characters open for you differently from the choice above. The cross removes the choice.",
+        "folio": "Sheet & Quickbar",
+        "standard": "Standard sheet",
+        "remove": "Remove the choice"
+      }
+    },
+    "StatusNeedsSource": "“{name}” needs a source creature and cannot be applied directly here.",
+    "DEFENSE": {
+      "physical": "Physical",
+      "fortitude": "Fortitude",
+      "reflex": "Reflex",
+      "willpower": "Willpower"
+    },
+    "RelativeHint": "Enter a value – or relative: “-7” for damage, “+5” for healing",
+    "SPELLFAV": {
+      "Title": "Spellbook",
+      "Book": "Spellbook",
+      "Save": "Save",
+      "Saved": "Saved",
+      "SaveHint": "Save this combination to the spellbook",
+      "RemoveHint": "Saved – click to remove it from the spellbook",
+      "ApplyHint": "Load combination",
+      "Empty": "Empty: choose rune, gesture and inflection, then click “Save”.",
+      "BookEmpty": "No saved spells yet. Add them with “Create Spell” or save them right in the spell dialog.",
+      "Missing": "No longer known: {components}",
+      "Unknown": "unknown: {components}",
+      "Cast": "Cast (dialog pre-filled)",
+      "CastQuick": "Cast now (skip dialog)",
+      "CastHint": "Cast – the dialog opens pre-filled (Shift: cast now)",
+      "Remove": "Remove from spellbook",
+      "Create": "Create Spell",
+      "CreateHint": "Compose a spell and save it to the spellbook without casting it",
+      "ComposerTitle": "Create Spell: {actor}",
+      "SaveToBook": "Save to spellbook",
+      "AlreadySaved": "Already in the spellbook",
+      "Added": "“{name}” saved to the spellbook.",
+      "NoComponents": "This hero knows no runes or gestures.",
+      "Rename": "Rename",
+      "RenameTitle": "Rename: {name}",
+      "RenameHint": "A custom name for this entry. Leave empty to use the spell name.",
+      "RenameSave": "Save",
+      "Name": "Custom name",
+      "NamePlaceholder": "optional, e.g. “Healing Hand”"
+    },
+    "Cancel": "Cancel",
+    "NeedsToken": "“{name}” is placed on the map: your token needs to be on the current scene.",
+    "QB": {
+      "ToQuickbar": "To quickbar (or double-click the title bar)",
+      "Restore": "Open the full sheet (or double-click the title bar)",
+      "Skills": "Skill checks",
+      "NoFavorites": "No favorites – mark actions with ☆",
+      "action": "A",
+      "focus": "F",
+      "heroism": "H",
+      "fortitude": "Fort",
+      "reflex": "Ref",
+      "willpower": "Will"
+    },
+    "SheetLabelAdversary": "Sheet & Quickbar (compact adversary sheet)",
+    "ViewTaxonomy": "View taxonomy",
+    "ViewArchetype": "View archetype",
+    "ThreatRank": "Threat rank",
+    "LevelUp": "Increase level",
+    "LevelDown": "Decrease level",
+    "EndTurn": "End turn",
+    "EndTurnHint": "End your turn and pass to the next combatant",
+    "PinSkill": "Pin to favorites and quickbar",
+    "DragToSort": "Drag to sort",
+    "UseSpend": "Spend a use",
+    "UseRestore": "Restore a use",
+    "SELFTEST": {
+      "Title": "Self-test",
+      "Run": "Run self-test",
+      "Hint": "Renders every hero and adversary sheet off-screen (full and as quickbar) and checks the integration with Crucible and Ember. Run it after every update.",
+      "Started": "Sheet & Quickbar self-test running …",
+      "Summary": "Sheet & Quickbar self-test: {count} sheets checked, {failed} with problems, {integrations} integration notes.",
+      "Integrations": "Integration",
+      "Failed": "Sheets with problems",
+      "NewVersions": "Sephral’s Crucible Sheet & Quickbar was tested with older versions. New: {versions}. Please run the self-test under Sheet & Quickbar settings → Maintenance.",
+      "PartMissing": "Part “{part}” is missing",
+      "NoResources": "No resource bars",
+      "QuickbarMissing": "Quickbar not rendered",
+      "QuickbarNarrow": "Quickbar too narrow",
+      "SheetClasses": "Crucible sheet classes not found",
+      "SpellDialog": "SpellCastDialog not found, the spellbook strip in the dialog is missing",
+      "SpellDialogHook": "Spell dialog patch not active (fallback through the render hook)",
+      "SpellAction": "CrucibleSpellAction not found, the spellbook cannot cast",
+      "Attunement": "Ember is active, but no Attunement tab was found",
+      "SystemConfig": "SYSTEM.{key} is missing",
+      "Version": "{id} {current} (tested {tested})"
+    },
+    "SKILLGROUP": {
+      "exp": "Exploration",
+      "kno": "Knowledge",
+      "soc": "Social",
+      "trade": "Trade"
+    },
+    "MaintainedCost": "Maintained: {cost} Focus at the start of each turn",
+    "MaintainedHands": "Maintained: occupies {hands} hand(s)",
+    "EndEffect": "Stop maintaining",
+    "LastSpell": "Repeat last spell",
+    "TurnStart": "It's {name}'s turn!",
+    "TARGET": {
+      "Label": "Target",
+      "Distance": "{distance} ft away",
+      "Self": "Yourself",
+      "Pan": "Click: pan to the token"
+    },
+    "HostileHeal": {
+      "Title": "Heal an enemy?",
+      "Content": "<strong>{action}</strong> restores Health or Morale, but your target is an enemy: {targets}. Continue anyway?"
+    },
+    "SHEET": {
+      "UseFolio": "Use Sheet & Quickbar (just for me)",
+      "UseStandard": "Use the standard sheet (just for me)",
+      "ConfigLegend": "Sephral’s Crucible Sheet & Quickbar – just for you",
+      "ConfigLabel": "Sheet for me",
+      "ConfigFolio": "Sheet & Quickbar",
+      "ConfigStandard": "Standard sheet",
+      "ConfigHint": "Applies at once and only to you – other players and the GM see their own choice. The settings below apply to everyone."
+    },
+    "MIGRATION": {
+      "Done": "Sephral’s Crucible Sheet & Quickbar took over the data of “Crucible Folio” ({actors} actors). The old module can be disabled.",
+      "LegacyActive": "“Crucible Folio” is still active – that is the earlier name of Sephral’s Crucible Sheet & Quickbar. Please disable “Crucible Folio”; the new module then takes over all data."
+    }
+  }
+}

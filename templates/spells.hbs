@@ -1,0 +1,82 @@
+<section class="tab fo-tab fo-spells {{tabs.spells.cssClass}}" data-group="{{tabs.spells.group}}" data-tab="{{tabs.spells.id}}">
+    {{#with folio.spells as |sp|}}
+    <div class="fo-toolbar">
+        {{#if sp.canCast}}
+        <button type="button" class="fo-tool-btn wide primary" data-action="foUse" data-use-action="cast">
+            <i class="fa-solid fa-wand-sparkles"></i> {{localize "FOLIO.CastSpell"}}</button>
+        {{/if}}
+        {{#with @root.folio.lastSpell as |ls|}}
+        <button type="button" class="fo-tool-btn wide fo-repeat-spell" data-action="foRepeatSpell"{{#if ls.costData}} data-cost="{{ls.costData}}"{{/if}}
+                data-tooltip-html="<strong>{{localize 'FOLIO.LastSpell'}}</strong><br>{{ls.name}}<br><em>{{localize 'FOLIO.SPELLFAV.CastHint'}}</em>">
+            <img src="{{ls.img}}" alt="" inert><i class="fa-solid fa-rotate-right"></i> {{ls.name}}</button>
+        {{/with}}
+        {{#if (and sp.canCast @root.folio.editable)}}
+        <button type="button" class="fo-tool-btn wide" data-action="foSpellCreate" data-tooltip="FOLIO.SPELLFAV.CreateHint">
+            <i class="fa-solid fa-book-medical"></i> {{localize "FOLIO.SPELLFAV.Create"}}</button>
+        {{/if}}
+        <span class="fo-toolbar-spacer"></span>
+        <span class="fo-toolbar-note">{{localize "FOLIO.SpellHint"}}</span>
+    </div>
+    <div class="fo-scroll">
+        {{#if sp.canCast}}
+        <div class="fo-card fo-spellbook">
+            <h3 class="fo-card-head"><i class="fa-solid fa-book-bookmark"></i> {{localize "FOLIO.SPELLFAV.Book"}}
+                <span class="fo-count">{{sp.book.length}}</span></h3>
+            {{#if sp.book.length}}
+            <ol class="fo-rows fo-lists" style="--cols: 30px minmax(0, 1fr) 76px 78px 34px;">
+                {{#each sp.book as |row|}}{{> "folio.action-row" row=row}}{{/each}}
+            </ol>
+            {{else}}
+            <p class="fo-hint">{{localize "FOLIO.SPELLFAV.BookEmpty"}}</p>
+            {{/if}}
+        </div>
+        {{/if}}
+        {{#each sp.groups as |g|}}
+        <div class="fo-card fo-spell-group">
+            <h3 class="fo-card-head"><i class="{{g.icon}}"></i> {{g.label}} <span class="fo-count">{{g.items.length}}</span></h3>
+            {{#if g.items.length}}
+            <div class="fo-tiles">
+                {{#each g.items as |c|}}
+                <div class="fo-tile" data-tooltip-html="<strong>{{c.name}}</strong><br>{{#each c.tags}}{{this}}{{#unless @last}} · {{/unless}}{{/each}}">
+                    <img src="{{c.img}}" alt="" inert>
+                    <div class="fo-tile-text">
+                        <span class="fo-tile-name">{{c.name}}</span>
+                        <span class="fo-tile-tags">{{#each c.tags}}<span>{{this}}</span>{{/each}}</span>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{else}}
+            <p class="fo-hint">{{g.empty}}</p>
+            {{/if}}
+        </div>
+        {{/each}}
+
+        <div class="fo-card fo-spell-group">
+            <h3 class="fo-card-head"><i class="fa-solid fa-book-sparkles"></i> {{sp.iconicLabel}}
+                {{#if sp.iconicSlots}}<span class="fo-count">{{sp.iconic.length}}/{{sp.iconicSlots}}</span>{{/if}}</h3>
+            {{#if sp.iconic.length}}
+            <ol class="fo-rows fo-iconic" style="--cols: 30px minmax(0, 1fr) 68px;">
+                {{#each sp.iconic as |s|}}
+                <li class="fo-row" data-item-id="{{s.id}}" data-key="item:{{s.id}}" data-deletable="true">
+                    <div class="fo-row-main">
+                        <span class="fo-icon" data-crucible-tooltip="spell" data-uuid="{{s.uuid}}"><img src="{{s.img}}" alt="" inert></span>
+                        <div class="fo-name"><span class="fo-title">{{s.name}}</span>
+                            <span class="fo-sub">{{#each s.tags}}<span>{{this}}</span>{{/each}}</span></div>
+                        <div class="fo-cell fo-ctrl">
+                            <button type="button" class="fo-btn" data-action="foItemEdit" data-tooltip="ITEM.ACTIONS.Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            {{#if @root.folio.unlocked}}
+                            <button type="button" class="fo-btn fo-danger" data-action="foItemDelete" data-tooltip="ITEM.ACTIONS.Delete"><i class="fa-solid fa-trash"></i></button>
+                            {{/if}}
+                        </div>
+                    </div>
+                </li>
+                {{/each}}
+            </ol>
+            {{else}}
+            <p class="fo-hint">{{sp.iconicEmpty}}</p>
+            {{/if}}
+        </div>
+    </div>
+    {{/with}}
+</section>

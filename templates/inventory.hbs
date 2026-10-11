@@ -1,0 +1,94 @@
+<section class="tab fo-tab fo-inventory {{tabs.inventory.cssClass}}" data-group="{{tabs.inventory.group}}" data-tab="{{tabs.inventory.id}}">
+    <div class="fo-toolbar">
+        <label class="fo-search-box{{#if folio.filters.inventory.text}} has-value{{/if}}">
+            <i class="fa-solid fa-magnifying-glass" inert></i>
+            <input class="fo-search" type="search" data-tab="inventory" value="{{folio.filters.inventory.text}}"
+                   placeholder="{{localize 'FOLIO.SearchItems'}}" autocomplete="off" spellcheck="false">
+            <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
+        </label>
+        {{#with folio.inventory.capacity as |cap|}}
+        <div class="fo-capacity{{#if cap.over}} over{{/if}}" data-tooltip="{{#if cap.over}}ACTOR.LABELS.OverCapacity{{else}}ACTOR.LABELS.CurrentCapacity{{/if}}">
+            <i class="fa-solid fa-weight-hanging" inert></i>
+            <div class="fo-bar"><span class="fo-fill" style="width: {{cap.pct}}%"></span></div>
+            <span class="fo-cap-value">{{cap.value}} / {{cap.max}}</span>
+        </div>
+        {{/with}}
+        {{#if folio.unlocked}}
+        <button type="button" class="fo-tool-btn" data-action="foItemCreate" data-tooltip="ITEM.ACTIONS.Create"><i class="fa-solid fa-plus"></i></button>
+        {{/if}}
+    </div>
+
+    <div class="fo-scroll fo-lists">
+        {{#each folio.inventory.sections as |section|}}
+        <section class="fo-section fo-inv-{{section.id}}{{#if section.collapsed}} collapsed{{/if}}" data-section="{{section.id}}"
+                 data-inventory-section="{{section.id}}" data-collapse-key="{{section.key}}" data-filterable
+                 style="--cols: 30px minmax(0, 1fr) repeat({{section.columns.length}}, 64px) 68px;">
+            {{> "folio.section-head" label=section.label icon=section.icon count=section.counter full=section.full
+                columns=section.columns}}
+            <ol class="fo-rows">
+                {{#each section.rows as |row|}}
+                <li class="fo-row fo-item draggable {{row.css}}{{#if row.expanded}} expanded{{/if}}" data-item-id="{{row.id}}"
+                    data-key="{{row.key}}" data-search="{{row.search}}" data-equipped="{{row.equipped}}" data-deletable="true"
+                    {{#if row.actionId}}data-use-action="{{row.actionId}}"{{/if}}>
+                    <div class="fo-row-main">
+                        <a class="fo-icon{{#if row.usable}} usable{{/if}}" data-action="foUse" data-crucible-tooltip="{{section.id}}"
+                           data-uuid="{{row.uuid}}" data-tooltip-direction="LEFT">
+                            <img src="{{row.img}}" alt="" inert>{{#if row.usable}}<i class="fa-solid fa-dice-d20 fo-use-hint" inert></i>{{/if}}
+                        </a>
+                        <div class="fo-name" data-action="foExpand">
+                            <span class="fo-title">{{#if row.showStack}}<span class="fo-stack">{{row.quantity}}×</span>{{/if}}{{row.name}}</span>
+                            {{#if row.subtitle.length}}
+                            <span class="fo-sub">{{#each row.subtitle as |s|}}<span class="{{#if s.unmet}}unmet{{/if}}"{{#if s.tooltip}} data-crucible-tooltip="tag" data-crucible-tooltip-text="{{s.tooltip}}"{{/if}}>{{s.label}}</span>{{/each}}</span>
+                            {{/if}}
+                        </div>
+                        {{#each row.cells as |cell|}}
+                        <div class="fo-cell fo-val {{cell.key}}">
+                            {{#if cell.uses}}
+                            <span class="fo-uses">
+                                <button type="button" class="fo-use-step" data-action="foUses" data-delta="-1"
+                                        {{#unless cell.uses.canDecrease}}disabled{{/unless}} aria-label="{{localize 'FOLIO.UseSpend'}}"
+                                        data-tooltip="FOLIO.UseSpend"><i class="fa-solid fa-minus"></i></button>
+                                <span class="fo-uses-value">{{cell.value}}</span>
+                                <button type="button" class="fo-use-step" data-action="foUses" data-delta="1"
+                                        {{#unless cell.uses.canIncrease}}disabled{{/unless}} aria-label="{{localize 'FOLIO.UseRestore'}}"
+                                        data-tooltip="FOLIO.UseRestore"><i class="fa-solid fa-plus"></i></button>
+                            </span>
+                            {{else if (and cell.editable @root.folio.unlocked)}}
+                            <input class="fo-qty" type="text" value="{{cell.value}}" aria-label="{{localize 'FOLIO.COLUMNS.quantity'}}">
+                            {{else}}{{cell.value}}{{/if}}
+                        </div>
+                        {{/each}}
+                        <div class="fo-cell fo-ctrl">
+                            {{#if @root.folio.editable}}
+                            {{#if row.canDrop}}
+                            <button type="button" class="fo-btn" data-action="foItemDrop" data-tooltip="ITEM.ACTIONS.Drop"><i class="fa-solid fa-hand-point-down"></i></button>
+                            {{/if}}
+                            {{#if row.equip}}
+                            <button type="button" class="fo-btn fo-equip{{#if row.equipped}} on{{/if}}" data-action="foItemEquip"
+                                    data-tooltip="{{row.equip.tooltip}}"><i class="{{row.equip.icon}}"></i></button>
+                            {{/if}}
+                            {{#if @root.folio.unlocked}}
+                            <button type="button" class="fo-btn" data-action="foItemEdit" data-tooltip="ITEM.ACTIONS.Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button type="button" class="fo-btn fo-danger" data-action="foItemDelete" data-tooltip="ITEM.ACTIONS.Delete"><i class="fa-solid fa-trash"></i></button>
+                            {{/if}}
+                            {{/if}}
+                        </div>
+                    </div>
+                    {{#if row.expanded}}<div class="fo-detail">{{{row.description}}}</div>{{/if}}
+                </li>
+                {{else}}
+                <li class="fo-hint">{{section.empty}}</li>
+                {{/each}}
+            </ol>
+        </section>
+        {{/each}}
+        <p class="fo-no-results" hidden><i class="fa-solid fa-ghost"></i> {{localize "FOLIO.NoResults"}}</p>
+    </div>
+
+    <footer class="fo-footer">
+        <div class="fo-currency-field">
+            <span class="fo-footer-label">{{localize "ACTOR.LABELS.Currency"}}</span>
+            <crucible-currency name="system.currency" value="{{folio.inventory.currency}}"></crucible-currency>
+        </div>
+    </footer>
+</section>
