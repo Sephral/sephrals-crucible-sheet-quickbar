@@ -71,6 +71,8 @@ The adversary sheet uses the same layout, adapted to Crucible adversaries: taxon
 | Play / edit mode | Lock in the header; play mode hides delete and edit controls |
 | Recover / rest | Buttons in the header (heroes) |
 | Your turn | Glowing portrait, initiative badge and an *End turn* button in the header and the quickbar. Only the GM can end the last turn of a round (a Crucible rule); the button shows that |
+| Next turn | When your hero acts next in the round, the initiative badge and the quickbar get a quiet frame and a short notice appears |
+| Delay | After Crucible's *Delay* action an hourglass next to the initiative shows the new and the original initiative |
 | Cost preview | Hovering an action pulses the action, focus and heroism pips it costs; missing pips turn red |
 | Conditions | In the header and the quickbar with their remaining rounds; maintained effects have a gold frame and an ✕ to end them |
 | Repeat last spell | Button in the Spells tab and the quickbar |
@@ -78,6 +80,7 @@ The adversary sheet uses the same layout, adapted to Crucible adversaries: taxon
 | Pin skills | Pin icon next to a skill: it then appears among the favorites and in the quickbar |
 | Charges | −/+ next to charges in the inventory |
 | Keyboard | Every clickable element is reachable with Tab; Enter or Space triggers it |
+| Keybindings | Switch between sheet and quickbar, end your turn, use quickbar buttons 1 to 9. They have no default keys, because core already uses the digits and Q/E. Assign them under *Configure Controls* |
 | Penalties | Negative values red, bonuses green |
 | Settings | Gear button in the sheet header (quickbar: in its title bar) opens the module's page in Foundry's settings |
 
@@ -92,11 +95,11 @@ The module brings German skill and training names (Athletik, Wahrnehmung, Arkane
 - The dice button expands all skills for direct checks.
 - Transparent while the mouse is elsewhere (*Quickbar opacity* setting); fully visible on hover and on your turn (then the frame glows).
 - Escape does not close the bar. Mode, position and *open* are remembered per actor in the browser; an open bar reopens after a reload.
-- **Targets:** with tokens targeted, a row shows name, physical defense and distance (the GM also sees health; frame color = hostile/friendly). Click to pan to the token. Buttons that cannot reach this target (too close, too far, not flanked …) are marked red; the ⛔ icon names the reason.
+- **Targets:** with tokens targeted, a row shows name, physical defense, the three saves, distance and the target's conditions as small icons (the GM also sees health, and the frame color shows hostile or friendly). Click to pan to the token. Buttons that cannot reach this target (too close, too far, not flanked …) are marked red. The ⛔ icon names the reason.
 
 ## In combat
 
-- **Players:** when your hero's turn begins, its quickbar opens (if the sheet is closed), glows and announces the turn. An open full sheet stays a full sheet.
+- **Players:** when your hero's turn begins, its quickbar opens (if the sheet is closed), glows and announces the turn. An open full sheet stays a full sheet. One turn earlier a short notice says that you are next.
 - **GM combat bar:** when an adversary's turn begins, its quickbar opens in a fixed place and its token is selected; the bar follows the next adversary and closes on hero turns. Moving it sets the place. Double-click turns it into an ordinary sheet that stays open.
 - Adversaries without favorites get their attacks, abilities and *Defend* in the quickbar automatically.
 - If a healing effect (e.g. a healing potion) targets an adversary, the module asks first.
@@ -149,7 +152,7 @@ The module was previously called *Crucible Folio* (id `crucible-folio`). On the 
 
 ## Self-test after updates
 
-The sheet uses some Crucible and Ember internals. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then run *Configure Settings → Sephral’s Crucible Sheet & Quickbar → Run self-test* (or `game.modules.get("sephrals-crucible-sheet-quickbar").api.runSelfTest()`): it opens every hero and adversary sheet invisibly (full and as quickbar), checks the integrations and whispers a report to the GM. The test changes no data and no stored window state.
+The sheet uses some Crucible and Ember internals. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then run *Configure Settings → Sephral’s Crucible Sheet & Quickbar → Run self-test* (or `game.modules.get("sephrals-crucible-sheet-quickbar").api.runSelfTest()`): it opens every hero sheet invisibly (full and as quickbar), the button also a random sample of 20 adversaries and the API call every adversary, checks the integrations and whispers a report to the GM. The test changes no data and no stored window state.
 
 ## Limitations
 
@@ -171,7 +174,8 @@ The sheet uses some Crucible and Ember internals. After an update of Foundry, Cr
 | `scripts/prepare.mjs` | Data preparation for the templates |
 | `scripts/folio-sheet.mjs` | `FolioSheetMixin` (sheet logic, quickbar, drag and drop) and the hero and adversary classes |
 | `scripts/spell-favorites.mjs` | Spellbook, spell dialog strip, builder |
-| `scripts/combat.mjs` | Combat helpers: quickbar on your turn, GM combat bar, refresh on target changes |
+| `scripts/combat.mjs` | Combat helpers: quickbar on your turn, notice when you are next, GM combat bar, refresh on target changes |
+| `scripts/keybindings.mjs` | Keybindings: switch sheet and quickbar, end turn, quickbar buttons 1 to 9 |
 | `scripts/selftest.mjs` | Self-test |
 | `tests/` | Node tests (`node --test`): pure helpers, language files, release script |
 

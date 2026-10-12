@@ -6,6 +6,7 @@
     "Initiative": "Init",
     "YourTurn": "It is your turn",
     "InCombat": "In combat",
+    "NextTurnHint": "You are next",
     "EditPortrait": "Change portrait",
     "ShowPortrait": "Show portrait to players",
     "ViewAncestry": "View ancestry",
@@ -92,6 +93,20 @@
       "de": "Deutsch",
       "en": "English"
     },
+    "KEYS": {
+      "ToggleQuickbar": {
+        "name": "Sheet & Quickbar: switch sheet and quickbar",
+        "hint": "For the character of the selected token, or your own character: opens its quickbar or switches between the full sheet and the quickbar."
+      },
+      "EndTurn": {
+        "name": "Sheet & Quickbar: end turn",
+        "hint": "Ends your turn in the current combat. The GM can end any turn."
+      },
+      "UseButton": {
+        "name": "Sheet & Quickbar: quickbar button {n}",
+        "hint": "Uses button {n} of the open quickbar, exactly like a click."
+      }
+    },
     "SETTINGS": {
       "Open": "Sheet & Quickbar settings",
       "UiLanguage": {
@@ -166,7 +181,7 @@
       },
       "TurnAnnounce": {
         "name": "Announce your turn",
-        "hint": "Announces “It's …'s turn!” and lets the quickbar glow briefly."
+        "hint": "Announces “It's …'s turn!”, lets the quickbar glow briefly and tells you when you are next."
       },
       "CombatBar": {
         "name": "Combat bar",
@@ -259,7 +274,7 @@
     "SELFTEST": {
       "Title": "Self-test",
       "Run": "Run self-test",
-      "Hint": "Renders every hero and adversary sheet off-screen (full and as quickbar) and checks the integration with Crucible and Ember. Run it after every update.",
+      "Hint": "Renders every hero and a random sample of 20 adversaries off-screen (full and as quickbar) and checks the integration with Crucible and Ember. Run it after every update.",
       "Started": "Sheet & Quickbar self-test running …",
       "Summary": "Sheet & Quickbar self-test: {count} sheets checked, {failed} with problems, {integrations} integration notes.",
       "Integrations": "Integration",
@@ -275,7 +290,8 @@
       "SpellAction": "CrucibleSpellAction not found, the spellbook cannot cast",
       "Attunement": "Ember is active, but no Attunement tab was found",
       "SystemConfig": "SYSTEM.{key} is missing",
-      "Version": "{id} {current} (tested {tested})"
+      "Version": "{id} {current} (tested {tested})",
+      "Sample": "Adversaries: random sample of {tested} out of {total}."
     },
     "SKILLGROUP": {
       "exp": "Exploration",
@@ -288,6 +304,8 @@
     "EndEffect": "Stop maintaining",
     "LastSpell": "Repeat last spell",
     "TurnStart": "It's {name}'s turn!",
+    "NextTurn": "{name} is next!",
+    "Delayed": "Delayed: acts at initiative {to} instead of {from} this round",
     "TARGET": {
       "Label": "Target",
       "Distance": "{distance} ft away",

@@ -1,10 +1,10 @@
 /**
- * Combat helpers: a hero's quickbar opens and announces itself on its turn, and the GM's combat bar follows the
- * adversary whose turn it is. Quickbars also refresh when targets change or tokens move, so the target display and
- * the range checks of their buttons stay current.
+ * Combat helpers: a hero's quickbar opens and announces itself on its turn (and the player hears when they are next),
+ * and the GM's combat bar follows the adversary whose turn it is. Quickbars also refresh when targets change or tokens
+ * move, so the target display and the range checks of their buttons stay current.
  */
 
-import {MODULE_ID, defaultBarPosition, loadUIState, setting} from "./config.mjs";
+import {MODULE_ID, defaultBarPosition, loadUIState, nextInRound, setting} from "./config.mjs";
 
 /**
  * The quickbar which the GM combat bar opened for the current turn.
@@ -60,7 +60,10 @@ async function onTurnChange(combat) {
   const actor = combat.combatant?.actor;
   try {
     if ( game.user.isGM ) await followCombatant(combat, actor);
-    else await announceOwnTurn(actor);
+    else {
+      await announceOwnTurn(actor);
+      announceNextTurn(combat);
+    }
   } catch(err) {
     console.error(`${MODULE_ID} | Could not open the quickbar for the new turn`, err);
   }
@@ -79,6 +82,19 @@ async function announceOwnTurn(actor) {
   const announce = setting("turnAnnounce");
   if ( setting("turnQuickbar") ) await sheet.showQuickbar({announce});
   else if ( announce ) ui.notifications.info(_loc("FOLIO.TurnStart", {name: actor.name}));
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Tell a player that their hero acts next in this round, so they can plan ahead. The quickbar shows the same as a
+ * quiet frame (see prepareHeader).
+ * @param {Combat} combat
+ */
+function announceNextTurn(combat) {
+  const actor = nextInRound(combat.turns, combat.turn, combat.settings?.skipDefeated)?.actor;
+  if ( !actor?.isOwner || !actor.sheet?.constructor.FOLIO || !setting("turnAnnounce") ) return;
+  ui.notifications.info(_loc("FOLIO.NextTurn", {name: actor.name}));
 }
 
 /* -------------------------------------------- */

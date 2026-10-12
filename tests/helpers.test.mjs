@@ -240,3 +240,28 @@ test("computeResources adds percentages and the pips Crucible renders", () => {
   assert.deepEqual(resources.heroism.pips.map(p => p.cssClass), ["full", "full", ""]);
   delete globalThis.SYSTEM;
 });
+
+/* -------------------------------------------- */
+/*  Combat order and self-test sample           */
+/* -------------------------------------------- */
+
+test("nextInRound finds the next combatant of this round only", () => {
+  const turns = [{id: "a"}, {id: "b", isDefeated: true}, {id: "c"}];
+  assert.equal(config.nextInRound(turns, 0).id, "b");
+  assert.equal(config.nextInRound(turns, 0, true).id, "c");
+  assert.equal(config.nextInRound(turns, 2), null, "the next round is rolled anew, so nobody is next");
+  assert.equal(config.nextInRound(turns, null).id, "a");
+  assert.equal(config.nextInRound([], 0), null);
+});
+
+test("sampleOf keeps short lists and draws a sample from long ones", async () => {
+  const {sampleOf} = await import("../scripts/selftest.mjs");
+  const list = [1, 2, 3, 4, 5, 6];
+  assert.deepEqual(sampleOf(list, 10), list);
+  assert.deepEqual(sampleOf(list, Infinity), list);
+  const sample = sampleOf(list, 3, () => 0.5);
+  assert.equal(sample.length, 3);
+  assert.equal(new Set(sample).size, 3);
+  assert.ok(sample.every(n => list.includes(n)));
+  assert.deepEqual(list, [1, 2, 3, 4, 5, 6], "the source list stays untouched");
+});

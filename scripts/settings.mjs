@@ -122,6 +122,9 @@ function onLanguageChange(value) {
 
 /* -------------------------------------------- */
 
+/** How many adversaries the self-test button checks (a random sample); the API call checks all of them. */
+const SELFTEST_ADVERSARIES = 20;
+
 /**
  * The menu button which runs the self-test. Foundry only accepts application classes as menus; this one runs the test
  * instead of opening a window.
@@ -129,7 +132,7 @@ function onLanguageChange(value) {
 class FolioSelfTestMenu extends foundry.applications.api.ApplicationV2 {
   /** @override */
   async render() {
-    if ( game.user.isGM ) await runSelfTest();
+    if ( game.user.isGM ) await runSelfTest({adversaryLimit: SELFTEST_ADVERSARIES});
     return this;
   }
 }

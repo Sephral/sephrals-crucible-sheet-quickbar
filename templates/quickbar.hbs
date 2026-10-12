@@ -1,12 +1,13 @@
 {{#with folio.header as |h|}}
-<section class="fo-quickbar{{#if h.combat.isTurn}} is-turn{{/if}}">
+<section class="fo-quickbar{{#if h.combat.isTurn}} is-turn{{else if h.combat.isNext}} is-next{{/if}}">
     <div class="fo-qb-status">
         <div class="fo-qb-portrait{{#if h.health.state}} hp-{{h.health.state}}{{/if}}">
             <img src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-tooltip="FOLIO.ShowPortrait">
             <span class="fo-qb-level" data-tooltip="{{#if h.isHero}}{{h.milestones.tooltip}}{{else}}{{h.threat.label}}{{/if}}">{{h.levelDisplay}}</span>
             {{#if h.combat}}
-            <span class="fo-qb-ini" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else}}FOLIO.InCombat{{/if}}">
-                <i class="fa-solid {{#if h.combat.isTurn}}fa-play{{else}}fa-swords{{/if}}"></i>{{h.combat.initiative}}</span>
+            <span class="fo-qb-ini" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else if h.combat.isNext}}FOLIO.NextTurnHint{{else}}FOLIO.InCombat{{/if}}">
+                <i class="fa-solid {{#if h.combat.isTurn}}fa-play{{else if h.combat.isNext}}fa-forward{{else}}fa-swords{{/if}}"></i>{{h.combat.initiative}}
+                {{#if h.combat.delayed}}<i class="fa-solid fa-hourglass-half fo-delay" data-tooltip="{{h.combat.delayed.tooltip}}"></i>{{/if}}</span>
             {{/if}}
         </div>
 
@@ -118,7 +119,9 @@
             <span class="fo-qb-target-name" inert>{{#if t.self}}{{localize "FOLIO.TARGET.Self"}}{{else}}{{t.name}}{{/if}}</span>
             {{#if t.health}}<span class="fo-qb-target-hp" inert><i style="width: {{t.health.pct}}%"></i></span>{{/if}}
             <span class="fo-qb-target-def" inert><i class="fa-solid fa-shield-halved"></i>{{t.physical}}</span>
+            {{#each t.saves as |sv|}}<span class="fo-qb-target-def {{sv.id}}" inert><b>{{sv.label}}</b>{{sv.value}}</span>{{/each}}
             {{#if t.distance includeZero=true}}<span class="fo-qb-target-dist" inert>{{t.distance}} ft</span>{{/if}}
+            {{#if t.statuses.length}}<span class="fo-qb-target-statuses" inert>{{#each t.statuses as |s|}}<img src="{{s.img}}" alt="{{s.name}}">{{/each}}{{#if t.moreStatuses}}<span>+{{t.moreStatuses}}</span>{{/if}}</span>{{/if}}
         </button>
         {{/each}}
     </div>

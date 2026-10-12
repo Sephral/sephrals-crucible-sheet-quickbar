@@ -1,5 +1,5 @@
 {{#with folio.header as |h|}}
-<section class="fo-head{{#if h.combat.isTurn}} is-turn{{/if}}">
+<section class="fo-head{{#if h.combat.isTurn}} is-turn{{else if h.combat.isNext}} is-next{{/if}}">
     <div class="fo-hero">
 
         {{!-- Portrait with level badge and milestone progress --}}
@@ -26,9 +26,10 @@
                 <span class="fo-level-label">{{localize "FOLIO.Level"}}</span>
             </div>
             {{#if h.combat}}
-            <div class="fo-turn" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else}}FOLIO.InCombat{{/if}}">
-                <i class="fa-solid {{#if h.combat.isTurn}}fa-play{{else}}fa-swords{{/if}}"></i>
+            <div class="fo-turn" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else if h.combat.isNext}}FOLIO.NextTurnHint{{else}}FOLIO.InCombat{{/if}}">
+                <i class="fa-solid {{#if h.combat.isTurn}}fa-play{{else if h.combat.isNext}}fa-forward{{else}}fa-swords{{/if}}"></i>
                 <span>{{localize "FOLIO.Initiative"}} {{h.combat.initiative}}</span>
+                {{#if h.combat.delayed}}<i class="fa-solid fa-hourglass-half fo-delay" data-tooltip="{{h.combat.delayed.tooltip}}"></i>{{/if}}
             </div>
             {{/if}}
         </div>

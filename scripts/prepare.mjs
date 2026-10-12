@@ -6,7 +6,7 @@
 
 import {
   ACTION_SECTIONS, ACTION_TAG_SECTIONS, COST_TAGS, FLAGS, INVENTORY_COLUMNS, INVENTORY_ICONS, MODULE_ID, SECTION_ICONS,
-  TALENT_ICONS, cssColor, setting, signClass
+  TALENT_ICONS, cssColor, nextInRound, setting, signClass
 } from "./config.mjs";
 import {
   buildSpell, getSpellFavorites, missingComponents, normalizeSpellId, parseSpellId, resolveActorToken, spellKey
@@ -272,16 +272,22 @@ export function prepareHeader(scope, issues) {
     && !actor.isToken));
   if ( combatant ) {
     const isTurn = !!encounter.started && (encounter.combatant?.id === combatant.id);
+    const next = nextInRound(encounter.turns, encounter.turn, encounter.settings?.skipDefeated);
     // Crucible lets only the GM start a new round, so a player cannot end the last turn of a round
-    const skip = encounter.settings?.skipDefeated;
-    const lastInRound = !encounter.turns.slice((encounter.turn ?? 0) + 1).some(c => !(skip && c.isDefeated));
     const canEnd = isTurn && (game.user.isGM || combatant.isOwner);
+    // Crucible's Delay action: the actor acts later this round, at a lower initiative
+    const delay = combatant.actor?.flags.crucible?.delay;
+    const delayed = (delay && (delay.round === encounter.round))
+      ? {from: delay.from, to: delay.to, tooltip: _loc("FOLIO.Delayed", {from: delay.from, to: delay.to})}
+      : null;
     combat = {
       round: encounter.round,
       initiative: combatant.initiative ?? "–",
       isTurn,
+      isNext: !!encounter.started && !isTurn && (next?.id === combatant.id),
+      delayed,
       canEnd,
-      endBlocked: canEnd && !game.user.isGM && lastInRound
+      endBlocked: canEnd && !game.user.isGM && !next
     };
   }
 
@@ -479,8 +485,12 @@ export function prepareLastSpell(scope) {
 
 /* -------------------------------------------- */
 
+/** How many status icons a target chip shows at most. */
+const TARGET_STATUS_ICONS = 5;
+
 /**
- * Describe the current user's targets for the quickbar: who they are, how far away and how well defended.
+ * Describe the current user's targets for the quickbar: who they are, how far away and how well defended, and which
+ * conditions they suffer from.
  * @param {FolioScope} scope
  * @returns {object[]}
  */
@@ -507,15 +517,22 @@ export function prepareTargets(scope) {
     const health = target.system.resources?.health;
     const showHealth = !!health && target.testUserPermission(game.user, "OBSERVER");
     const saves = defenses.saves.map(sv => `${sv.label} ${sv.value}`).join(" · ");
+    // Statuses are shown on the token for everyone anyway
+    const statuses = [...target.statuses].map(id => CONFIG.statusEffects[id]).filter(s => s?.img)
+      .map(s => ({id: s.id, img: s.img, name: _loc(s.name)}));
     targets.push({
       id: token.id, name: token.name, img: token.document.texture?.src || target.img,
       self: sourceToken === token, distance,
       disposition: disposition === HOSTILE ? "hostile" : (disposition === FRIENDLY ? "friendly" : "neutral"),
       physical: defenses.physical.value,
+      saves: defenses.saves.map(sv => ({id: sv.id, label: _loc(`FOLIO.QB.${sv.id}`), value: sv.value})),
+      statuses: statuses.slice(0, TARGET_STATUS_ICONS),
+      moreStatuses: Math.max(statuses.length - TARGET_STATUS_ICONS, 0),
       health: showHealth ? {value: health.value, max: health.max,
         pct: health.max ? Math.clamp(Math.round(health.value * 100 / health.max), 0, 100) : 0} : null,
       tooltip: `<strong>${foundry.utils.escapeHTML(token.name)}</strong><br>${defenses.physical.label} ${
-        defenses.physical.value} · ${saves}${distance !== null ? `<br>${_loc("FOLIO.TARGET.Distance", {distance})}` : ""}`
+        defenses.physical.value} · ${saves}${distance !== null ? `<br>${_loc("FOLIO.TARGET.Distance", {distance})}` : ""}${
+        statuses.length ? `<br>${statuses.map(s => foundry.utils.escapeHTML(s.name)).join(", ")}` : ""}`
     });
   }
   return targets;

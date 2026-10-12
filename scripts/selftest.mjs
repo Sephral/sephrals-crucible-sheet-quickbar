@@ -41,6 +41,8 @@ async function testActor(actor, cls) {
     await sheet.render({force: true});
     const el = sheet.element;
     const expected = ["header", "tabs", "play", "inventory", "talents", "training", "spells", "effects", "biography"];
+    // Ember adds the attunement tab to heroes
+    if ( (actor.type === "hero") && cls.hasAttunement ) expected.push("attunement");
     for ( const part of expected ) {
       if ( !el.querySelector(`[data-application-part="${part}"]`) ) problems.push(_loc("FOLIO.SELFTEST.PartMissing", {part}));
     }
@@ -58,6 +60,25 @@ async function testActor(actor, cls) {
   problems.push(...errors);
   return {name: actor.name, type: actor.type, ok: !problems.length, problems, ms: Math.round(performance.now() - started)};
 }
+
+/**
+ * A random sample of a list, in random order; the whole list when it is not longer than the limit.
+ * @param {Array} list
+ * @param {number} limit
+ * @param {() => number} [random]
+ * @returns {Array}
+ */
+export function sampleOf(list, limit, random=Math.random) {
+  if ( list.length <= limit ) return list.slice();
+  const pool = list.slice();
+  for ( let i = pool.length - 1; i > 0; i-- ) {
+    const j = Math.floor(random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, limit);
+}
+
+/* -------------------------------------------- */
 
 /**
  * Check the integration points which rely on Crucible or Ember internals.
@@ -85,7 +106,7 @@ function checkIntegrations() {
 /**
  * Run the self-test over all heroes and adversaries.
  * @param {object} [options]
- * @param {number} [options.adversaryLimit=Infinity]   Limit the number of adversaries tested
+ * @param {number} [options.adversaryLimit=Infinity]   Test a random sample of this many adversaries
  * @param {boolean} [options.report=true]               Post a whispered chat report to the current user
  * @returns {Promise<{integrations: string[], results: SelfTestResult[]}>}
  */
@@ -97,7 +118,11 @@ export async function runSelfTest({adversaryLimit=Infinity, report=true}={}) {
   const results = [];
   ui.notifications.info(_loc("FOLIO.SELFTEST.Started"));
   const heroes = game.actors.filter(a => (a.type === "hero") && !a.isL0);
-  const adversaries = game.actors.filter(a => a.type === "adversary").slice(0, adversaryLimit);
+  const allAdversaries = game.actors.filter(a => a.type === "adversary");
+  const adversaries = sampleOf(allAdversaries, adversaryLimit);
+  const sample = (adversaries.length < allAdversaries.length)
+    ? _loc("FOLIO.SELFTEST.Sample", {tested: adversaries.length, total: allAdversaries.length})
+    : "";
   for ( const actor of heroes ) results.push(await testActor(actor, heroCls));
   for ( const actor of adversaries ) results.push(await testActor(actor, adversaryCls));
 
@@ -108,6 +133,7 @@ export async function runSelfTest({adversaryLimit=Infinity, report=true}={}) {
   }).join(", ");
   console.group(`${MODULE_ID} | Self-test`);
   console.log(versions);
+  if ( sample ) console.log(sample);
   if ( integrations.length ) console.warn("Integrations:", integrations);
   console.table(results.map(r => ({name: r.name, type: r.type, ok: r.ok, ms: r.ms, problems: r.problems.join("; ")})));
   console.groupEnd();
@@ -120,7 +146,9 @@ export async function runSelfTest({adversaryLimit=Infinity, report=true}={}) {
   if ( report ) {
     const esc = foundry.utils.escapeHTML;
     const list = items => `<ul>${items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`;
-    let content = `<h3>${_loc("FOLIO.SELFTEST.Title")}</h3><p>${esc(summary)}</p><p><small>${esc(versions)}</small></p>`;
+    let content = `<h3>${_loc("FOLIO.SELFTEST.Title")}</h3><p>${esc(summary)}</p>`;
+    if ( sample ) content += `<p><small>${esc(sample)}</small></p>`;
+    content += `<p><small>${esc(versions)}</small></p>`;
     if ( integrations.length ) content += `<h4>${_loc("FOLIO.SELFTEST.Integrations")}</h4>${list(integrations)}`;
     if ( failed.length ) {
       content += `<h4>${_loc("FOLIO.SELFTEST.Failed")}</h4>`

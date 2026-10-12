@@ -6,6 +6,7 @@ import {runSelfTest} from "./selftest.mjs";
 import {registerCombatHooks} from "./combat.mjs";
 import {hideGMSettings, openSettings, registerSettings} from "./settings.mjs";
 import {applyModuleLanguage} from "./language.mjs";
+import {registerKeybindings} from "./keybindings.mjs";
 import {folioInUse, registerFolioSheets} from "./sheet-choice.mjs";
 
 /** The partial templates shared between several tabs of the sheet. */
@@ -61,6 +62,7 @@ let languageReady = Promise.resolve();
 Hooks.once("i18nInit", () => {
   if ( (game.system.id !== "crucible") || legacyActive() ) return;
   languageReady = applyModuleLanguage(game.settings.get(MODULE_ID, "uiLanguage"));
+  registerKeybindings();
 });
 
 Hooks.once("setup", () => {

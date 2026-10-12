@@ -6,6 +6,7 @@
     "Initiative": "Ini",
     "YourTurn": "Du bist am Zug",
     "InCombat": "Im Kampf",
+    "NextTurnHint": "Du bist als Nächstes dran",
     "EditPortrait": "Porträt ändern",
     "ShowPortrait": "Porträt allen zeigen",
     "ViewAncestry": "Abstammung ansehen",
@@ -92,6 +93,20 @@
       "de": "Deutsch",
       "en": "English"
     },
+    "KEYS": {
+      "ToggleQuickbar": {
+        "name": "Sheet & Quickbar: Bogen und Kompaktleiste umschalten",
+        "hint": "Für den Charakter des ausgewählten Tokens oder deinen eigenen: öffnet seine Kompaktleiste oder wechselt zwischen vollem Bogen und Kompaktleiste."
+      },
+      "EndTurn": {
+        "name": "Sheet & Quickbar: Zug beenden",
+        "hint": "Beendet deinen Zug im aktuellen Kampf. Die SL kann jeden Zug beenden."
+      },
+      "UseButton": {
+        "name": "Sheet & Quickbar: Kompaktleiste, Schaltfläche {n}",
+        "hint": "Nutzt Schaltfläche {n} der offenen Kompaktleiste, genau wie ein Klick."
+      }
+    },
     "SETTINGS": {
       "Open": "Sheet & Quickbar – Einstellungen",
       "UiLanguage": {
@@ -166,7 +181,7 @@
       },
       "TurnAnnounce": {
         "name": "Zugbeginn melden",
-        "hint": "Meldet „… ist am Zug!“ und lässt die Kompaktleiste kurz aufleuchten."
+        "hint": "Meldet „… ist am Zug!“, lässt die Kompaktleiste kurz aufleuchten und sagt dir, wenn du als Nächstes dran bist."
       },
       "CombatBar": {
         "name": "Kampfleiste",
@@ -259,7 +274,7 @@
     "SELFTEST": {
       "Title": "Selbsttest",
       "Run": "Selbsttest starten",
-      "Hint": "Öffnet alle Helden- und Gegnerbögen unsichtbar (voll und als Kompaktleiste) und prüft die Anbindung an Crucible und Ember. Nach jedem Update ausführen.",
+      "Hint": "Öffnet alle Helden und eine zufällige Auswahl von 20 Gegnern unsichtbar (voll und als Kompaktleiste) und prüft die Anbindung an Crucible und Ember. Nach jedem Update ausführen.",
       "Started": "Selbsttest von Sheet & Quickbar läuft …",
       "Summary": "Selbsttest von Sheet & Quickbar: {count} Bögen geprüft, {failed} mit Problemen, {integrations} Anbindungshinweise.",
       "Integrations": "Anbindung",
@@ -275,7 +290,8 @@
       "SpellAction": "CrucibleSpellAction nicht gefunden, das Zauberbuch kann nicht wirken",
       "Attunement": "Ember aktiv, aber kein Einstimmungs-Tab gefunden",
       "SystemConfig": "SYSTEM.{key} fehlt",
-      "Version": "{id} {current} (getestet {tested})"
+      "Version": "{id} {current} (getestet {tested})",
+      "Sample": "Gegner: zufällige Auswahl von {tested} aus {total}."
     },
     "SKILLGROUP": {
       "exp": "Erkundung",
@@ -288,6 +304,8 @@
     "EndEffect": "Aufrechterhaltung beenden",
     "LastSpell": "Letzten Zauber wiederholen",
     "TurnStart": "{name} ist am Zug!",
+    "NextTurn": "{name} ist als Nächstes dran!",
+    "Delayed": "Verzögert: handelt in dieser Runde bei Initiative {to} statt {from}",
     "TARGET": {
       "Label": "Ziel",
       "Distance": "{distance} Fuß entfernt",

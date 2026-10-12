@@ -168,6 +168,23 @@ export function compareVersions(a, b) {
 /* -------------------------------------------- */
 
 /**
+ * The combatant who acts after the current one in this round, or null at the end of the round. Crucible rolls the
+ * initiative anew every round, so the order of the next round is not known yet.
+ * @param {Combatant[]} turns         The turn order
+ * @param {number|null} turn          The index of the current turn
+ * @param {boolean} [skipDefeated]    Skip defeated combatants, like the combat tracker setting
+ * @returns {Combatant|null}
+ */
+export function nextInRound(turns, turn, skipDefeated=false) {
+  for ( let i = (turn ?? -1) + 1; i < turns.length; i++ ) {
+    if ( !skipDefeated || !turns[i].isDefeated ) return turns[i];
+  }
+  return null;
+}
+
+/* -------------------------------------------- */
+
+/**
  * Where a quickbar appears when it has no remembered position: above the hotbar, left of center. Further bars stack
  * upwards so they do not cover each other.
  * @param {number} [stack=0]   How many bars are already open

@@ -419,6 +419,20 @@
   font-weight: 600;
 }
 
+/* Next in the turn order: a quiet hint before the own turn begins */
+.folio .fo-head.is-next .fo-turn {
+  box-shadow: inset 0 0 0 1px var(--fo-accent-2);
+  color: var(--fo-accent-2);
+}
+
+/* Crucible's Delay action: acting later this round */
+.folio .fo-delay {
+  margin-left: 1px;
+  color: var(--fo-c-focus, #7aa7ff);
+  font-size: 0.95em;
+  cursor: help;
+}
+
 /* Identity */
 .folio .fo-ident {
   display: flex;
@@ -2718,8 +2732,14 @@
 
 .application.folio.fo-qb:hover,
 .application.folio.fo-qb:focus-within,
-.application.folio.fo-qb:has(.fo-quickbar.is-turn) {
+.application.folio.fo-qb:has(.fo-quickbar.is-turn),
+.application.folio.fo-qb:has(.fo-quickbar.is-next) {
   opacity: 1;
+}
+
+.application.folio.fo-qb:has(.fo-quickbar.is-next) {
+  border-color: color-mix(in srgb, var(--fo-accent-2) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fo-accent-2) 40%, transparent), 0 0 10px rgb(240 194 123 / 15%);
 }
 
 .application.folio.fo-qb:has(.fo-quickbar.is-turn) {
@@ -2840,6 +2860,11 @@
   background: var(--fo-accent);
   color: #1b120c;
   font-weight: 700;
+}
+
+.folio .fo-quickbar.is-next .fo-qb-ini {
+  box-shadow: inset 0 0 0 1px var(--fo-accent-2);
+  color: var(--fo-accent-2);
 }
 
 .folio .fo-qb-pools {
@@ -3629,7 +3654,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  max-width: 640px;
+  /* As wide as the status row, like the action bar: the chips wrap instead of widening the quickbar */
+  width: 0;
+  min-width: 100%;
 }
 
 .folio .fo-qb-targets-icon {
@@ -3666,7 +3693,7 @@
   border-left-color: var(--d);
 }
 
-.folio .fo-qb-target img {
+.folio .fo-qb-target > img {
   width: 20px;
   height: 20px;
   object-fit: cover;
@@ -3702,10 +3729,31 @@
   font-variant-numeric: tabular-nums;
 }
 
-.folio .fo-qb-target-def i {
+.folio .fo-qb-target-def i,
+.folio .fo-qb-target-def b {
   margin-right: 2px;
   color: var(--fo-text-3);
   font-size: 9px;
+}
+
+.folio .fo-qb-target-def b {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.folio .fo-qb-target-statuses {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  color: var(--fo-text-3);
+  font-size: 9.5px;
+}
+
+.folio .fo-qb-target-statuses img {
+  width: 14px;
+  height: 14px;
+  border: none;
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 80%));
 }
 
 .folio.fo-light .window-content button.fo-qb-target,
@@ -3901,7 +3949,8 @@
 .application.folio.fo-compact .window-content button.fo-qb-skill { height: 19px; padding: 0 5px; font-size: 11px; }
 .application.folio.fo-compact .fo-qb-targets { gap: 3px; }
 .application.folio.fo-compact .window-content button.fo-qb-target { height: 20px; font-size: 10.5px; }
-.application.folio.fo-compact .fo-qb-target img { width: 16px; height: 16px; }
+.application.folio.fo-compact .fo-qb-target > img { width: 16px; height: 16px; }
+.application.folio.fo-compact .fo-qb-target-statuses img { width: 12px; height: 12px; }
 
 /* The full sheet shows the settings gear among its header buttons, the quickbar in its title bar */
 .application.folio:not(.fo-qb) .window-header [data-action="foSettings"] {
