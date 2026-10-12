@@ -9,7 +9,7 @@
 
 *The demo uses Zarajah, one of Crucible's pregenerated heroes, and the arena of Crucible's playtest adventure.*
 
-Inspired by the Tidy5e sheet with its dense lists, play and edit mode, search and inline details, but in Crucible's own look. For heroes and adversaries alike.
+Dense lists, a play and an edit mode, search and inline details, all in Crucible's own look. For heroes and adversaries alike.
 
 ## Highlights
 
