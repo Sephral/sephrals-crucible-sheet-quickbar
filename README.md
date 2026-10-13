@@ -2,6 +2,7 @@
 
 **Everything your Crucible hero can do, on one compact sheet. And when the fight starts, it shrinks into a quickbar that stays on the map.**
 
+[![Foundry VTT package](https://img.shields.io/badge/Foundry%20VTT-Package%20page-fe6a1f?logo=foundryvirtualtabletop&logoColor=white)](https://foundryvtt.com/packages/sephrals-crucible-sheet-quickbar)
 [![Join Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/7BjCgDYaBP)
 [![More modules by Sephral](https://img.shields.io/badge/GitHub-More%20modules%20by%20Sephral-181717?logo=github&logoColor=white)](https://github.com/Sephral)
 
@@ -32,8 +33,7 @@ The GM can also make it the default for everyone.
 
 ## Install
 
-Use the manifest URL
-`https://github.com/Sephral/sephrals-crucible-sheet-quickbar/releases/latest/download/module.json`
+Search for **Crucible Sheet & Quickbar** in Foundry's module browser or open the [package page](https://foundryvtt.com/packages/sephrals-crucible-sheet-quickbar).
 
 Foundry VTT 14 · Crucible 0.11 or newer · Ember optional, it adds the Attunement tab and the Ember codex background · English and German
 

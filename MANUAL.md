@@ -6,7 +6,7 @@ This manual covers the details. For a quick overview see the [README](README.md)
 
 Requirements: Foundry VTT 14 and the Crucible system 0.11 or newer. Ember is optional. With it the sheet shows the *Attunement* tab.
 
-1. Install the module with its manifest URL `https://github.com/Sephral/sephrals-crucible-sheet-quickbar/releases/latest/download/module.json`, or unpack the release zip into `Data/modules/sephrals-crucible-sheet-quickbar/`. The folder name must match, and `module.json` lies directly inside.
+1. Install the module from Foundry's module browser (search for *Crucible Sheet & Quickbar*), with its manifest URL `https://github.com/Sephral/sephrals-crucible-sheet-quickbar/releases/latest/download/module.json`, or unpack the release zip into `Data/modules/sephrals-crucible-sheet-quickbar/`. The folder name must match, and `module.json` lies directly inside.
 2. Enable the module in the world (*Manage Modules*, GM).
 3. Choose the sheet for yourself: right click your character in the actor directory → *Use Sheet & Quickbar (just for me)*.
 
