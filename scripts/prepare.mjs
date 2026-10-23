@@ -254,14 +254,19 @@ export function prepareHeader(scope, issues) {
     };
   }).filter(Boolean);
 
-  // Active conditions, temporary effects and effects the actor maintains
+  // Active conditions, temporary effects and effects the actor maintains. Since Crucible 0.11.2 a maintained effect
+  // carries the "maintained" property and is due (suppressed) from the start of the actor's turn until its Focus is
+  // paid with the Maintain action, so a due effect stays in the list instead of vanishing.
   const conditions = [];
+  const ownTurn = !!actor && (game.combat?.combatant?.actor === actor);
   for ( const effect of actor.allApplicableEffects() ) {
-    if ( effect.disabled || effect.isSuppressed ) continue;
+    if ( effect.disabled ) continue;
     const maintenance = effect.system?.maintenance ?? {};
-    const maintained = !!(maintenance.cost || maintenance.hands);
+    const maintained = !!(effect.system?.properties?.has?.("maintained") || maintenance.cost || maintenance.hands);
+    const due = maintained && !!effect.system?.suppression?.maintenance;
+    if ( effect.isSuppressed && !due ) continue;
     if ( !effect.statuses.size && !effect.isTemporary && !maintained ) continue;
-    conditions.push(prepareCondition(effect, maintenance, maintained));
+    conditions.push(prepareCondition(effect, maintenance, maintained, {due, ownTurn}));
   }
   conditions.sort((x, y) => (y.maintained - x.maintained) || x.name.localeCompare(y.name));
 
@@ -343,9 +348,12 @@ export function prepareHeader(scope, issues) {
  * @param {ActiveEffect} effect
  * @param {{cost?: number, hands?: number}} maintenance
  * @param {boolean} maintained
+ * @param {object} [options]
+ * @param {boolean} [options.due]       Its maintenance is due (Crucible 0.11.2)
+ * @param {boolean} [options.ownTurn]   It is the actor's turn, the only time maintenance can be paid
  * @returns {object}
  */
-function prepareCondition(effect, maintenance, maintained) {
+function prepareCondition(effect, maintenance, maintained, {due=false, ownTurn=false}={}) {
   let duration = effect.duration ?? {};
   try {
     duration = effect.updateDuration?.() ?? duration;
@@ -358,10 +366,22 @@ function prepareCondition(effect, maintenance, maintained) {
   if ( Number.isFinite(duration.remaining) && duration.label ) lines.push(duration.label);
   if ( maintenance.cost ) lines.push(_loc("FOLIO.MaintainedCost", {cost: maintenance.cost}));
   else if ( maintenance.hands ) lines.push(_loc("FOLIO.MaintainedHands", {hands: maintenance.hands}));
+  if ( due ) lines.push(_loc(SYSTEM.EFFECTS?.SUPPRESSION_REASONS?.maintenance?.label ?? "BASE_EFFECT.SUPPRESSION.Maintenance"));
+  // The Maintain action of Crucible, offered on the actor's own turn like on Crucible's sheet
+  let maintainLabel = "";
+  if ( due && ownTurn && effect.isOwner ) {
+    try {
+      const action = effect.system?.getMaintainAction?.();
+      if ( action ) maintainLabel = _loc("BASE_EFFECT.ACTIONS.MaintainCost", {cost: action.cost?.focus ?? maintenance.cost ?? 0});
+    } catch(err) {
+      maintainLabel = "";
+    }
+  }
   return {
     name: effect.name, img: effect.img, uuid: effect.uuid, rounds,
-    roundsLabel: (counted && setting("conditionRounds")) ? String(rounds) : "", maintained,
+    roundsLabel: (counted && setting("conditionRounds")) ? String(rounds) : "", maintained, due,
     canEnd: maintained && effect.isOwner,
+    canMaintain: !!maintainLabel, maintainLabel,
     tooltip: lines.join("<br>")
   };
 }
@@ -1033,7 +1053,7 @@ export async function prepareEffects(scope, context) {
       if ( source ) subtitle.unshift({label: source, source: true});
       rows.push({
         id: e.id, uuid: e.uuid, key, name: e.name, img: e.icon, subtitle,
-        disabled: effect?.disabled, toggle: e.disabled,
+        disabled: effect?.disabled, toggle: e.disabled, maintain: e.maintain ?? "",
         search: [e.name, source].filterJoin(" ").toLowerCase(),
         expanded,
         description: expanded ? await enrich(scope, effect?.description) : ""

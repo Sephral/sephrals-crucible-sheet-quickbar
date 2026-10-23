@@ -19,7 +19,7 @@ export function setting(key) {
 }
 
 /** Versions the module was last verified against; newer versions trigger a hint to run the self-test. */
-export const TESTED_VERSIONS = {crucible: "0.11.1", ember: "0.6.3", core: "14.369"};
+export const TESTED_VERSIONS = {crucible: "0.11.2", ember: "0.6.3", core: "14.369"};
 
 /** Action sections in display order, with the context tags which sort an action into them. */
 export const ACTION_SECTIONS = ["attack", "spell", "summon", "reaction", "movement", "consumable", "general"];

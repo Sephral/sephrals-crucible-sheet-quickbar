@@ -75,6 +75,7 @@ export function FolioSheetMixin(Base) {
         foQbSkills: FolioSheet.#onToggleQuickbarSkills,
         foRepeatSpell: FolioSheet.#onRepeatSpell,
         foEndEffect: FolioSheet.#onEndEffect,
+        foMaintainEffect: FolioSheet.#onMaintainEffect,
         foTarget: FolioSheet.#onPanToTarget,
         foSettings: FolioSheet.#onOpenSettings,
         foUseStandardSheet: FolioSheet.#onUseStandardSheet
@@ -981,6 +982,20 @@ export function FolioSheetMixin(Base) {
       if ( !effect?.isOwner ) return;
       game.tooltip.deactivate();
       await effect.delete();
+    }
+
+    /**
+     * Pay the maintenance of a maintained effect with Crucible's Maintain action (Crucible 0.11.2).
+     * @this {FolioSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #onMaintainEffect(event, target) {
+      event.stopPropagation();
+      const effect = fromUuidSync(target.dataset.uuid);
+      if ( !effect?.isOwner ) return;
+      game.tooltip.deactivate();
+      await effect.system?.getMaintainAction?.()?.use();
     }
 
     /**

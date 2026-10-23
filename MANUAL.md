@@ -48,7 +48,7 @@ The module brings German skill and training names (Athletik, Wahrnehmung, Arkane
 | Next turn | When your hero acts next in the round, the initiative badge and the quickbar get a quiet frame and a short notice appears |
 | Delay | After Crucible's *Delay* action an hourglass next to the initiative shows the new and the original initiative |
 | Cost preview | Hovering an action pulses the action, focus and heroism pips it costs. Missing pips turn red |
-| Conditions | In the header and the quickbar with their remaining rounds. Maintained effects have a gold frame and an ✕ to end them |
+| Conditions | In the header and the quickbar with their remaining rounds. Maintained effects have a gold frame and an ✕ to end them. When their maintenance is due (Crucible 0.11.2) they pulse, and on your own turn a button pays the Focus with Crucible's Maintain action |
 | Repeat last spell | Button in the Spells tab and the quickbar |
 | Sort favorites | Drag and drop favorites (and quickbar buttons) |
 | Pin skills | Pin icon next to a skill: it then appears among the favorites and in the quickbar |
@@ -119,6 +119,6 @@ Crucible is still before 1.0 and changes between versions. After an update of Fo
 ## Limitations
 
 * Crucible only. In worlds of other systems the module does nothing.
-* Verified with Crucible 0.11.1, Ember 0.6.3 and Foundry 14.369. Run the self test after updates.
+* Verified with Crucible 0.11.2, Ember 0.6.3 and Foundry 14.369. Run the self test after updates.
 * Character creation (level 0) keeps using the system's creation sheet.
 * The *Attunement* tab and the *Ember codex* background need the Ember module.

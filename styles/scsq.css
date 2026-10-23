@@ -3611,6 +3611,48 @@
   color: #fff;
 }
 
+/* A maintained effect whose maintenance is due (Crucible 0.11.2): it ends with the turn unless it is maintained */
+.folio .fo-cond.due img {
+  border-color: var(--fo-accent);
+  animation: fo-cond-due 1.6s ease-in-out infinite;
+}
+
+@keyframes fo-cond-due {
+  0%, 100% { box-shadow: 0 0 0 1px var(--fo-accent); }
+  50% { box-shadow: 0 0 9px 2px var(--fo-accent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .folio .fo-cond.due img { animation: none; }
+}
+
+.folio .window-content button.fo-cond-maintain {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 13px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--fo-accent-2);
+  border-radius: 50%;
+  background: #2a2010;
+  box-shadow: none;
+  color: var(--fo-accent-2);
+  font-size: 7.5px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.folio .window-content button.fo-cond-maintain:hover,
+.folio .window-content button.fo-cond-maintain:focus-visible {
+  background: var(--fo-accent-2);
+  color: #1b120c;
+}
+
 /* Repeat the last spell */
 .folio .window-content button.fo-qb-action.is-repeat {
   border-style: dashed;

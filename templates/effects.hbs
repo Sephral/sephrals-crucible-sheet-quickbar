@@ -44,6 +44,7 @@
                         </div>
                         <div class="fo-cell fo-ctrl">
                             {{#if @root.folio.editable}}
+                            {{#if row.maintain}}<button type="button" class="fo-btn" data-action="foMaintainEffect" data-uuid="{{row.uuid}}" data-tooltip="{{row.maintain}}" aria-label="{{row.maintain}}"><i class="fa-solid fa-repeat"></i></button>{{/if}}
                             <button type="button" class="fo-btn" data-action="foEffectToggle" data-tooltip="{{row.toggle.tooltip}}"><i class="{{row.toggle.icon}}"></i></button>
                             <button type="button" class="fo-btn" data-action="foEffectEdit" data-tooltip="ACTIVE_EFFECT.ACTIONS.Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                             <button type="button" class="fo-btn fo-danger" data-action="foEffectDelete" data-tooltip="ACTIVE_EFFECT.ACTIONS.Delete"><i class="fa-solid fa-trash"></i></button>
