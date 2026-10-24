@@ -16,6 +16,7 @@ import {
   buildSpell, castLastSpell, castSpellFavorite, confirmHostileRestoration, getSpellFavorites, openSpellComposer,
   quickUseProblem, removeSpellFavorite, renameSpellFavorite, resolveActorToken
 } from "./spell-favorites.mjs";
+import {countFeature, markUsed} from "./usage.mjs";
 
 export {MODULE_ID};
 
@@ -453,6 +454,7 @@ export function FolioSheetMixin(Base) {
     /** @inheritDoc */
     async _onFirstRender(context, options) {
       await super._onFirstRender(context, options);
+      if ( !this.options.folioSelfTest ) markUsed(MODULE_ID);
       this.#createContextMenus();
       // Keyboard access: Enter or Space activates any focusable element which carries an action
       this.element.addEventListener("keydown", event => {
@@ -848,6 +850,7 @@ export function FolioSheetMixin(Base) {
     async toggleQuickbar(force) {
       const on = force ?? !this.#quickbar;
       if ( on === this.#quickbar ) return;
+      if ( !this.options.folioSelfTest ) countFeature(MODULE_ID, "quickbarToggle");
       if ( !on ) this.folioAutoBar = false; // Opening the full sheet makes a combat bar an ordinary sheet
       game.tooltip.deactivate();
       const stored = actorEntry(loadUIState().quickbar, this.document) ?? {};
@@ -1136,6 +1139,7 @@ export function FolioSheetMixin(Base) {
         }
       }
       if ( !(await confirmHostileRestoration(action, resolveActorToken(this.document))) ) return;
+      countFeature(MODULE_ID, this.#quickbar ? "quickbarAction" : "sheetAction");
       game.tooltip.deactivate();
       try {
         await this.document.useAction(actionId, {dialog});
@@ -1372,6 +1376,7 @@ export function FolioSheetMixin(Base) {
      * @returns {Promise<void>}
      */
     async #rollSkill(skillId, dialog) {
+      countFeature(MODULE_ID, "skillRoll");
       const check = await this.document.rollSkill(skillId, {dialog, chatMessage: false});
       if ( !check ) return;
       const skill = check.data.type ?? skillId;

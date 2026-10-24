@@ -8,6 +8,7 @@ import {hideGMSettings, openSettings, registerSettings} from "./settings.mjs";
 import {applyModuleLanguage} from "./language.mjs";
 import {registerKeybindings} from "./keybindings.mjs";
 import {folioInUse, registerFolioSheets} from "./sheet-choice.mjs";
+import {registerUsage} from "./usage.mjs";
 
 /** The partial templates shared between several tabs of the sheet. */
 const PARTIALS = {
@@ -36,6 +37,11 @@ Hooks.once("init", () => {
   if ( (game.system.id !== "crucible") || legacyActive() ) return;
 
   registerSettings();
+  registerUsage(MODULE_ID, {
+    features: ["sheetAction", "quickbarAction", "quickbarToggle", "skillRoll", "spellCast", "spellRepeat",
+      "combatBarFollow", "keybindingUsed"],
+    settings: ["theme", "compactMode", "worldDefault"]
+  });
   registerSheets();
   registerSpellDialogHooks();
   registerCombatHooks();

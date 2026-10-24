@@ -5,6 +5,7 @@
 
 import {FLAGS, MODULE_ID, setting} from "./config.mjs";
 import {wantsFolio} from "./sheet-choice.mjs";
+import {countFeature} from "./usage.mjs";
 
 const FLAG = FLAGS.spellFavorites;
 
@@ -236,6 +237,7 @@ export async function castSpellFavorite(actor, favorite, {dialog=true}={}) {
     }
   }
   if ( !(await confirmHostileRestoration(spell, token)) ) return;
+  countFeature(MODULE_ID, "spellCast");
   try {
     await spell.use({dialog, token: token ?? undefined});
   } catch(err) {
@@ -255,6 +257,7 @@ export async function castSpellFavorite(actor, favorite, {dialog=true}={}) {
 export async function castLastSpell(actor, {dialog=true}={}) {
   const lastSpell = actor.flags.crucible?.lastSpell;
   if ( !lastSpell ) return;
+  countFeature(MODULE_ID, "spellRepeat");
   await castSpellFavorite(actor, {id: normalizeSpellId(lastSpell)}, {dialog});
 }
 

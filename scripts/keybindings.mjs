@@ -5,6 +5,7 @@
  */
 
 import {MODULE_ID} from "./config.mjs";
+import {countFeature} from "./usage.mjs";
 
 /** How many quickbar buttons get a keybinding of their own. */
 const BUTTON_KEYS = 9;
@@ -38,6 +39,7 @@ function folioSheet(actor) {
 function onToggleQuickbar() {
   const sheet = folioSheet(activeActor());
   if ( !sheet ) return false;
+  countFeature(MODULE_ID, "keybindingUsed");
   if ( sheet.rendered ) sheet.toggleQuickbar();
   else sheet.showQuickbar();
   return true;
@@ -51,6 +53,7 @@ function onEndTurn() {
   const combat = game.combat;
   if ( !combat?.started ) return false;
   if ( !game.user.isGM && !combat.combatant?.isOwner ) return false;
+  countFeature(MODULE_ID, "keybindingUsed");
   game.tooltip.deactivate();
   combat.nextTurn().catch(err => ui.notifications.warn(err.message));
   return true;
@@ -71,6 +74,7 @@ function onUseButton(index) {
   }
   const button = bar?.element.querySelectorAll(".fo-qb-actions .fo-qb-action")[index - 1];
   if ( !button ) return false;
+  countFeature(MODULE_ID, "keybindingUsed");
   button.click();
   return true;
 }

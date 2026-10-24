@@ -5,6 +5,7 @@
  */
 
 import {MODULE_ID, defaultBarPosition, loadUIState, nextInRound, setting} from "./config.mjs";
+import {countFeature} from "./usage.mjs";
 
 /**
  * The quickbar which the GM combat bar opened for the current turn.
@@ -117,6 +118,7 @@ async function followCombatant(combat, actor) {
     return;
   }
 
+  countFeature(MODULE_ID, "combatBarFollow");
   const wasOpen = sheet.rendered;
   await sheet.showQuickbar({position: loadUIState().combatBar ?? defaultBarPosition(), auto: !wasOpen});
   combatBar = sheet.folioAutoBar ? sheet : null;
