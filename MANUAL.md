@@ -108,6 +108,19 @@ The language is stored per browser, like in every Sephral module. *Follow Foundr
 * **Background:** *Transparent* (default, opacity 0.3: the map shows through, blurred), *Solid*, *Crucible* (texture and arena motif of the standard Crucible sheet), *Ember codex* (only with the Ember module). Every variant exists in the dark and the light theme. The quickbar keeps its own background.
 * **Compact mode** (default: on) makes type, icons and spacing smaller in the sheet and the quickbar. New sheets open a little smaller, open windows switch immediately.
 
+## Usage statistics
+
+The module can take part in a small usage report shared by all of Sephral’s modules. Nothing is counted or sent until the GM agrees: shortly after the world starts, the active GM is asked, and the question comes back at every start until there is an answer. The answer counts for all of Sephral’s modules in the world. *Share usage statistics* in the module settings turns the report on or off at any time, and *Manage statistics* below it shows what the report contains right now.
+
+With the GM’s consent only the active GM’s browser counts, and it sends at most one report a day. The question lists everything the report contains, from the Foundry version to a random world ID. For Sheet & Quickbar it holds:
+
+* on how many of the last 30 days the module was used
+* how often actions are used from the sheet or the quickbar, the quickbar is shown or hidden, skills are rolled, spells are cast or repeated from the spellbook, the quickbar follows the combatant whose turn it is and the keyboard shortcuts are used
+* the settings *Color scheme*, *Compact mode* and *Default for everyone* (only the chosen option)
+* where errors occur in the module code: file, line and error type, never the error message
+
+No names, chat messages, notes, dice results or other content of the world are sent.
+
 ## Migration from Crucible Folio
 
 The module was previously called *Crucible Folio*. On the first start it takes over your settings, spellbooks, favorites and pinned skills once. Nothing is deleted, so you can go back if needed. While *Crucible Folio* is still enabled in the same world, this module waits and asks the GM to disable the old one.
