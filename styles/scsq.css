@@ -3246,7 +3246,7 @@
 }
 
 /* ==========================================================================
-   Round 2: end turn, adversaries, pinned skills, favorite ordering, uses,
+   End turn, adversaries, pinned skills, favorite ordering, uses,
    keyboard focus
    ========================================================================== */
 
@@ -3510,7 +3510,7 @@
 }
 
 /* ==========================================================================
-   Round 3: cost preview, turn announcement, condition durations,
+   Cost preview, turn announcement, condition durations,
    repeat last spell, targets in the quickbar
    ========================================================================== */
 
