@@ -112,7 +112,7 @@ The language is stored per browser, like in every Sephral module. *Follow Foundr
 
 The module can take part in a small usage report shared by all of Sephral’s modules. Nothing is counted or sent until the GM agrees: shortly after the world starts, the active GM is asked, and the question comes back at every start until there is an answer. The answer counts for all of Sephral’s modules in the world. *Share usage statistics* in the module settings turns the report on or off at any time, and *Manage statistics* below it shows what the report contains right now.
 
-With the GM’s consent only the active GM’s browser counts, and it sends at most one report a day. The question lists everything the report contains, from the Foundry version to a random world ID. For Sheet & Quickbar it holds:
+With the GM’s consent only the active GM’s browser counts, and it sends at most one report a day. The counts are kept in a hidden world setting, so all browsers and computers of the GM count together, and turning the statistics off deletes them. A copy of a world gets its own world ID. The question lists everything the report contains, from the Foundry version to a random world ID. For Sheet & Quickbar it holds:
 
 * on how many of the last 30 days the module was used
 * how often actions are used from the sheet or the quickbar, the quickbar is shown or hidden, skills are rolled, spells are cast or repeated from the spellbook, the quickbar follows the combatant whose turn it is and the keyboard shortcuts are used
