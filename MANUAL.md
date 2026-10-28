@@ -102,6 +102,7 @@ All options are in Foundry's settings dialog (*Configure Settings*) on the page 
 | Targets | Target in the quickbar, mark unsuitable actions |
 | Combat | Quickbar on your turn, announce your turn, combat bar (GM), fill adversary quickbars (GM) |
 | Self test (GM) | Button *Run self-test* at the top of the page |
+| Debug file (GM) | Button *Save debug file*, see [Debug file](#debug-file) |
 
 The language is stored per browser, like in every Sephral module. *Follow Foundry* uses Foundry's language, including community translations. A fixed choice switches the module's own texts only, Crucible keeps Foundry's language. Personal options apply per user on every device, world options apply to everyone.
 
@@ -128,6 +129,12 @@ The module was previously called *Crucible Folio*. On the first start it takes o
 ## Self test after updates
 
 Crucible is still before 1.0 and changes between versions. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then click *Run self-test* on the module's settings page. It checks every hero sheet and a sample of adversaries, changes nothing and whispers a report to the GM.
+
+## Debug file
+
+For bug reports, the GM saves one file about all of Sephral’s modules in this world: `Save debug file` in the module settings, or `Save Debug File (Sephral’s Modules)` in the context menu of a chat message. It holds the versions of Foundry, the system and the active modules, the settings of the modules and what they recorded, for Sheet & Quickbar the verified and installed versions of Crucible and Ember, whether the sheets are in use and the quickbars this browser remembers. Macros call `game.modules.get("sephrals-crucible-sheet-quickbar").api.saveDebugFile()`.
+
+The file contains chat text and whispers. Check it before you share it.
 
 ## Limitations
 

@@ -5,6 +5,7 @@
 
 import {MODULE_ID} from "./config.mjs";
 import {closeCombatBar} from "./combat.mjs";
+import {registerDebugMenu} from "./debug-file.mjs";
 import {FOLLOW_FOUNDRY, applyModuleLanguage} from "./language.mjs";
 import {runSelfTest} from "./selftest.mjs";
 import {refreshSheetChoice} from "./sheet-choice.mjs";
@@ -140,7 +141,7 @@ class FolioSelfTestMenu extends foundry.applications.api.ApplicationV2 {
 /* -------------------------------------------- */
 
 /**
- * Register all settings of the module and the self-test menu button.
+ * Register all settings of the module and the menu buttons for the self-test and the debug file.
  */
 export function registerSettings() {
   const isActive = id => !!game.modules.get(id)?.active;
@@ -185,6 +186,9 @@ export function registerSettings() {
     type: FolioSelfTestMenu,
     restricted: true
   });
+
+  // The button saves the debug file of Sephral's modules instead of opening a window
+  registerDebugMenu(MODULE_ID, {name: "FOLIO.DEBUG.Title", label: "FOLIO.DEBUG.Save", hint: "FOLIO.DEBUG.Hint"});
 }
 
 /**

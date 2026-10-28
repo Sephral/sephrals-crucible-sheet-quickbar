@@ -1,10 +1,10 @@
 {
   "name": "sephrals-crucible-sheet-quickbar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check scripts/combat.mjs && node --check scripts/config.mjs && node --check scripts/folio-sheet.mjs && node --check scripts/keybindings.mjs && node --check scripts/language.mjs && node --check scripts/migration.mjs && node --check scripts/prepare.mjs && node --check scripts/scsq.mjs && node --check scripts/selftest.mjs && node --check scripts/settings.mjs && node --check scripts/sheet-choice.mjs && node --check scripts/spell-favorites.mjs",
+    "check": "node --check scripts/combat.mjs && node --check scripts/config.mjs && node --check scripts/debug.mjs && node --check scripts/debug-file.mjs && node --check scripts/folio-sheet.mjs && node --check scripts/keybindings.mjs && node --check scripts/language.mjs && node --check scripts/migration.mjs && node --check scripts/prepare.mjs && node --check scripts/scsq.mjs && node --check scripts/selftest.mjs && node --check scripts/settings.mjs && node --check scripts/sheet-choice.mjs && node --check scripts/spell-favorites.mjs",
     "check:manifest": "node build/validate-manifest.mjs",
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",

@@ -4,6 +4,8 @@ import {createFolioSheets} from "./folio-sheet.mjs";
 import {castSpellFavorite, getSpellFavorites, openSpellComposer, registerSpellDialogHooks} from "./spell-favorites.mjs";
 import {runSelfTest} from "./selftest.mjs";
 import {registerCombatHooks} from "./combat.mjs";
+import {registerDebug} from "./debug.mjs";
+import {saveDebugFile} from "./debug-file.mjs";
 import {hideGMSettings, openSettings, registerSettings} from "./settings.mjs";
 import {applyModuleLanguage} from "./language.mjs";
 import {registerKeybindings} from "./keybindings.mjs";
@@ -37,6 +39,7 @@ Hooks.once("init", () => {
   if ( (game.system.id !== "crucible") || legacyActive() ) return;
 
   registerSettings();
+  registerDebug();
   registerUsage(MODULE_ID, {
     features: ["sheetAction", "quickbarAction", "quickbarToggle", "skillRoll", "spellCast", "spellRepeat",
       "combatBarFollow", "keybindingUsed"],
@@ -56,7 +59,9 @@ Hooks.once("init", () => {
   }
 
   game.modules.get(MODULE_ID).api = {
-    devReload, runSelfTest, castSpellFavorite, getSpellFavorites, openSpellComposer, openSettings
+    devReload, runSelfTest, castSpellFavorite, getSpellFavorites, openSpellComposer, openSettings,
+    /** Save the debug file of Sephral's modules (GM): about one chat message, or without an id the latest picture. */
+    saveDebugFile: messageId => saveDebugFile(messageId ?? null, {moduleId: MODULE_ID})
   };
 });
 

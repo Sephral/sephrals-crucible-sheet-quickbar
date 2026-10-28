@@ -328,6 +328,13 @@
     "MIGRATION": {
       "Done": "Sephral’s Crucible Sheet & Quickbar hat die Daten von „Crucible Folio“ übernommen ({actors} Akteure). Das alte Modul kann deaktiviert werden.",
       "LegacyActive": "„Crucible Folio“ ist noch aktiv – das ist der frühere Name von Sephral’s Crucible Sheet & Quickbar. Bitte „Crucible Folio“ deaktivieren; das neue Modul übernimmt danach alle Daten."
+    },
+    "DEBUG": {
+      "Title": "Debug-Datei",
+      "Save": "Debug-Datei speichern",
+      "Hint": "Speichert eine Datei für Fehlerberichte über alle Module von Sephral in dieser Welt: Versionen, Einstellungen und was die Module aufgezeichnet haben, etwa die letzten Chatnachrichten, die sie gelesen haben. Sie enthält Chattext und Flüsternachrichten, prüfe sie vor dem Teilen.",
+      "Entry": "Debug-Datei speichern (Sephral’s Module)",
+      "Saved": "Debug-Datei {file} gespeichert. Sie enthält Chattext und Flüsternachrichten, prüfe sie vor dem Teilen."
     }
   },
   "TRAINING": {
