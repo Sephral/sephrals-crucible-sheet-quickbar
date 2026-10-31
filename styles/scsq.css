@@ -2416,7 +2416,7 @@
    Biography
    -------------------------------------------------------------------------- */
 
-/* Like Crucible's sheet the sections share the height of the tab and scroll inside; empty ones keep to their heading */
+/* Like Crucible's sheet the sections share the height of the tab and scroll inside; texts get more of it than empty ones */
 .folio .fo-bio-layout {
   display: flex;
   flex-direction: column;
@@ -2425,21 +2425,16 @@
 }
 
 .folio .fo-bio-card {
-  flex: 1 1 0;
+  flex: 3 1 0;
   min-height: 120px;
   display: flex;
   flex-direction: column;
   transition: flex-grow 250ms;
 }
 
-/* The details beside the appearance set the least height of its card */
-.folio .fo-bio-card:has(> .fo-bio-body > .fo-bio-details) {
-  min-height: auto;
-}
-
 .folio .fo-bio-card.empty {
-  flex: 0 0 auto;
-  min-height: 0;
+  flex: 1 1 0;
+  min-height: 80px;
 }
 
 .folio .fo-bio-card.fo-bio-expanded,
@@ -2484,18 +2479,17 @@
   gap: 12px;
 }
 
+/* Pronouns, age, height and weight in one row above the texts */
 .folio .fo-bio-details {
-  flex: 0 0 196px;
-  padding: 2px 0 0 12px;
-  border-left: 1px solid var(--fo-line-soft);
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 6px 10px 8px;
 }
 
-.folio .fo-bio-details-head {
-  display: block;
-  margin: 0 0 6px;
-  color: var(--fo-title);
-  font-family: var(--fo-font-display);
-  font-size: 14px;
+.folio .fo-bio-details.fo-fields .form-group {
+  margin: 0;
 }
 
 .folio .fo-fields .form-group {
@@ -4122,8 +4116,8 @@
 .application.folio.fo-compact .fo-attune img { width: 30px; height: 30px; }
 .application.folio.fo-compact .fo-attune-name { font-size: 14px; }
 .application.folio.fo-compact .fo-bio-layout { gap: 6px; padding: 6px; }
-.application.folio.fo-compact .fo-bio-card:not(.empty, .fo-bio-folded, :has(.fo-bio-details)) { min-height: 96px; }
-.application.folio.fo-compact .fo-bio-details { flex-basis: 180px; }
+.application.folio.fo-compact .fo-bio-card:not(.empty, .fo-bio-folded) { min-height: 96px; }
+.application.folio.fo-compact .fo-bio-details { gap: 8px; padding: 4px 8px 6px; }
 .application.folio.fo-compact .fo-fields .form-group { margin: 0 0 4px; }
 .application.folio.fo-compact .fo-fields input { height: 24px; }
 .application.folio.fo-compact .fo-bio-card prose-mirror { font-size: 13px; }

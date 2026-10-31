@@ -48,28 +48,37 @@ export function registerFolioSheets(sheets) {
 
 /* -------------------------------------------- */
 
+/** The answers of the first start question in button order: values of the worldDefault setting. */
+const WORLD_DEFAULT_CHOICES = {
+  heroes: {label: "FOLIO.WELCOME.Heroes", icon: "fa-solid fa-user"},
+  all: {label: "FOLIO.WELCOME.All", icon: "fa-solid fa-users"},
+  none: {label: "FOLIO.WELCOME.None", icon: "fa-solid fa-user-gear"}
+};
+
 /**
  * Ask the GM once per world whether the sheet should be the default for everyone. Until someone chooses it, enabling
- * the module changes nothing anyone sees, so a GM who never opens the settings would not notice it at all.
+ * the module changes nothing anyone sees, so a GM who never opens the settings would not notice it at all. A world
+ * which already has a default is asked as well, with that default preselected; closing the window changes nothing.
  * @returns {Promise<void>}
  */
 export async function askWorldDefault() {
   if ( !game.user.isGM || (game.users.activeGM && !game.users.activeGM.isSelf) ) return;
   if ( game.settings.get(MODULE_ID, "welcomeShown") ) return;
   await game.settings.set(MODULE_ID, "welcomeShown", true);
-  if ( setting("worldDefault") !== "none" ) return;
+  const current = setting("worldDefault");
+  const preselect = (current in WORLD_DEFAULT_CHOICES) && (current !== "none") ? current : "heroes";
   const choice = await foundry.applications.api.DialogV2.wait({
     window: {title: "FOLIO.WELCOME.Title", icon: "fa-solid fa-scroll"},
     position: {width: 480},
+    // Modal dialogs sit in the browser's top layer, so windows other packages open on ready cannot cover the question
+    modal: true,
     content: `<p>${_loc("FOLIO.WELCOME.Text")}</p><p class="hint">${_loc("FOLIO.WELCOME.Hint")}</p>`,
-    buttons: [
-      {action: "heroes", label: "FOLIO.WELCOME.Heroes", icon: "fa-solid fa-user", default: true},
-      {action: "all", label: "FOLIO.WELCOME.All", icon: "fa-solid fa-users"},
-      {action: "none", label: "FOLIO.WELCOME.None", icon: "fa-solid fa-user-gear"}
-    ],
+    buttons: Object.entries(WORLD_DEFAULT_CHOICES).map(([action, b]) => ({...b, action, default: action === preselect})),
     rejectClose: false
   });
-  if ( ["heroes", "all"].includes(choice) ) await game.settings.set(MODULE_ID, "worldDefault", choice);
+  if ( (choice in WORLD_DEFAULT_CHOICES) && (choice !== current) ) {
+    await game.settings.set(MODULE_ID, "worldDefault", choice);
+  }
 }
 
 /**

@@ -7,7 +7,7 @@ This manual covers the details. For a quick overview see the [README](README.md)
 Requirements: Foundry VTT 14 and the Crucible system 0.11 or newer. Ember is optional. With it the sheet shows the *Attunement* tab.
 
 1. Install the module from Foundry's module browser (search for *Crucible Sheet & Quickbar*), with its manifest URL `https://github.com/Sephral/sephrals-crucible-sheet-quickbar/releases/latest/download/module.json`, or unpack the release zip into `Data/modules/sephrals-crucible-sheet-quickbar/`. The folder name must match, and `module.json` lies directly inside.
-2. Enable the module in the world (*Manage Modules*, GM). On the first start the GM is asked once whether the sheet should be the standard sheet for everyone: for heroes, for heroes and adversaries, or not (everyone chooses).
+2. Enable the module in the world (*Manage Modules*, GM). On the first start the GM is asked once per world whether the sheet should be the standard sheet for everyone: for heroes, for heroes and adversaries, or not (everyone chooses). The current choice is preselected, and closing the window changes nothing.
 3. Or choose the sheet just for yourself: right click your character in the actor directory → *Use Sheet & Quickbar (just for me)*.
 
 ## Who sees the sheet
@@ -27,7 +27,7 @@ The choice is personal and never changes the actor. That is why it is not one of
 * **Inventory, Talents, Training, Spells, Effects, Attunement (Ember, heroes only), Biography.**
 * **Inventory:** equipped shields are listed under *Armor* with their Block value, although Crucible counts them as off hand weapons. Drag an item onto a section to move it: onto the *Backpack* to stow it, onto *Weapons* or *Armor* to equip it there. Weapons and shields can sit in either of these two sections, the sheet remembers the choice per character. The section under the pointer lights up when the item can go there.
 * **Training:** every training names the abilities behind it.
-* **Biography:** appearance with the details beside it, public and private biography share the height of the tab like in Crucible's sheet. Click a heading to give that text the whole tab, click again to show all three.
+* **Biography:** pronouns, age, height and weight in one row at the top. Below, appearance, public and private biography share the height of the tab like in Crucible's sheet. Click a heading to give that text the whole tab, click again to show all three.
 
 The adversary sheet uses the same layout, adapted to Crucible adversaries: taxonomy and archetype, threat rank, level with fractional steps, a star for *important* adversaries (only those show wounds and madness), heroism only when present, no rest buttons. Its training tab starts with the trained skills only, as Crucible's does, and its talents can be dragged onto other adversaries.
 

@@ -1,20 +1,19 @@
 <section class="tab fo-tab fo-biography {{tabs.biography.cssClass}}" data-group="{{tabs.biography.group}}" data-tab="{{tabs.biography.id}}">
     <div class="fo-scroll fo-bio-layout">
+        {{#if folio.hasBiographyDetails}}
+        <div class="fo-card fo-fields fo-bio-details" aria-label="{{localize 'ACTOR.Details'}}">
+            {{formGroup fields.details.fields.biography.fields.pronouns value=source.system.details.biography.pronouns classes="slim"}}
+            {{formGroup fields.details.fields.biography.fields.age value=source.system.details.biography.age classes="slim"}}
+            {{formGroup fields.details.fields.biography.fields.height value=source.system.details.biography.height classes="slim"}}
+            {{formGroup fields.details.fields.biography.fields.weight value=source.system.details.biography.weight classes="slim"}}
+        </div>
+        {{/if}}
         <div class="fo-card fo-bio-card{{#unless biography.appearanceSrc}} empty{{/unless}} {{folio.bioState.appearance}}" data-bio-section="appearance">
             <h3 class="fo-card-head fo-bio-head" data-action="foBioExpand" data-tooltip="{{biography.appearanceField.hint}}">
                 <span>{{biography.appearanceField.label}}</span><i class="fa-solid fa-chevron-down fo-chev" inert></i>
             </h3>
             <div class="fo-bio-body">
                 {{formInput biography.appearanceField value=biography.appearanceSrc enriched=biography.appearanceHTML toggled=true}}
-                {{#if folio.hasBiographyDetails}}
-                <div class="fo-fields fo-bio-details">
-                    <span class="fo-bio-details-head">{{localize "ACTOR.Details"}}</span>
-                    {{formGroup fields.details.fields.biography.fields.pronouns value=source.system.details.biography.pronouns classes="slim"}}
-                    {{formGroup fields.details.fields.biography.fields.age value=source.system.details.biography.age classes="slim"}}
-                    {{formGroup fields.details.fields.biography.fields.height value=source.system.details.biography.height classes="slim"}}
-                    {{formGroup fields.details.fields.biography.fields.weight value=source.system.details.biography.weight classes="slim"}}
-                </div>
-                {{/if}}
             </div>
         </div>
         <div class="fo-card fo-bio-card{{#unless biography.publicSrc}} empty{{/unless}} {{folio.bioState.public}}" data-bio-section="public">
