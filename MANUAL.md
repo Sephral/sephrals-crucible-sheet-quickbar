@@ -108,7 +108,7 @@ All options are in Foundry's settings dialog (*Configure Settings*) on the page 
 | Controls | Quick mode, cost preview, repeat last spell, spellbook in the spell dialog, confirmation before healing adversaries |
 | Targets | Target in the quickbar, mark unsuitable actions |
 | Combat | Quickbar on your turn, announce your turn, combat bar (GM), fill adversary quickbars (GM) |
-| Self test (GM) | Button *Run self-test* at the top of the page |
+| Self test (GM) | Button *Run self test* at the top of the page |
 | Debug file (GM) | Button *Save debug file*, see [Debug file](#debug-file) |
 
 The language is stored per browser, like in every Sephral module. *Follow Foundry* uses Foundry's language, including community translations. A fixed choice switches the module's own texts only, Crucible keeps Foundry's language. Personal options apply per user on every device, world options apply to everyone.
@@ -135,7 +135,7 @@ The module was previously called *Crucible Folio*. On the first start it takes o
 
 ## Self test after updates
 
-Crucible is still before 1.0 and changes between versions. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then click *Run self-test* on the module's settings page. It checks every hero sheet and a sample of adversaries, changes nothing and whispers a report to the GM.
+Crucible is still before 1.0 and changes between versions. After an update of Foundry, Crucible or Ember the module tells the GM once that newer versions are running. Then click *Run self test* on the module's settings page. It checks every hero sheet and a sample of adversaries, changes nothing and whispers a report to the GM.
 
 ## Debug file
 
@@ -145,7 +145,7 @@ The file contains chat text and whispers. Check it before you share it.
 
 ## Sephral’s Modules
 
-The module settings have a button *Sephral’s Modules* (GMs only). It opens one window for all of Sephral's modules in the world: the version, self-test, settings and manual of each, a button that switches on an installed module that is off (Foundry then reloads the world for everyone), and the debug file. Below, *More from Sephral* lists other modules that fit the game system of the world, shown only after a click. The list is part of the module, nothing is loaded from the internet for it.
+The first button in the module settings, *Sephral’s Modules* (GMs only), opens one window for all of Sephral's modules in the world: the version, self test, settings, manual and demo video of each, a button that switches on an installed module that is off (Foundry then reloads the world for everyone), and the debug file. Below, *More from Sephral* lists other modules that fit the game system of the world, shown only after a click, each with its demo video. The list is part of the module. Only a video you start is loaded, from the module page on GitHub.
 
 ## Limitations
 

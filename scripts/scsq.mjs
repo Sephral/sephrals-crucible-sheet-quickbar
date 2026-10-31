@@ -39,8 +39,8 @@ const legacyActive = () => !!game.modules.get(LEGACY_MODULE_ID)?.active;
 Hooks.once("init", () => {
   if ( (game.system.id !== "crucible") || legacyActive() ) return;
 
-  registerSettings();
   registerHubModule({moduleId: MODULE_ID, tested: TESTED_VERSIONS});
+  registerSettings();
   registerDebug();
   registerUsage(MODULE_ID, {
     features: ["sheetAction", "quickbarAction", "quickbarToggle", "skillRoll", "spellCast", "spellRepeat",

@@ -1,17 +1,18 @@
 /**
- * The window "Sephral's Modules": every Sephral module in the world with its version, self-test, settings and manual,
- * the debug file, and on request the other Sephral modules that fit the world.
+ * The window "Sephral's Modules": every Sephral module in the world with its version, self test, settings, manual and
+ * demo video, the debug file, and on request the other Sephral modules that fit the world.
  *
  * Every module carries an identical copy as scripts/hub.mjs next to scripts/debug-file.mjs. Never change one copy
- * alone: all copies stay the same, and a change that older copies must notice raises HUB_LIB_VERSION. The copies share
- * one registry on globalThis. The copy with the highest HUB_LIB_VERSION draws the window, the copy with the newest
- * CATALOG_REVISION lists the modules, so a module released with an older copy keeps working and the list still shows
- * modules that came out later. Modules without a copy (older releases) still appear, their self-test runs through
- * api.runSelfTest. The debug file button uses scripts/debug-file.mjs beside this file.
+ * alone: all copies stay the same. The copies share one registry on globalThis. The copy with the highest
+ * HUB_LIB_VERSION draws the window, the copy with the newest CATALOG_REVISION lists the modules, so a module released
+ * with an older copy keeps working and the list still shows modules that came out later. On a tie the copy loaded first
+ * wins, whatever its age: once a copy is released, every change of the window raises HUB_LIB_VERSION and every change
+ * of CATALOG or INTEGRATIONS raises CATALOG_REVISION. Modules without a copy (older releases) still appear, their self
+ * test runs through api.runSelfTest. The debug file button uses scripts/debug-file.mjs beside this file.
  */
 
-export const HUB_LIB_VERSION = 1;
-export const CATALOG_REVISION = 20261031;
+export const HUB_LIB_VERSION = 2;
+export const CATALOG_REVISION = 2026103101;
 
 const REGISTRY_KEY = "sephralsHub";
 const WINDOW_ID = "sephrals-hub";
@@ -21,6 +22,9 @@ const PREFIX = "sephrals-";
 const HIDDEN = ["sephrals-usage-optout"];
 const GITHUB = "https://github.com/Sephral";
 const DISCORD = "https://discord.gg/7BjCgDYaBP";
+/** The README demo videos, played from GitHub only when the GM starts one. */
+const VIDEO_BASE = "https://raw.githubusercontent.com/Sephral";
+const VIDEO_WINDOW_ID = "sephrals-hub-video";
 const PROBLEM_LIMIT = 5;
 
 /* -------------------------------------------- */
@@ -30,6 +34,9 @@ const PROBLEM_LIMIT = 5;
 /**
  * The released modules. systems: only for these game systems. needs: a module that must be active. supports: game
  * systems with built in support. listed: has a package page on foundryvtt.com, otherwise the link goes to GitHub.
+ * video: false keeps the README demo video (media/demo.mp4 on GitHub) out of the window, for videos with AI made images
+ * (Foundry's AI content policy) or content we may not show inside a package. released: false has a repository but no
+ * release yet: its row gets manual and video, More from Sephral leaves it out. core: the lowest Foundry generation.
  */
 const CATALOG = [
   { id: "sephrals-campaign-album", title: "Campaign Album", listed: true, supports: ["crucible", "dnd5e"],
@@ -47,6 +54,9 @@ const CATALOG = [
   { id: "sephrals-crucible-sheet-quickbar", title: "Crucible Sheet & Quickbar", listed: true, systems: ["crucible"],
     text: { en: "A compact hero and adversary sheet with a combat quickbar.",
       de: "Ein kompakter Bogen für Helden und Gegner mit Kampfleiste." } },
+  { id: "sephrals-handout-lens", title: "Handout Lens", listed: false, released: false,
+    text: { en: "Zoom, pan and a reading lens for every picture you show your players.",
+      de: "Zoomen, verschieben und eine Leselupe für jedes Bild, das du deinen Spielern zeigst." } },
   { id: "sephrals-file-commander", title: "File Commander", listed: true,
     text: { en: "A file manager with two panels for Foundry's storage.",
       de: "Ein Dateimanager mit zwei Fenstern für Foundrys Speicher." } },
@@ -59,6 +69,9 @@ const CATALOG = [
   { id: "sephrals-lunar-almanac", title: "Lunar Almanac", listed: true, needs: "ember",
     text: { en: "Ember's moons and inner realms with their phases at a glance.",
       de: "Embers Monde und innere Reiche mit ihren Phasen auf einen Blick." } },
+  { id: "sephrals-map-knowledge", title: "Map Knowledge", listed: false, released: false, core: 14,
+    text: { en: "Reveal parts of the map to your players, right in Foundry's own fog of war.",
+      de: "Deck Teile der Karte für deine Spieler auf, direkt in Foundrys eigenem Nebel des Krieges." } },
   { id: "sephrals-module-loadouts", title: "Module Loadouts", listed: true,
     text: { en: "Save your active modules as loadouts and switch with one click.",
       de: "Speichere deine aktiven Module als Loadouts und wechsle mit einem Klick." } },
@@ -125,30 +138,35 @@ const TEXTS = {
     title: "Sephral’s Modules",
     menuName: "Sephral’s Modules",
     menuLabel: "Open",
-    menuHint: "Self-tests, settings and manuals of all Sephral modules in this world, and other modules that fit it.",
+    menuHint: "Self tests, settings and manuals of all Sephral modules in this world, and other modules that fit it.",
     heading: "Your modules in this world",
     summary: "{installed} installed, {active} active",
-    runAll: "Run all self-tests",
+    runAll: "Run all self tests",
     debugFile: "Save debug file",
     inWorld: "In this world",
-    inWorldHint: "Settings, manual and self-test for each module",
+    inWorldHint: "Settings, manual, demo video and self test for each module",
     active: "Active",
     off: "Off",
-    testOk: "Self-test passed",
-    testOkChecks: "Self-test passed, {checks} checks",
-    testProblem: "Self-test found 1 problem",
-    testProblems: "Self-test found {count} problems",
-    testRunning: "Self-test running",
-    testNone: "Self-test not run yet",
-    testError: "The self-test could not run: {error}",
-    testMissing: "This version has no self-test",
+    testOk: "Self test passed",
+    testOkChecks: "Self test passed, {checks} checks",
+    testProblem: "Self test found 1 problem",
+    testProblems: "Self test found {count} problems",
+    testRunning: "Self test running",
+    testNone: "Self test not run yet",
+    testError: "The self test could not run: {error}",
+    testMissing: "This version has no self test",
     moreProblems: "and {count} more",
     offNote: "Installed, not active in this world",
     offMissing: "Installed, not active. It needs {missing}, which is not installed.",
-    newer: "Newer than tested: {list}. Run the self-tests of these modules once.",
-    selfTest: "Run the self-test",
+    newer: "Newer than tested: {list}. Run the self tests of these modules once.",
+    selfTest: "Run the self test",
     settings: "Settings",
     manual: "Manual",
+    video: "Demo video",
+    watchVideo: "Watch the video",
+    videoTitle: "{title}: demo video",
+    videoSource: "The video plays from the module page on GitHub.",
+    videoError: "The video could not be loaded.",
     enable: "Enable",
     enableTitle: "Enable {title}",
     enableText: "Enable {title} in this world? Foundry then reloads the world for everyone.",
@@ -183,7 +201,7 @@ const TEXTS = {
     runAll: "Alle Selbsttests starten",
     debugFile: "Debug-Datei speichern",
     inWorld: "In dieser Welt",
-    inWorldHint: "Einstellungen, Handbuch und Selbsttest für jedes Modul",
+    inWorldHint: "Einstellungen, Handbuch, Demo-Video und Selbsttest für jedes Modul",
     active: "Aktiv",
     off: "Aus",
     testOk: "Selbsttest bestanden",
@@ -201,6 +219,11 @@ const TEXTS = {
     selfTest: "Selbsttest starten",
     settings: "Einstellungen",
     manual: "Handbuch",
+    video: "Demo-Video",
+    watchVideo: "Video ansehen",
+    videoTitle: "{title}: Demo-Video",
+    videoSource: "Das Video läuft von der Seite des Moduls auf GitHub.",
+    videoError: "Das Video konnte nicht geladen werden.",
     enable: "Aktivieren",
     enableTitle: "{title} aktivieren",
     enableText: "{title} in dieser Welt aktivieren? Foundry lädt die Welt danach für alle neu.",
@@ -341,6 +364,15 @@ export function shortTitle(title) {
  * @param {string} b
  * @returns {boolean}
  */
+/**
+ * The demo video of a catalog entry, or null when the catalog keeps it out of the window.
+ * @param {{id: string, video?: boolean}} [entry]
+ * @returns {string|null}
+ */
+export function demoVideo(entry) {
+  return entry?.id && (entry.video !== false) ? `${VIDEO_BASE}/${entry.id}/main/media/demo.mp4` : null;
+}
+
 export function isNewer(a, b) {
   const parts = (value) => String(value ?? "").split(".").map((part) => parseInt(part, 10) || 0);
   const left = parts(a);
@@ -427,11 +459,11 @@ export function classifyResult(result) {
  *   installed: installed Sephral modules, active: every active module id (Sephral and others), system: game system id
  * @returns {{works: {entry: object, partner: string, text: object}[], made: object[], builtIn: object[], every: object[], hidden: number}}
  */
-export function suggestions(catalog, { installed, active, system }) {
+export function suggestions(catalog, { installed, active, system, core = Infinity }) {
   const groups = { works: [], made: [], builtIn: [], every: [], hidden: 0 };
   for (const entry of catalog.modules ?? []) {
-    if (installed.has(entry.id)) continue;
-    const fits = !entry.systems || entry.systems.includes(system);
+    if (installed.has(entry.id) || (entry.released === false)) continue;
+    const fits = (!entry.systems || entry.systems.includes(system)) && (!entry.core || (core >= entry.core));
     const needsMet = !entry.needs || active.has(entry.needs);
     if (!fits || !needsMet) {
       groups.hidden++;
@@ -612,6 +644,9 @@ function createWindowClass() {
         toggleMore() {
           this.moreOpen = !this.moreOpen;
           this.render();
+        },
+        video(event, target) {
+          openVideo(target.dataset.module);
         }
       }
     };
@@ -632,6 +667,59 @@ function createWindowClass() {
   };
 }
 
+let VideoWindowClass = null;
+
+/** Play the demo video of a catalog module in a window of its own. */
+function openVideo(moduleId) {
+  const catalog = registry().catalog ?? { modules: CATALOG };
+  const entry = catalog.modules.find((candidate) => candidate.id === moduleId);
+  const src = demoVideo(entry);
+  if (!src) return null;
+  VideoWindowClass ??= createVideoWindowClass();
+  ensureStyles();
+  const existing = globalThis.foundry.applications.instances?.get?.(VIDEO_WINDOW_ID);
+  const app = existing ?? new VideoWindowClass();
+  app.entry = entry;
+  // A new window has no element before its first render
+  void app.render({ force: true }).then(() => app.bringToFront?.());
+  return app;
+}
+
+function createVideoWindowClass() {
+  const { ApplicationV2 } = globalThis.foundry.applications.api;
+  return class SephralsModulesVideo extends ApplicationV2 {
+    static DEFAULT_OPTIONS = {
+      id: VIDEO_WINDOW_ID,
+      classes: ["sephrals-hub", "sephrals-hub-video"],
+      window: { icon: "fa-solid fa-circle-play", resizable: true },
+      position: { width: 860, height: "auto" }
+    };
+
+    entry = null;
+
+    get title() {
+      return text("videoTitle", { title: this.entry?.title ?? "" });
+    }
+
+    async _renderHTML() {
+      const id = this.entry?.id ?? "";
+      return `<video class="sh-video" src="${escape(demoVideo(this.entry) ?? "")}" controls autoplay muted loop playsinline></video>
+        <p class="sh-hint sh-video-note">${escape(text("videoSource"))} ${link(`${GITHUB}/${id}#readme`, text("github"))}</p>
+        <p class="sh-note sh-warn sh-video-error" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> ${escape(text("videoError"))}</p>`;
+    }
+
+    _replaceHTML(result, content) {
+      content.innerHTML = result;
+      const error = content.querySelector(".sh-video-error");
+      content.querySelector("video")?.addEventListener("error", () => { if (error) error.hidden = false; });
+    }
+  };
+}
+
+function videoButton(entry) {
+  return demoVideo(entry) ? iconButton("video", entry.id, text("video"), "fa-solid fa-play", "sh-flame") : "";
+}
+
 function link(href, label, icon = "fa-solid fa-arrow-up-right-from-square") {
   return `<a href="${escape(href)}" target="_blank" rel="noopener">${escape(label)} <i class="${icon}" aria-hidden="true"></i></a>`;
 }
@@ -642,8 +730,8 @@ function packageLink(entry) {
     : link(`${GITHUB}/${entry.id}`, text("github"));
 }
 
-function iconButton(action, moduleId, label, icon) {
-  return `<button type="button" class="sh-icon" data-action="${action}" data-module="${escape(moduleId)}" `
+function iconButton(action, moduleId, label, icon, extra = "") {
+  return `<button type="button" class="sh-icon${extra ? ` ${extra}` : ""}" data-action="${action}" data-module="${escape(moduleId)}" `
     + `data-tooltip="${escape(label)}" aria-label="${escape(label)}"><i class="${icon}" aria-hidden="true"></i></button>`;
 }
 
@@ -670,7 +758,8 @@ function testLine(module, result, missing = []) {
   }
 }
 
-function moduleRow(module, inCatalog) {
+function moduleRow(module, entry) {
+  const inCatalog = Boolean(entry);
   const result = registry().results.get(module.id);
   const missing = module.active ? [] : modulesToEnable(module.id, globalThis.game.modules).missing;
   const manual = inCatalog ? `<a class="sh-icon" href="${GITHUB}/${escape(module.id)}/blob/main/MANUAL.md" target="_blank" rel="noopener" `
@@ -690,7 +779,7 @@ function moduleRow(module, inCatalog) {
         <span class="sh-pill ${module.active ? "sh-on" : ""}">${escape(text(module.active ? "active" : "off"))}</span></div>
       ${testLine(module, result, missing)}
     </div>
-    <div class="sh-row-actions">${actions}${manual}</div>
+    <div class="sh-row-actions">${actions}${manual}${videoButton(entry)}</div>
   </li>`;
 }
 
@@ -699,7 +788,7 @@ function card(entry, extra = {}) {
   return `<li class="sh-card${extra.partner ? " sh-card-works" : ""}">
     <div class="sh-row-title"><strong>${escape(entry.title)}</strong>${fit}</div>
     <p>${escape(extra.text ? localized(extra.text) : localized(entry.text))}</p>
-    ${packageLink(entry)}
+    <div class="sh-card-links">${packageLink(entry)}${demoVideo(entry) ? `<button type="button" class="sh-play sh-flame" data-action="video" data-module="${escape(entry.id)}"><i class="fa-solid fa-play" aria-hidden="true"></i><span>${escape(text("watchVideo"))}</span></button>` : ""}</div>
   </li>`;
 }
 
@@ -707,7 +796,7 @@ function renderContent(moreOpen) {
   const game = globalThis.game;
   const reg = registry();
   const catalog = reg.catalog ?? { modules: CATALOG, integrations: INTEGRATIONS };
-  const catalogIds = new Set(catalog.modules.map((entry) => entry.id));
+  const catalogById = new Map(catalog.modules.map((entry) => [entry.id, entry]));
   const installed = installedModules(game.modules);
   const activeCount = installed.filter((module) => module.active).length;
   const system = game.system;
@@ -729,7 +818,8 @@ function renderContent(moreOpen) {
   const groups = suggestions(catalog, {
     installed: new Set(installed.map((module) => module.id)),
     active: new Set(Array.from(game.modules ?? []).filter((module) => module.active).map((module) => module.id)),
-    system: system.id
+    system: system.id,
+    core: Number(game.release?.generation ?? Infinity)
   });
   const fitting = groups.works.length + groups.made.length + groups.builtIn.length + groups.every.length;
   const titleOf = (id) => shortTitle(game.modules.get(id)?.title)
@@ -761,7 +851,7 @@ function renderContent(moreOpen) {
   ${newer.length ? `<div class="sh-banner"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><p>${escape(text("newer", { list: newerList }))}</p></div>` : ""}
   <section class="sh-panel">
     <header class="sh-panel-head"><h2>${escape(text("inWorld"))}</h2><span class="sh-hint">${escape(text("inWorldHint"))}</span></header>
-    <ul class="sh-rows">${installed.map((module) => moduleRow(module, catalogIds.has(module.id))).join("")}</ul>
+    <ul class="sh-rows">${installed.map((module) => moduleRow(module, catalogById.get(module.id))).join("")}</ul>
   </section>
   <section class="sh-panel sh-more">
     <header class="sh-panel-head sh-more-head">
@@ -858,6 +948,41 @@ body.theme-light .sephrals-hub:not(.themed), .sephrals-hub.themed.theme-light {
 .sephrals-hub .sh-card-works { grid-column: 1 / -1; background: var(--sh-accent-soft); border-color: var(--sh-accent); }
 .sephrals-hub .sh-card p { flex: 1; font-size: 13px; color: var(--sh-muted); }
 .sephrals-hub .sh-card a { font-size: 13px; font-weight: 500; }
+.sephrals-hub .sh-card-links { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 16px; }
+/* The play buttons burn: a rising fire gradient, flickering tongues on top and a glow, calm for reduced motion */
+.sephrals-hub .sh-flame {
+  position: relative; overflow: hidden; isolation: isolate; color: #fff; border: 0;
+  background: linear-gradient(0deg, #b3170a 0%, #ff4d00 30%, #ff9a00 62%, #ffd84a 100%); background-size: 100% 220%;
+  text-shadow: 0 1px 2px rgba(90, 10, 0, 0.75);
+  animation: sh-burn 1.4s ease-in-out infinite alternate, sh-glow 1.4s ease-in-out infinite alternate;
+}
+.sephrals-hub .sh-flame::before {
+  content: ""; position: absolute; inset: -60% -20% -10%; z-index: -1; pointer-events: none; mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 22% 55% at 18% 100%, rgba(255, 236, 140, 0.95), transparent 70%),
+    radial-gradient(ellipse 26% 70% at 50% 100%, rgba(255, 170, 40, 0.9), transparent 70%),
+    radial-gradient(ellipse 20% 50% at 82% 100%, rgba(255, 226, 120, 0.9), transparent 70%);
+  animation: sh-flicker 0.8s ease-in-out infinite alternate;
+}
+.sephrals-hub .sh-flame > * { position: relative; }
+.sephrals-hub .sh-flame:hover, .sephrals-hub .sh-flame:focus-visible { filter: brightness(1.15) saturate(1.15); box-shadow: 0 0 18px rgba(255, 140, 0, 0.95); }
+.sephrals-hub .sh-play {
+  display: inline-flex; align-items: center; gap: 8px; width: auto; height: 30px; margin: 0; padding: 0 14px 0 12px;
+  border-radius: 999px; font: 600 13px var(--font-primary, "Signika", sans-serif); cursor: pointer; white-space: nowrap;
+}
+.sephrals-hub .sh-icon.sh-flame { border-radius: 50%; }
+@keyframes sh-burn { from { background-position: 0 0; } to { background-position: 0 100%; } }
+@keyframes sh-flicker {
+  0% { transform: translate(0, 12%) scale(1, 0.9); opacity: 0.75; }
+  40% { transform: translate(-4%, -4%) scale(1.05, 1.15); opacity: 1; }
+  100% { transform: translate(4%, 6%) scale(0.95, 1); opacity: 0.85; }
+}
+@keyframes sh-glow { from { box-shadow: 0 0 5px rgba(255, 90, 0, 0.45); } to { box-shadow: 0 0 14px rgba(255, 150, 0, 0.9); } }
+@media (prefers-reduced-motion: reduce) {
+  .sephrals-hub .sh-flame, .sephrals-hub .sh-flame::before { animation: none; }
+}
+.sephrals-hub-video .window-content { gap: 8px; }
+.sephrals-hub .sh-video { display: block; width: 100%; aspect-ratio: 16 / 10; background: #000; border-radius: var(--sh-radius-small); }
 .sephrals-hub .sh-footer { display: flex; justify-content: flex-end; gap: 16px; padding: 0 4px; font-size: 13px; flex: none; }
 `;
 
