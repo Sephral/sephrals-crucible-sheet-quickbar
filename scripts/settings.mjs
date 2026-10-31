@@ -171,6 +171,9 @@ export function registerSettings() {
   game.settings.register(MODULE_ID, "migratedUser", {scope: "user", config: false, type: Boolean, default: false});
   game.settings.register(MODULE_ID, "migratedWorld", {scope: "world", config: false, type: Boolean, default: false});
 
+  // Once-marker of the question on the first start in a world (see askWorldDefault)
+  game.settings.register(MODULE_ID, "welcomeShown", {scope: "world", config: false, type: Boolean, default: false});
+
   game.settings.register(MODULE_ID, "acknowledgedVersions", {
     scope: "client",
     config: false,

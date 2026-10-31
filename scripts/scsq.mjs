@@ -6,10 +6,11 @@ import {runSelfTest} from "./selftest.mjs";
 import {registerCombatHooks} from "./combat.mjs";
 import {registerDebug} from "./debug.mjs";
 import {saveDebugFile} from "./debug-file.mjs";
+import {registerHubModule} from "./hub.mjs";
 import {hideGMSettings, openSettings, registerSettings} from "./settings.mjs";
 import {applyModuleLanguage} from "./language.mjs";
 import {registerKeybindings} from "./keybindings.mjs";
-import {folioInUse, registerFolioSheets} from "./sheet-choice.mjs";
+import {askWorldDefault, folioInUse, registerFolioSheets} from "./sheet-choice.mjs";
 import {registerUsage} from "./usage.mjs";
 
 /** The partial templates shared between several tabs of the sheet. */
@@ -39,6 +40,7 @@ Hooks.once("init", () => {
   if ( (game.system.id !== "crucible") || legacyActive() ) return;
 
   registerSettings();
+  registerHubModule({moduleId: MODULE_ID, tested: TESTED_VERSIONS});
   registerDebug();
   registerUsage(MODULE_ID, {
     features: ["sheetAction", "quickbarAction", "quickbarToggle", "skillRoll", "spellCast", "spellRepeat",
@@ -93,6 +95,7 @@ Hooks.once("ready", async () => {
   await migrateLegacyData();
   reopenQuickbars();
   noticeNewVersions();
+  askWorldDefault();
 });
 
 /* -------------------------------------------- */

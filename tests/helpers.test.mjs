@@ -265,3 +265,114 @@ test("sampleOf keeps short lists and draws a sample from long ones", async () =>
   assert.ok(sample.every(n => list.includes(n)));
   assert.deepEqual(list, [1, 2, 3, 4, 5, 6], "the source list stays untouched");
 });
+
+/* -------------------------------------------- */
+/*  Inventory sections                          */
+/* -------------------------------------------- */
+
+/**
+ * A minimal owned item.
+ * @param {string} type
+ * @param {object} [system]
+ * @returns {object}
+ */
+function makeItem(type, system={}) {
+  return {type, system: {equipped: true, ...system}};
+}
+
+test("shields default to the armor section, other items to the section of their type", () => {
+  assert.equal(prepare.defaultSection(makeItem("weapon", {category: "shieldHeavy"})), "armor");
+  assert.equal(prepare.defaultSection(makeItem("weapon", {category: "shieldLight"})), "armor");
+  assert.equal(prepare.defaultSection(makeItem("weapon", {category: "talisman1"})), "weapon");
+  assert.equal(prepare.defaultSection(makeItem("tool")), "toolbelt");
+  assert.equal(prepare.defaultSection(makeItem("loot")), "backpack");
+});
+
+test("inventorySection follows the chosen section of weapons and leaves the rest to Crucible", () => {
+  const shield = makeItem("weapon", {category: "shieldHeavy"});
+  assert.equal(prepare.inventorySection(shield, "weapon"), "armor");
+  assert.equal(prepare.inventorySection(shield, "backpack"), "backpack", "unequipped items stay in the backpack");
+  assert.equal(prepare.inventorySection(shield, "weapon", "weapon"), "weapon");
+  const grimoire = makeItem("weapon", {category: "talisman1"});
+  assert.equal(prepare.inventorySection(grimoire, "weapon", "armor"), "armor");
+  assert.equal(prepare.inventorySection(grimoire, "weapon", "toolbelt"), "weapon",
+    "sections with slot counters are not offered");
+  assert.equal(prepare.inventorySection(makeItem("armor"), "armor", "weapon"), "armor");
+  assert.equal(prepare.inventorySection(undefined, "toolbelt"), "toolbelt");
+});
+
+test("inventoryChoices reads the chosen sections from the actor", () => {
+  const actor = makeActor({[config.FLAGS.inventorySections]: [["a", "armor"], ["b", "weapon"]]});
+  assert.deepEqual([...prepare.inventoryChoices(actor)], [["a", "armor"], ["b", "weapon"]]);
+  assert.equal(prepare.inventoryChoices(makeActor({})).size, 0);
+  assert.equal(prepare.inventoryChoices(makeActor({[config.FLAGS.inventorySections]: {a: "armor"}})).size, 0,
+    "anything but a list of pairs is ignored");
+});
+
+test("inventoryMove equips if needed and remembers only sections other than the default", () => {
+  const shield = makeItem("weapon", {category: "shieldHeavy"});
+  assert.deepEqual(prepare.inventoryMove(shield, "armor"), {equip: false, choice: null});
+  assert.deepEqual(prepare.inventoryMove(shield, "weapon"), {equip: false, choice: "weapon"});
+  const stowed = makeItem("weapon", {category: "shieldHeavy", equipped: false});
+  assert.deepEqual(prepare.inventoryMove(stowed, "armor"), {equip: true, choice: null});
+  assert.equal(prepare.inventoryMove(shield, "backpack"), null, "Crucible stows items itself");
+  assert.equal(prepare.inventoryMove(shield, "accessory"), null);
+  assert.equal(prepare.inventoryMove(makeItem("armor"), "weapon"), null);
+});
+
+test("acceptsInventoryDrop allows the backpack, the type's section and the weapon places", () => {
+  const sword = makeItem("weapon", {category: "simple1"});
+  assert.ok(prepare.acceptsInventoryDrop(sword, "backpack"));
+  assert.ok(prepare.acceptsInventoryDrop(sword, "weapon"));
+  assert.ok(prepare.acceptsInventoryDrop(sword, "armor"));
+  assert.ok(!prepare.acceptsInventoryDrop(sword, "toolbelt"));
+  assert.ok(prepare.acceptsInventoryDrop(makeItem("consumable"), "toolbelt"));
+  assert.ok(!prepare.acceptsInventoryDrop(makeItem("armor"), "weapon"));
+});
+
+test("groupInventory moves entries behind the entries a section already holds", () => {
+  const inventory = {
+    weapon: {items: [{id: "grimoire"}, {id: "shield"}]},
+    armor: {items: [{id: "mail"}]},
+    backpack: {items: [{id: "rope"}]}
+  };
+  const target = {shield: "armor", rope: "nowhere"};
+  const groups = prepare.groupInventory(inventory, (d, id) => target[d.id] ?? id);
+  assert.deepEqual(groups.weapon.map(d => d.id), ["grimoire"]);
+  assert.deepEqual(groups.armor.map(d => d.id), ["mail", "shield"]);
+  assert.deepEqual(groups.backpack.map(d => d.id), ["rope"], "unknown sections keep the entry where it was");
+});
+
+test("inventoryColumns adds the block column before the weight when a row has a block value", () => {
+  assert.deepEqual(prepare.inventoryColumns("armor", [{tags: {}}]), ["armor", "dodge", "weight"]);
+  assert.deepEqual(prepare.inventoryColumns("armor", [{tags: {}}, {tags: {block: "Block 3"}}]),
+    ["armor", "dodge", "block", "weight"]);
+  assert.deepEqual(prepare.inventoryColumns("weapon", [{tags: {block: "Block 1"}}]), ["damage", "range", "weight"]);
+  assert.deepEqual(prepare.inventoryColumns("unknown", []), ["quantity", "weight"]);
+});
+
+/* -------------------------------------------- */
+/*  Defense tooltip and character creation      */
+/* -------------------------------------------- */
+
+test("physicalTooltip lists every part with its share", () => {
+  const html = prepare.physicalTooltip("Physical", 20, [
+    {id: "armor", label: "Armor", value: 10, pct: 50}, {id: "dodge", label: "Dodge", value: 5, pct: 25},
+    {id: "parry", label: "Parry", value: 1, pct: 5}, {id: "block", label: "Block", value: 4, pct: 20}
+  ]);
+  assert.match(html, /^<strong>Physical 20<\/strong><ol class="fo-def-parts">/);
+  assert.equal(html.match(/<li /g).length, 4);
+  assert.match(html, /<li class="block"><i><\/i><span>Block<\/span><b>4<\/b><em>20%<\/em><\/li>/);
+});
+
+test("inCharacterCreation recognizes Crucible's creation sheet on heroes only", async () => {
+  globalThis.crucible = {CONFIG: {heroCreationSheet: {name: "HeroCreationSheet"}}};
+  const {inCharacterCreation} = await import("../scripts/sheet-choice.mjs");
+  const actor = (type, sheetClass) => ({type,
+    getFlag: (scope, key) => (((scope === "core") && (key === "sheetClass")) ? sheetClass : undefined)});
+  assert.ok(inCharacterCreation(actor("hero", "crucible.HeroCreationSheet")));
+  assert.ok(!inCharacterCreation(actor("hero", "")), "creation clears the sheet when it is done");
+  assert.ok(!inCharacterCreation(actor("hero", undefined)));
+  assert.ok(!inCharacterCreation(actor("adversary", "crucible.HeroCreationSheet")));
+  delete globalThis.crucible;
+});

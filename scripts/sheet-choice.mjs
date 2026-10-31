@@ -32,7 +32,7 @@ export function registerFolioSheets(sheets) {
   const getSheetClass = ActorClass.prototype._getSheetClass;
   ActorClass.prototype._getSheetClass = function() {
     const cls = getSheetClass.call(this);
-    if ( !(this.type in FOLIO_CLASSES) ) return cls;
+    if ( !(this.type in FOLIO_CLASSES) || inCharacterCreation(this) ) return cls;
     try {
       if ( wantsFolio(this) ) return FOLIO_CLASSES[this.type];
     } catch(err) {
@@ -47,6 +47,41 @@ export function registerFolioSheets(sheets) {
 }
 
 /* -------------------------------------------- */
+
+/**
+ * Ask the GM once per world whether the sheet should be the default for everyone. Until someone chooses it, enabling
+ * the module changes nothing anyone sees, so a GM who never opens the settings would not notice it at all.
+ * @returns {Promise<void>}
+ */
+export async function askWorldDefault() {
+  if ( !game.user.isGM || (game.users.activeGM && !game.users.activeGM.isSelf) ) return;
+  if ( game.settings.get(MODULE_ID, "welcomeShown") ) return;
+  await game.settings.set(MODULE_ID, "welcomeShown", true);
+  if ( setting("worldDefault") !== "none" ) return;
+  const choice = await foundry.applications.api.DialogV2.wait({
+    window: {title: "FOLIO.WELCOME.Title", icon: "fa-solid fa-scroll"},
+    position: {width: 480},
+    content: `<p>${_loc("FOLIO.WELCOME.Text")}</p><p class="hint">${_loc("FOLIO.WELCOME.Hint")}</p>`,
+    buttons: [
+      {action: "heroes", label: "FOLIO.WELCOME.Heroes", icon: "fa-solid fa-user", default: true},
+      {action: "all", label: "FOLIO.WELCOME.All", icon: "fa-solid fa-users"},
+      {action: "none", label: "FOLIO.WELCOME.None", icon: "fa-solid fa-user-gear"}
+    ],
+    rejectClose: false
+  });
+  if ( ["heroes", "all"].includes(choice) ) await game.settings.set(MODULE_ID, "worldDefault", choice);
+}
+
+/**
+ * Is a hero still in Crucible's character creation? Crucible assigns its creation sheet to new level 0 heroes and
+ * clears that sheet once creation is done.
+ * @param {Actor} actor
+ * @returns {boolean}
+ */
+export function inCharacterCreation(actor) {
+  const creation = crucible.CONFIG?.heroCreationSheet?.name;
+  return (actor.type === "hero") && !!creation && (actor.getFlag("core", "sheetClass") === `crucible.${creation}`);
+}
 
 /**
  * Does the current user see this actor in the Folio sheet?

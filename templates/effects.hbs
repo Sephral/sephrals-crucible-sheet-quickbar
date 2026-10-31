@@ -3,7 +3,7 @@
     <div class="fo-toolbar">
         <label class="fo-search-box{{#if @root.folio.filters.effects.text}} has-value{{/if}}">
             <i class="fa-solid fa-magnifying-glass" inert></i>
-            <input class="fo-search" type="search" data-tab="effects" value="{{@root.folio.filters.effects.text}}"
+            <input class="fo-search" type="search" id="{{@root.partId}}-search" data-tab="effects" value="{{@root.folio.filters.effects.raw}}"
                    placeholder="{{localize 'FOLIO.SearchEffects'}}" autocomplete="off" spellcheck="false">
             <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
         </label>

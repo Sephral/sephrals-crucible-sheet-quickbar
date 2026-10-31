@@ -5,8 +5,9 @@
  */
 
 import {
-  ACTION_SECTIONS, ACTION_TAG_SECTIONS, COST_TAGS, FLAGS, INVENTORY_COLUMNS, INVENTORY_ICONS, MODULE_ID, SECTION_ICONS,
-  TALENT_ICONS, cssColor, nextInRound, setting, signClass
+  ACTION_SECTIONS, ACTION_TAG_SECTIONS, COST_TAGS, EQUIPMENT_SECTIONS, FLAGS, INVENTORY_COLUMNS, INVENTORY_EXTRA_COLUMNS,
+  INVENTORY_ICONS, INVENTORY_PLACES, MODULE_ID, SECTION_ICONS, SHIELD_CATEGORIES, TALENT_ICONS, cssColor,
+  nextInRound, setting, signClass
 } from "./config.mjs";
 import {
   buildSpell, getSpellFavorites, missingComponents, normalizeSpellId, parseSpellId, resolveActorToken, spellKey
@@ -169,6 +170,20 @@ export function computeResources(actor) {
 }
 
 /**
+ * The tooltip of the physical defense: each part with its value and its share of the total, as Crucible's sheet shows.
+ * @param {string} label
+ * @param {number} total
+ * @param {{id: string, label: string, value: number, pct: number}[]} segments
+ * @returns {string}
+ */
+export function physicalTooltip(label, total, segments) {
+  const esc = foundry.utils.escapeHTML ?? (s => String(s));
+  const rows = segments.map(s => `<li class="${s.id}"><i></i><span>${esc(s.label)}</span><b>${s.value}</b>`
+    + `<em>${s.pct}%</em></li>`).join("");
+  return `<strong>${esc(label)} ${total}</strong><ol class="fo-def-parts">${rows}</ol>`;
+}
+
+/**
  * Prepare defense values of an actor.
  * @param {Actor} actor
  * @returns {object}
@@ -189,7 +204,7 @@ export function computeDefenses(actor) {
   return {
     physical: {
       label: short("physical"), value: physical, segments, ruleId: "defense.physical",
-      tooltip: `${label("physical")} ${physical} = ${segments.map(s => `${s.label} ${s.value}`).join(" + ")}`
+      tooltip: physicalTooltip(label("physical"), physical, segments)
     },
     saves: ["fortitude", "reflex", "willpower"].map(id => ({id, label: short(id), value: total(id),
       ruleId: `defense.${id}`})),
@@ -273,8 +288,7 @@ export function prepareHeader(scope, issues) {
   // Combat turn indicator
   let combat = null;
   const encounter = game.combat;
-  const combatant = encounter?.combatants.find(c => (c.actor?.uuid === actor.uuid) || (c.actor?.id === actor.id
-    && !actor.isToken));
+  const combatant = encounter?.combatants.find(c => c.actor?.uuid === actor.uuid);
   if ( combatant ) {
     const isTurn = !!encounter.started && (encounter.combatant?.id === combatant.id);
     const next = nextInRound(encounter.turns, encounter.turn, encounter.settings?.skipDefeated);
@@ -314,7 +328,8 @@ export function prepareHeader(scope, issues) {
       levelDisplay: String(adv.level ?? 0),
       milestones: {progress: adv.progress ?? 0, required: adv.required ?? 0, pct: adv.pct ?? 0,
         tooltip: _loc("ADVANCEMENT.MilestoneTooltip", adv)},
-      canLevelUp: !actor.isL0 && (adv.pct === 100) && !issues.length,
+      canLevelUp: (actor.isL0 || (adv.pct === 100)) && !issues.length,
+      levelField: !actor.isL0 && scope.editable && !scope.locked,
       progress: issues.length ? {
         tooltip: `<h4>${_loc("ACTOR.ProgressionRequirements")}</h4><ol>${
           issues.map(i => `<li>${_loc(i.label)}</li>`).join("")}</ol>`
@@ -830,6 +845,99 @@ export function prepareResistances(scope) {
 /* -------------------------------------------- */
 
 /**
+ * The section an item belongs in when no section was chosen for it: shields in armor, everything else where Crucible
+ * sorts its type.
+ * @param {Item} item
+ * @returns {string}
+ */
+export function defaultSection(item) {
+  if ( (item?.type === "weapon") && SHIELD_CATEGORIES.has(item.system?.category) ) return "armor";
+  return EQUIPMENT_SECTIONS[item?.type] ?? "backpack";
+}
+
+/**
+ * The sections chosen for an actor's items by drag and drop. They live on the actor rather than on the items, because
+ * Crucible only stacks items whose data is identical.
+ * @param {Actor} actor
+ * @returns {Map<string, string>}   Section ids by item id
+ */
+export function inventoryChoices(actor) {
+  const pairs = actor.getFlag(MODULE_ID, FLAGS.inventorySections);
+  return new Map(Array.isArray(pairs) ? pairs : []);
+}
+
+/**
+ * The section an inventory item is shown in. Crucible sorts by item type, so an equipped shield would land among the
+ * weapons; items listed in INVENTORY_PLACES move to the section chosen for them, or else to their default section.
+ * @param {Item} item
+ * @param {string} section      The section Crucible sorted the item into
+ * @param {string} [chosen]     The section chosen for the item
+ * @returns {string}
+ */
+export function inventorySection(item, section, chosen) {
+  const places = INVENTORY_PLACES[item?.type];
+  if ( !places?.includes(section) ) return section;
+  if ( places.includes(chosen) ) return chosen;
+  const fallback = defaultSection(item);
+  return places.includes(fallback) ? fallback : section;
+}
+
+/**
+ * What dropping an owned item onto an inventory section does beyond Crucible's own handling.
+ * @param {Item} item
+ * @param {string} section
+ * @returns {{equip: boolean, choice: string|null}|null}  Whether to equip the item and the section to remember for it
+ *                                                        (null for its default section), or null to leave it to Crucible
+ */
+export function inventoryMove(item, section) {
+  if ( !INVENTORY_PLACES[item?.type]?.includes(section) ) return null;
+  return {equip: !item.system.equipped, choice: (section === defaultSection(item)) ? null : section};
+}
+
+/**
+ * Can a dragged item be dropped onto an inventory section? The backpack and the section of the item's type are
+ * Crucible's own targets.
+ * @param {Item} item
+ * @param {string} section
+ * @returns {boolean}
+ */
+export function acceptsInventoryDrop(item, section) {
+  return (section === "backpack") || (EQUIPMENT_SECTIONS[item?.type] === section) || !!inventoryMove(item, section);
+}
+
+/**
+ * Distribute Crucible's inventory entries over the sections they are shown in. Moved entries follow the entries the
+ * section already holds.
+ * @param {Record<string, {items: object[]}>} inventory      Crucible's inventory sections
+ * @param {(entry: object, section: string) => string} sectionOf
+ * @returns {Record<string, object[]>}
+ */
+export function groupInventory(inventory, sectionOf) {
+  const own = Object.fromEntries(Object.keys(inventory).map(id => [id, []]));
+  const moved = Object.fromEntries(Object.keys(inventory).map(id => [id, []]));
+  for ( const [id, section] of Object.entries(inventory) ) {
+    for ( const d of section.items ) {
+      const target = sectionOf(d, id);
+      if ( (target !== id) && (target in moved) ) moved[target].push(d);
+      else own[id].push(d);
+    }
+  }
+  return Object.fromEntries(Object.keys(own).map(id => [id, [...own[id], ...moved[id]]]));
+}
+
+/**
+ * The columns of an inventory section: extra columns join before the weight column when an entry has a value for them.
+ * @param {string} sectionId
+ * @param {object[]} entries
+ * @returns {string[]}
+ */
+export function inventoryColumns(sectionId, entries) {
+  const columns = INVENTORY_COLUMNS[sectionId] ?? ["quantity", "weight"];
+  const extra = (INVENTORY_EXTRA_COLUMNS[sectionId] ?? []).filter(c => entries.some(d => d.tags?.[c]));
+  return extra.length ? [...columns.slice(0, -1), ...extra, columns.at(-1)] : columns;
+}
+
+/**
  * Prepare inventory sections with column values.
  * @param {FolioScope} scope
  * @param {object} context
@@ -844,10 +952,14 @@ export async function prepareInventory(scope, context) {
     if ( (label === undefined) || (label === null) || (label === "") ) return "–";
     return String(label).match(/-?\d+(?:[.,]\d+)?/)?.[0] ?? label;
   };
+  const choices = inventoryChoices(actor);
+  const groups = groupInventory(context.inventory ?? {},
+    (d, id) => inventorySection(actor.items.get(d.id), id, choices.get(d.id)));
   for ( const [sectionId, section] of Object.entries(context.inventory ?? {}) ) {
-    const columns = INVENTORY_COLUMNS[sectionId] ?? ["quantity", "weight"];
+    const entries = groups[sectionId];
+    const columns = inventoryColumns(sectionId, entries);
     const rows = [];
-    for ( const d of section.items ) {
+    for ( const d of entries ) {
       const item = actor.items.get(d.id);
       if ( !item ) continue;
       const short = item.getTags("short") ?? {};
@@ -855,6 +967,7 @@ export async function prepareInventory(scope, context) {
       const uses = system.uses;
       const values = {
         damage: num(short.damage), range: num(short.range), armor: num(short.armor), dodge: num(short.dodge),
+        block: num(d.tags.block),
         uses: uses ? `${uses.value}/${uses.max}` : "–",
         quantity: system.quantity ?? 1,
         weight: system.weight ? Number((system.weight * (system.quantity ?? 1)).toFixed(1)) : "–"
@@ -941,6 +1054,7 @@ export async function prepareTalents(scope, context) {
         id: item.id, uuid: item.uuid, key, name: item.name, img: item.img,
         subtitle, cost: activation.cost, target: activation.target,
         actionId, usable: !!actionId,
+        draggable: !isHero,
         search: [item.name, ...subtitle.map(s => s.label)].filterJoin(" ").toLowerCase(),
         expanded,
         description: expanded ? await enrich(scope, item.system.description) : ""

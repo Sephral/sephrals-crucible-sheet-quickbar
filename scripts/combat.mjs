@@ -14,6 +14,12 @@ import {countFeature} from "./usage.mjs";
 let combatBar = null;
 
 /**
+ * The GM combat bar handles turn changes one after the other, so two quick turn changes cannot leave a bar open.
+ * @type {Promise<void>}
+ */
+let following = Promise.resolve();
+
+/**
  * Iterate the open Folio quickbars.
  * @returns {Generator<ApplicationV2>}
  */
@@ -60,7 +66,7 @@ async function onTurnChange(combat) {
   if ( !combat?.started || !combat.isView ) return;
   const actor = combat.combatant?.actor;
   try {
-    if ( game.user.isGM ) await followCombatant(combat, actor);
+    if ( game.user.isGM ) await (following = following.catch(() => {}).then(() => followCombatant(combat, actor)));
     else {
       await announceOwnTurn(actor);
       announceNextTurn(combat);

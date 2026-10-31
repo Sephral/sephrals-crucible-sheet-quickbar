@@ -2,7 +2,7 @@
     <div class="fo-toolbar">
         <label class="fo-search-box{{#if folio.filters.talents.text}} has-value{{/if}}">
             <i class="fa-solid fa-magnifying-glass" inert></i>
-            <input class="fo-search" type="search" data-tab="talents" value="{{folio.filters.talents.text}}"
+            <input class="fo-search" type="search" id="{{@root.partId}}-search" data-tab="talents" value="{{folio.filters.talents.raw}}"
                    placeholder="{{localize 'FOLIO.SearchTalents'}}" autocomplete="off" spellcheck="false">
             <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
         </label>
@@ -13,10 +13,8 @@
             <span>{{localize "ACTOR.SHEET.PointsSpent"}}</span><b>{{pts.spent}}</b>
         </div>
         {{/with}}
-        {{#if folio.editable}}
         <button type="button" class="fo-tool-btn wide{{#if folio.talents.treeOpen}} active{{/if}}" data-action="talentTree">
             <i class="fa-solid fa-diagram-project"></i> {{folio.talents.treeLabel}}</button>
-        {{/if}}
         {{#if folio.unlocked}}
         <button type="button" class="fo-tool-btn" data-action="talentReset" data-tooltip="ACTOR.ACTIONS.ResetTalents"><i class="fa-solid fa-rotate-left"></i></button>
         {{/if}}
@@ -34,7 +32,7 @@
             {{/if}}
             <ol class="fo-rows">
                 {{#each section.rows as |row|}}
-                <li class="fo-row fo-talent{{#if row.expanded}} expanded{{/if}}" data-item-id="{{row.id}}" data-key="{{row.key}}"
+                <li class="fo-row fo-talent{{#if row.draggable}} draggable{{/if}}{{#if row.expanded}} expanded{{/if}}" data-item-id="{{row.id}}" data-key="{{row.key}}"
                     data-search="{{row.search}}" {{#if row.actionId}}data-use-action="{{row.actionId}}"{{/if}} data-deletable="{{@root.folio.talents.canDelete}}">
                     <div class="fo-row-main">
                         <a class="fo-icon{{#if row.usable}} usable{{/if}}" data-action="foUse" data-crucible-tooltip="talent"

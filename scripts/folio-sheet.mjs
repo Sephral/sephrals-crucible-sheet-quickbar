@@ -8,9 +8,11 @@ import {
 import {openSettings} from "./settings.mjs";
 import {setActorChoice} from "./sheet-choice.mjs";
 import {
-  computeDefenses, getProgressIssues, prepareAbilities, prepareActionChips, prepareActions, prepareAttunements,
-  prepareEffects, prepareHeader, prepareInventory, prepareLastSpell, preparePinnedSkills, prepareQuickbarButtons,
-  prepareResistances, prepareSkills, prepareSpellbook, prepareSpells, prepareTalents, prepareTargets, prepareTraining
+  acceptsInventoryDrop, computeDefenses, getProgressIssues, inventoryChoices, inventoryMove, prepareAbilities,
+  prepareActionChips,
+  prepareActions, prepareAttunements, prepareEffects, prepareHeader, prepareInventory, prepareLastSpell,
+  preparePinnedSkills, prepareQuickbarButtons, prepareResistances, prepareSkills, prepareSpellbook, prepareSpells,
+  prepareTalents, prepareTargets, prepareTraining
 } from "./prepare.mjs";
 import {
   buildSpell, castLastSpell, castSpellFavorite, confirmHostileRestoration, getSpellFavorites, openSpellComposer,
@@ -22,6 +24,13 @@ export {MODULE_ID};
 
 /** The MIME type used to reorder favorites by drag and drop. */
 const FAVORITE_MIME = "application/x-folio-favorite";
+
+/** Controls which only change the view and stay usable for users who cannot edit the actor. */
+const VIEW_CONTROLS = ["input.fo-search", ...["foClearSearch", "foFilter", "foProfFilter", "foQuickbar", "foQbSkills",
+  "foSettings", "foTarget", "talentTree"].map(action => `button[data-action="${action}"]`)].join(", ");
+
+/** The MIME type which marks an inventory item dragged from a Folio sheet, readable while dragging over a section. */
+const INVENTORY_MIME = "application/x-folio-inventory";
 
 /**
  * Apply the Folio behavior to a Crucible actor sheet class.
@@ -61,6 +70,7 @@ export function FolioSheetMixin(Base) {
         foTraining: FolioSheet.#onChangeTraining,
         foFilter: FolioSheet.#onFilter,
         foCollapse: FolioSheet.#onCollapse,
+        foBioExpand: FolioSheet.#onBioExpand,
         foRest: FolioSheet.#onRest,
         foResolve: FolioSheet.#onResolveProgress,
         foShowArt: FolioSheet.#onShowArt,
@@ -148,17 +158,20 @@ export function FolioSheetMixin(Base) {
 
     /** Search and filter state per tab, kept on the instance so that filters survive re-renders. */
     #filters = {
-      play: {text: "", section: ""},
-      inventory: {text: ""},
-      talents: {text: ""},
-      effects: {text: ""}
+      play: {raw: "", text: "", section: ""},
+      inventory: {raw: "", text: ""},
+      talents: {raw: "", text: ""},
+      effects: {raw: "", text: ""}
     };
 
     /** The tab which resolves the next unmet progression requirement. */
     #progressTab = null;
 
-    /** Show only trainings with invested points on the training tab. */
-    #trainedOnly = false;
+    /**
+     * Show only trainings with invested points on the training tab. Crucible starts adversaries, who have no point
+     * pool, the same way and keeps its own filter in step (see #onProficiencyFilter).
+     */
+    #trainedOnly = !this.document.system.points;
 
     /** Elements which already received listeners, so partial re-renders do not bind them twice. */
     #bound = new WeakSet();
@@ -177,6 +190,15 @@ export function FolioSheetMixin(Base) {
 
     /** The element whose cost is previewed on the resource pips. */
     #costSource = null;
+
+    /** The inventory item dragged from this sheet and the section it was shown in, for the drop target highlight. */
+    #inventoryDrag = null;
+
+    /** The biography section which takes the whole tab, the others folded to their heading. */
+    #bioExpanded = null;
+
+    /** Uses of items which were changed but whose update has not returned yet, by item id. */
+    #pendingUses = new Map();
 
     /**
      * Was this quickbar opened by the GM combat bar? Such a bar follows the turn order: it is closed again when the
@@ -350,6 +372,7 @@ export function FolioSheetMixin(Base) {
         collapsed: uiState.collapsed,
         filters: this.#filters,
         hasBiographyDetails: !!this.document.system.schema.getField("details.biography.pronouns"),
+        bioState: Object.fromEntries(["appearance", "public", "private"].map(id => [id, this.#bioClass(id)])),
         actionColumns: [
           {key: "cost", label: _loc("FOLIO.COLUMNS.cost")},
           {key: "target", label: _loc("FOLIO.COLUMNS.target")}
@@ -505,6 +528,30 @@ export function FolioSheetMixin(Base) {
 
     /* -------------------------------------------- */
 
+    /**
+     * Core disables every form control of a sheet the user cannot edit. Controls which only change the view, such as
+     * search, filters, the quickbar and the talent tree, stay usable for observers.
+     * @inheritDoc
+     */
+    _toggleDisabled(disabled) {
+      super._toggleDisabled(disabled);
+      if ( !disabled ) return;
+      for ( const el of this.element.querySelectorAll(VIEW_CONTROLS) ) el.disabled = false;
+    }
+
+    /**
+     * Crucible clamps resources to their maximum, and an update which then changes nothing re-renders only the active
+     * tab. The Folio sheet shows the resource fields in its header, so that is re-rendered as well.
+     * @inheritDoc
+     */
+    async _processSubmitData(event, form, submitData, options={}) {
+      const result = await super._processSubmitData(event, form, submitData, options);
+      if ( result && !result.created && !result.updated && this.rendered ) this.render({parts: ["header"]});
+      return result;
+    }
+
+    /* -------------------------------------------- */
+
     /** @inheritDoc */
     async _onRender(context, options) {
       await super._onRender(context, options);
@@ -594,6 +641,15 @@ export function FolioSheetMixin(Base) {
           });
           container.addEventListener("drop", this.#onFavoriteDrop.bind(this));
         }
+
+        // Inventory sections which take the dragged item light up
+        for ( const list of el.querySelectorAll(".fo-inventory .fo-lists") ) {
+          if ( !bind(list) ) continue;
+          list.addEventListener("dragover", this.#onInventoryDragOver.bind(this));
+          list.addEventListener("dragleave", event => {
+            if ( !list.contains(event.relatedTarget) ) this.#markDropSection(null);
+          });
+        }
       }
 
       // Elements which carry an action but are not buttons become reachable by keyboard
@@ -608,12 +664,125 @@ export function FolioSheetMixin(Base) {
     /** @inheritDoc */
     async _onDragStart(event) {
       const target = event.currentTarget;
+      this.#inventoryDrag = null;
       if ( target.classList.contains("fo-action-drag") ) {
         const action = this.document.actions[target.closest("[data-action-id]")?.dataset.actionId];
         if ( action ) event.dataTransfer.setData("text/plain", JSON.stringify(action.toMacroDragData()));
         return;
       }
+      const from = target.closest(".fo-inventory [data-inventory-section]")?.dataset.inventorySection;
+      const item = from ? this.document.items.get(target.dataset.itemId) : null;
+      if ( item ) {
+        this.#inventoryDrag = {item, from};
+        event.dataTransfer.setData(INVENTORY_MIME, item.id);
+        target.addEventListener("dragend", () => this.#endInventoryDrag(), {once: true});
+      }
       return super._onDragStart(event);
+    }
+
+    /* -------------------------------------------- */
+    /*  Inventory Drag and Drop                     */
+    /* -------------------------------------------- */
+
+    /**
+     * Crucible equips an item dropped into the section of its type and stows one dropped into the backpack. Weapons may
+     * additionally move between the weapon and armor sections, equipping them if needed; the chosen section is kept
+     * on the item. A new item dropped into such a section is equipped there, as Crucible does for its own section.
+     * @inheritDoc
+     */
+    async _onDropItem(event, item) {
+      this.#endInventoryDrag();
+      const section = event.target.closest?.("[data-inventory-section]")?.dataset.inventorySection;
+      if ( !this.document.isOwner || !section ) return super._onDropItem(event, item);
+
+      // Moving an owned item, unless it is dropped onto a stack it combines with
+      if ( item.parent?.uuid === this.document.uuid ) {
+        const targetId = event.target.closest("[data-item-id]")?.dataset.itemId;
+        const target = (targetId && (targetId !== item.id)) ? this.document.items.get(targetId) : null;
+        const move = inventoryMove(item, section);
+        if ( !move || (target && item.isStackable({target})) ) return super._onDropItem(event, item);
+        return this.#moveItem(item, move);
+      }
+
+      // A new item: Crucible creates it, then it is placed in the section it was dropped into
+      const before = new Set(this.document.items.keys());
+      await super._onDropItem(event, item);
+      const created = this.document.items.find(i => !before.has(i.id));
+      const move = created ? inventoryMove(created, section) : null;
+      if ( !move ) return;
+      if ( move.equip ) {
+        try {
+          await created.update({system: this.document.canEquipItem(created)});
+        } catch(err) {
+          return ui.notifications.warn(err.message);
+        }
+      }
+      await this.#rememberSection(created, move.choice);
+    }
+
+    /**
+     * Equip an owned item if needed and remember the section it was moved into.
+     * @param {Item} item
+     * @param {{equip: boolean, choice: string|null}} move
+     */
+    async #moveItem(item, {equip, choice}) {
+      if ( equip ) {
+        const before = new Set(this.document.items.keys());
+        try {
+          await this.document.equipItem(item, {equipped: true});
+        } catch(err) {
+          return ui.notifications.warn(err.message);
+        }
+        // Crucible equips one unit split off a stack, and an equip action cancelled in combat equips nothing
+        const id = item.id;
+        item = this.document.items.find(i => i.system.equipped && ((i.id === id) || !before.has(i.id)));
+        if ( !item ) return;
+      }
+      await this.#rememberSection(item, choice);
+    }
+
+    /**
+     * Remember the section chosen for an item, or forget it when the item goes back to its default section. Choices
+     * for items the actor no longer owns are dropped along the way.
+     * @param {Item} item
+     * @param {string|null} choice
+     */
+    async #rememberSection(item, choice) {
+      const choices = inventoryChoices(this.document);
+      if ( (choices.get(item.id) ?? null) === choice ) return;
+      if ( choice ) choices.set(item.id, choice);
+      else choices.delete(item.id);
+      const pairs = [...choices].filter(([id]) => this.document.items.has(id));
+      await this.document.setFlag(MODULE_ID, FLAGS.inventorySections, pairs);
+    }
+
+    /**
+     * Highlight the inventory section under the pointer when the item dragged from this sheet would move there.
+     * @param {DragEvent} event
+     */
+    #onInventoryDragOver(event) {
+      const drag = event.dataTransfer?.types.includes(INVENTORY_MIME) ? this.#inventoryDrag : null;
+      const section = event.target.closest("[data-inventory-section]");
+      const id = section?.dataset.inventorySection;
+      const accepts = drag && id && (id !== drag.from) && acceptsInventoryDrop(drag.item, id);
+      this.#markDropSection(accepts ? section : null);
+    }
+
+    /**
+     * Mark one inventory section as the drop target.
+     * @param {HTMLElement|null} section
+     */
+    #markDropSection(section) {
+      for ( const node of this.element.querySelectorAll(".fo-section.fo-drop-target") ) {
+        if ( node !== section ) node.classList.remove("fo-drop-target");
+      }
+      section?.classList.add("fo-drop-target");
+    }
+
+    /** Forget the dragged inventory item and remove its highlight. */
+    #endInventoryDrag() {
+      this.#inventoryDrag = null;
+      this.#markDropSection(null);
     }
 
     /* -------------------------------------------- */
@@ -853,7 +1022,7 @@ export function FolioSheetMixin(Base) {
       if ( !this.options.folioSelfTest ) countFeature(MODULE_ID, "quickbarToggle");
       if ( !on ) this.folioAutoBar = false; // Opening the full sheet makes a combat bar an ordinary sheet
       game.tooltip.deactivate();
-      const stored = actorEntry(loadUIState().quickbar, this.document) ?? {};
+      const stored = this.options.folioSelfTest ? {} : (actorEntry(loadUIState().quickbar, this.document) ?? {});
       if ( on ) {
         const {left, top, width, height} = this.position;
         this.#fullPosition = {left, top, width, height};
@@ -1023,6 +1192,7 @@ export function FolioSheetMixin(Base) {
     #onSearchInput(event) {
       const input = event.currentTarget;
       const tab = input.dataset.tab;
+      this.#filters[tab].raw = input.value;
       this.#filters[tab].text = input.value.trim().toLowerCase();
       input.closest(".fo-search-box")?.classList.toggle("has-value", !!input.value);
       this.#applyFilter(tab);
@@ -1278,8 +1448,15 @@ export function FolioSheetMixin(Base) {
       const item = this.#getItem(target);
       const uses = item?.system.uses;
       if ( !uses ) return;
-      const value = Math.clamp(uses.value + Number(target.dataset.delta), 0, uses.max);
-      if ( value !== uses.value ) await item.update({"system.uses.value": value});
+      const current = this.#pendingUses.get(item.id) ?? uses.value;
+      const value = Math.clamp(current + Number(target.dataset.delta), 0, uses.max);
+      if ( value === current ) return;
+      this.#pendingUses.set(item.id, value);
+      try {
+        await item.update({"system.uses.value": value});
+      } finally {
+        if ( this.#pendingUses.get(item.id) === value ) this.#pendingUses.delete(item.id);
+      }
     }
 
     /**
@@ -1434,8 +1611,12 @@ export function FolioSheetMixin(Base) {
     }
 
     /** @this {FolioSheet} */
-    static async #onProficiencyFilter() {
+    static async #onProficiencyFilter(event, target) {
       this.#trainedOnly = !this.#trainedOnly;
+      // Crucible leaves untrained trainings out of the context while its own filter is on, so toggle it as well
+      const handler = this.options.actions.proficiencyFilter;
+      const fn = handler?.handler ?? handler;
+      if ( fn ) return fn.call(this, event, target);
       await this.render({parts: ["training"]});
     }
 
@@ -1452,6 +1633,33 @@ export function FolioSheetMixin(Base) {
       const collapsed = !block.classList.contains("collapsed");
       block.classList.toggle("collapsed", collapsed);
       updateUIState(state => state.collapsed[key] = collapsed);
+    }
+
+    /**
+     * Let one biography section take the whole tab, as Crucible's sheet does; a second click shows all sections again.
+     * @this {FolioSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static #onBioExpand(event, target) {
+      const id = target.closest("[data-bio-section]")?.dataset.bioSection;
+      if ( !id ) return;
+      this.#bioExpanded = (this.#bioExpanded === id) ? null : id;
+      for ( const card of this.element.querySelectorAll(".fo-bio-card[data-bio-section]") ) {
+        card.classList.remove("fo-bio-expanded", "fo-bio-folded");
+        const css = this.#bioClass(card.dataset.bioSection);
+        if ( css ) card.classList.add(css);
+      }
+    }
+
+    /**
+     * The class of a biography section while one section is expanded.
+     * @param {string} id
+     * @returns {string}
+     */
+    #bioClass(id) {
+      if ( !this.#bioExpanded ) return "";
+      return (id === this.#bioExpanded) ? "fo-bio-expanded" : "fo-bio-folded";
     }
 
     /**
@@ -1499,8 +1707,12 @@ export function FolioSheetMixin(Base) {
     }
 
     /** @this {FolioSheet} */
-    static #onGoTab(event, target) {
-      this.changeTab(target.dataset.tab, "sheet");
+    static async #onGoTab(event, target) {
+      const tab = target.dataset.tab;
+      if ( !this.#quickbar ) return this.changeTab(tab, "sheet");
+      this.tabGroups.sheet = tab;
+      this.#persist(state => state.tabs[this.stateKey] = tab);
+      await this.toggleQuickbar(false);
     }
 
     /**

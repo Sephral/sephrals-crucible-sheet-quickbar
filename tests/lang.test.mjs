@@ -13,7 +13,7 @@ globalThis.foundry = {
 };
 
 const {SETTINGS, labelKey} = await import("../scripts/settings.mjs");
-const {ACTION_SECTIONS, INVENTORY_COLUMNS} = await import("../scripts/config.mjs");
+const {ACTION_SECTIONS, INVENTORY_COLUMNS, INVENTORY_EXTRA_COLUMNS} = await import("../scripts/config.mjs");
 
 /**
  * All keys of a nested translation object, dotted.
@@ -81,7 +81,8 @@ test("every key used by scripts and templates exists", async () => {
     }
   }
   for ( const id of ["favorites", ...ACTION_SECTIONS] ) used.add(`FOLIO.ACTIONS.${id}`);
-  for ( const id of new Set(Object.values(INVENTORY_COLUMNS).flat()) ) used.add(`FOLIO.COLUMNS.${id}`);
+  const columns = [...Object.values(INVENTORY_COLUMNS), ...Object.values(INVENTORY_EXTRA_COLUMNS)].flat();
+  for ( const id of new Set(columns) ) used.add(`FOLIO.COLUMNS.${id}`);
   for ( const id of ["action", "focus", "heroism", "fortitude", "reflex", "willpower"] ) used.add(`FOLIO.QB.${id}`);
   for ( const id of ["physical", "fortitude", "reflex", "willpower"] ) used.add(`FOLIO.DEFENSE.${id}`);
   for ( const id of ["play", "inventory", "talents", "training", "spells", "effects", "attunement", "biography"] ) {

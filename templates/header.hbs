@@ -4,7 +4,7 @@
 
         {{!-- Portrait with level badge and milestone progress --}}
         <div class="fo-portrait{{#if h.health.state}} hp-{{h.health.state}}{{/if}}">
-            <img class="fo-portrait-img" src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-edit="img"
+            <img class="fo-portrait-img profile" src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-edit="img"
                  data-tooltip="{{#if @root.folio.unlocked}}FOLIO.EditPortrait{{else}}FOLIO.ShowPortrait{{/if}}">
             {{#if h.isHero}}
             <div class="fo-milestones" data-tooltip="{{h.milestones.tooltip}}">
@@ -22,7 +22,12 @@
                         data-tooltip="ACTOR.ACTIONS.LevelUp"><i class="fa-solid fa-angles-up"></i></button>
                 {{/if}}
                 {{/if}}
+                {{#if h.levelField}}
+                <input class="fo-level-num" type="number" name="system.advancement.level" value="{{h.level}}" min="1" step="1"
+                       data-dtype="Number" data-tooltip="{{h.milestones.tooltip}}" aria-label="{{localize 'ADVANCEMENT.Level'}}">
+                {{else}}
                 <span class="fo-level-num" data-tooltip="{{#if h.isHero}}{{h.milestones.tooltip}}{{else}}{{h.threat.label}}{{/if}}">{{h.levelDisplay}}</span>
+                {{/if}}
                 <span class="fo-level-label">{{localize "FOLIO.Level"}}</span>
             </div>
             {{#if h.combat}}
@@ -146,7 +151,7 @@
                 <span class="fo-cur-label" data-tooltip="{{c.tooltip}}">{{c.label}}</span>
                 <div class="fo-pips">
                     {{#each c.pips as |pip i|}}
-                    <a class="fo-pip {{pip.cssClass}}" data-action="resourcePip" data-resource="{{c.id}}" data-index="{{i}}"
+                    <a class="fo-pip {{pip.cssClass}}" {{#if @root.folio.editable}}data-action="resourcePip"{{/if}} data-resource="{{c.id}}" data-index="{{i}}"
                        aria-label="{{c.label}} {{i}}"></a>
                     {{/each}}
                 </div>
@@ -184,7 +189,7 @@
 
         {{#with @root.folio.defenses as |d|}}
         <div class="fo-defenses">
-            <div class="fo-stat fo-defense physical" data-tooltip="{{d.physical.tooltip}}">
+            <div class="fo-stat fo-defense physical" data-tooltip-html="{{d.physical.tooltip}}" data-tooltip-class="fo-defense-tip">
                 <span class="fo-stat-label" data-crucible-tooltip="tag" data-rule-id="defense.physical">{{d.physical.label}}</span>
                 <span class="fo-stat-value">{{d.physical.value}}</span>
                 <span class="fo-segments">
@@ -200,13 +205,13 @@
         </div>
 
         <div class="fo-movement">
-            <a class="fo-move" data-action="editStride" data-tooltip="ACTOR.FIELDS.movement.stride.tooltip">
+            <a class="fo-move" {{#if @root.folio.editable}}data-action="editStride"{{/if}} data-tooltip="ACTOR.FIELDS.movement.stride.tooltip">
                 <i class="fa-solid fa-shoe-prints"></i><span class="fo-move-label">{{localize "ACTOR.FIELDS.movement.stride.label"}}</span><b>{{d.stride}}</b>
             </a>
-            <a class="fo-move" data-action="editEngagement" data-tooltip="ACTOR.FIELDS.movement.engagement.tooltip">
+            <a class="fo-move" {{#if @root.folio.editable}}data-action="editEngagement"{{/if}} data-tooltip="ACTOR.FIELDS.movement.engagement.tooltip">
                 <i class="fa-solid fa-crosshairs"></i><span class="fo-move-label">{{localize "ACTOR.FIELDS.movement.engagement.labelShort"}}</span><b>{{d.engagement}}</b>
             </a>
-            <a class="fo-move" data-action="editSize" data-tooltip="ANCESTRY.FIELDS.movement.size.hint">
+            <a class="fo-move" {{#if @root.folio.editable}}data-action="editSize"{{/if}} data-tooltip="ANCESTRY.FIELDS.movement.size.hint">
                 <i class="fa-solid fa-up-right-and-down-left-from-center"></i><span class="fo-move-label">{{localize "ANCESTRY.FIELDS.movement.size.label"}}</span><b>{{d.size}}</b>
             </a>
         </div>

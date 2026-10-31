@@ -2,7 +2,7 @@
 <section class="fo-quickbar{{#if h.combat.isTurn}} is-turn{{else if h.combat.isNext}} is-next{{/if}}">
     <div class="fo-qb-status">
         <div class="fo-qb-portrait{{#if h.health.state}} hp-{{h.health.state}}{{/if}}">
-            <img src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-tooltip="FOLIO.ShowPortrait">
+            <img class="profile" src="{{h.img}}" alt="{{h.name}}" data-action="foShowArt" data-tooltip="FOLIO.ShowPortrait">
             <span class="fo-qb-level" data-tooltip="{{#if h.isHero}}{{h.milestones.tooltip}}{{else}}{{h.threat.label}}{{/if}}">{{h.levelDisplay}}</span>
             {{#if h.combat}}
             <span class="fo-qb-ini" data-tooltip="{{#if h.combat.isTurn}}FOLIO.YourTurn{{else if h.combat.isNext}}FOLIO.NextTurnHint{{else}}FOLIO.InCombat{{/if}}">
@@ -31,7 +31,7 @@
                 <span class="fo-qb-cur-label">{{localize (concat "FOLIO.QB." c.id)}}</span>
                 <div class="fo-pips">
                     {{#each c.pips as |pip i|}}
-                    <a class="fo-pip {{pip.cssClass}}" data-action="resourcePip" data-resource="{{c.id}}" data-index="{{i}}"
+                    <a class="fo-pip {{pip.cssClass}}" {{#if @root.folio.editable}}data-action="resourcePip"{{/if}} data-resource="{{c.id}}" data-index="{{i}}"
                        aria-label="{{c.label}} {{i}}"></a>
                     {{/each}}
                 </div>

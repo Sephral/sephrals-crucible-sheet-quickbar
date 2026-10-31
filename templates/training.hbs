@@ -26,11 +26,14 @@
                     {{#each section.types as |t|}}
                     <li class="fo-train{{#if t.rollable}} rollable{{/if}}{{#if t.points}} invested{{/if}}" data-training="{{t.id}}" data-skill="{{t.id}}">
                         <img src="{{t.icon}}" alt="" inert>
-                        {{#if t.rollable}}
-                        <a class="fo-train-name" data-action="foSkill" data-tooltip="FOLIO.RollHint">{{t.label}}</a>
-                        {{else}}
-                        <span class="fo-train-name">{{t.label}}</span>
-                        {{/if}}
+                        <span class="fo-train-title">
+                            {{#if t.rollable}}
+                            <a class="fo-train-name" data-action="foSkill" data-tooltip="FOLIO.RollHint">{{t.label}}</a>
+                            {{else}}
+                            <span class="fo-train-name">{{t.label}}</span>
+                            {{/if}}
+                            {{#if t.abbrs}}<span class="fo-train-abbrs">{{t.abbrs}}</span>{{/if}}
+                        </span>
                         <span class="fo-train-rank">{{t.rank}}</span>
                         <span class="fo-train-bar" data-tooltip-html="{{t.tooltips.points}}" data-tooltip-class="crucible">
                             <i style="width: {{t.widthPct}}"></i>

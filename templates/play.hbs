@@ -72,7 +72,7 @@
         <div class="fo-toolbar">
             <label class="fo-search-box{{#if folio.filters.play.text}} has-value{{/if}}">
                 <i class="fa-solid fa-magnifying-glass" inert></i>
-                <input class="fo-search" type="search" data-tab="play" value="{{folio.filters.play.text}}"
+                <input class="fo-search" type="search" id="{{@root.partId}}-search" data-tab="play" value="{{folio.filters.play.raw}}"
                        placeholder="{{localize 'FOLIO.SearchActions'}}" autocomplete="off" spellcheck="false">
                 <button type="button" class="fo-clear" data-action="foClearSearch" tabindex="-1"><i class="fa-solid fa-xmark"></i></button>
             </label>

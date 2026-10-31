@@ -8,7 +8,7 @@
     "InCombat": "Im Kampf",
     "NextTurnHint": "Du bist als Nächstes dran",
     "EditPortrait": "Porträt ändern",
-    "ShowPortrait": "Porträt allen zeigen",
+    "ShowPortrait": "Porträt zeigen",
     "ViewAncestry": "Abstammung ansehen",
     "ViewBackground": "Hintergrund ansehen",
     "Signature": "Signaturtalent",
@@ -70,6 +70,7 @@
       "range": "Reichw.",
       "armor": "Rüstung",
       "dodge": "Ausw.",
+      "block": "Block",
       "uses": "Ladung",
       "quantity": "Menge",
       "weight": "Gewicht"
@@ -324,6 +325,14 @@
       "ConfigFolio": "Sheet & Quickbar",
       "ConfigStandard": "Standardbogen",
       "ConfigHint": "Wirkt sofort und nur für dich – andere Spieler und die SL sehen ihre eigene Wahl. Die Einstellungen unten gelten dagegen für alle."
+    },
+    "WELCOME": {
+      "Title": "Sephral’s Crucible Sheet & Quickbar",
+      "Text": "Soll Sheet & Quickbar in dieser Welt der Standardbogen sein? Er öffnet sich dann für alle, die nichts anderes gewählt haben.",
+      "Hint": "Alle Spieler und die SL können einzelne Charaktere weiterhin auf Crucibles Bogen zurückstellen. Ändern lässt sich das später unter Einstellungen konfigurieren, Vorgabe für alle.",
+      "Heroes": "Ja, für Helden",
+      "All": "Ja, für Helden und Gegner",
+      "None": "Nein, jeder wählt selbst"
     },
     "MIGRATION": {
       "Done": "Sephral’s Crucible Sheet & Quickbar hat die Daten von „Crucible Folio“ übernommen ({actors} Akteure). Das alte Modul kann deaktiviert werden.",

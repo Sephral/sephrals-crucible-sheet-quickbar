@@ -54,6 +54,30 @@ export const INVENTORY_COLUMNS = {
   toolbelt: ["uses", "quantity", "weight"],
   backpack: ["uses", "quantity", "weight"]
 };
+/** Columns a section adds before its weight column when one of its items has a value for them. */
+export const INVENTORY_EXTRA_COLUMNS = {
+  armor: ["block"]
+};
+
+/** The section Crucible sorts an equipped item into, by item type. */
+export const EQUIPMENT_SECTIONS = {
+  weapon: "weapon",
+  armor: "armor",
+  accessory: "accessory",
+  consumable: "toolbelt",
+  tool: "toolbelt"
+};
+
+/**
+ * Sections an equipped item may be moved into by drag and drop, by item type. Sections with slot counters stay out,
+ * so their counters keep matching the slots in use.
+ */
+export const INVENTORY_PLACES = {
+  weapon: ["weapon", "armor"]
+};
+
+/** Weapon categories which are shields; equipped shields are shown in the armor section unless moved. */
+export const SHIELD_CATEGORIES = new Set(["shieldLight", "shieldHeavy"]);
 export const INVENTORY_ICONS = {
   weapon: "fa-solid fa-swords",
   armor: "fa-solid fa-shield-halved",
@@ -72,7 +96,8 @@ export const TALENT_ICONS = {
 export const FLAGS = {
   spellFavorites: "spellFavorites",
   favoriteOrder: "favoriteOrder",
-  pinnedSkills: "pinnedSkills"
+  pinnedSkills: "pinnedSkills",
+  inventorySections: "inventorySections"
 };
 
 /* -------------------------------------------- */

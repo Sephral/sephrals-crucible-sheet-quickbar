@@ -8,7 +8,7 @@
     "InCombat": "In combat",
     "NextTurnHint": "You are next",
     "EditPortrait": "Change portrait",
-    "ShowPortrait": "Show portrait to players",
+    "ShowPortrait": "Show portrait",
     "ViewAncestry": "View ancestry",
     "ViewBackground": "View background",
     "Signature": "Signature talent",
@@ -70,6 +70,7 @@
       "range": "Range",
       "armor": "Armor",
       "dodge": "Dodge",
+      "block": "Block",
       "uses": "Uses",
       "quantity": "Qty",
       "weight": "Weight"
@@ -324,6 +325,14 @@
       "ConfigFolio": "Sheet & Quickbar",
       "ConfigStandard": "Standard sheet",
       "ConfigHint": "Applies at once and only to you – other players and the GM see their own choice. The settings below apply to everyone."
+    },
+    "WELCOME": {
+      "Title": "Sephral’s Crucible Sheet & Quickbar",
+      "Text": "Should the Sheet & Quickbar be the standard sheet in this world? It then opens for everyone who has not chosen otherwise.",
+      "Hint": "Every player and the GM can still switch single characters back to Crucible’s sheet. You can change this later under Configure Settings, Default for everyone.",
+      "Heroes": "Yes, for heroes",
+      "All": "Yes, for heroes and adversaries",
+      "None": "No, everyone chooses"
     },
     "MIGRATION": {
       "Done": "Sephral’s Crucible Sheet & Quickbar took over the data of “Crucible Folio” ({actors} actors). The old module can be disabled.",

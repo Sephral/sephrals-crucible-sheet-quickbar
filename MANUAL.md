@@ -7,26 +7,31 @@ This manual covers the details. For a quick overview see the [README](README.md)
 Requirements: Foundry VTT 14 and the Crucible system 0.11 or newer. Ember is optional. With it the sheet shows the *Attunement* tab.
 
 1. Install the module from Foundry's module browser (search for *Crucible Sheet & Quickbar*), with its manifest URL `https://github.com/Sephral/sephrals-crucible-sheet-quickbar/releases/latest/download/module.json`, or unpack the release zip into `Data/modules/sephrals-crucible-sheet-quickbar/`. The folder name must match, and `module.json` lies directly inside.
-2. Enable the module in the world (*Manage Modules*, GM).
-3. Choose the sheet for yourself: right click your character in the actor directory → *Use Sheet & Quickbar (just for me)*.
+2. Enable the module in the world (*Manage Modules*, GM). On the first start the GM is asked once whether the sheet should be the standard sheet for everyone: for heroes, for heroes and adversaries, or not (everyone chooses).
+3. Or choose the sheet just for yourself: right click your character in the actor directory → *Use Sheet & Quickbar (just for me)*.
 
 ## Who sees the sheet
 
-Enabling the module changes nothing for anyone. Each user chooses for themselves:
+Enabling the module changes nothing for anyone until it is chosen. The GM is asked once on the first start whether it should be the default for everyone, see *For everyone* below. Each user chooses for themselves:
 
 * **For all their characters:** *Configure Settings → Sephral’s Crucible Sheet & Quickbar → Use Sheet & Quickbar for*: all heroes and adversaries, heroes only, only characters chosen one by one, or as set by the GM (default).
 * **For a single character:** right click the actor in the actor directory → *Use Sheet & Quickbar (just for me)*, use the ⋮ menu of the Crucible sheet, or open Foundry's *Configure Sheet* dialog, which gets a section *just for you* at the top. The ⋮ menu of this sheet switches back to the standard sheet.
-* **For everyone (GM):** *Default for everyone* sets the sheet for heroes, or heroes and adversaries, for all users who follow the GM. The default is *Nobody*.
+* **For everyone (GM):** *Default for everyone* sets the sheet for heroes, or heroes and adversaries, for all users who follow the GM. The default is *Nobody*, and the question on the first start sets it as well.
 
 The choice is personal and never changes the actor. That is why it is not one of the sheet types in Foundry's *Configure Sheet* dialog, whose choices apply to all users. The dialog shows the personal choice in a section of its own instead. Open sheets switch immediately. The other features (turn notice, spellbook strip in Crucible's spell dialog, version notice for the GM) only act for characters the user sees in this sheet. Character creation (level 0) keeps using the system's creation sheet.
 
 ## The sheet
 
-* **Header (always visible):** portrait with level and milestone bar, health and wounds, morale and madness with thresholds, action, focus and heroism as clickable pips, active conditions, abilities, defenses (physical with its composition bar), movement, size, stride.
+* **Header (always visible):** portrait with level and milestone bar, health and wounds, morale and madness with thresholds, action, focus and heroism as clickable pips, active conditions, abilities, defenses (physical with its composition bar, hover it for armor, dodge, parry and block with their shares), movement, size, stride. In edit mode a hero's level is a field, as on Crucible's sheet. A level 0 hero gets the level up button once creation is complete.
 * **Play:** sidebar with equipment, skills (click for a check), resistances, knowledge and languages. Next to it all actions with cost chips, target, search and filters.
 * **Inventory, Talents, Training, Spells, Effects, Attunement (Ember, heroes only), Biography.**
+* **Inventory:** equipped shields are listed under *Armor* with their Block value, although Crucible counts them as off hand weapons. Drag an item onto a section to move it: onto the *Backpack* to stow it, onto *Weapons* or *Armor* to equip it there. Weapons and shields can sit in either of these two sections, the sheet remembers the choice per character. The section under the pointer lights up when the item can go there.
+* **Training:** every training names the abilities behind it.
+* **Biography:** appearance with the details beside it, public and private biography share the height of the tab like in Crucible's sheet. Click a heading to give that text the whole tab, click again to show all three.
 
-The adversary sheet uses the same layout, adapted to Crucible adversaries: taxonomy and archetype, threat rank, level with fractional steps, a star for *important* adversaries (only those show wounds and madness), heroism only when present, no rest buttons.
+The adversary sheet uses the same layout, adapted to Crucible adversaries: taxonomy and archetype, threat rank, level with fractional steps, a star for *important* adversaries (only those show wounds and madness), heroism only when present, no rest buttons. Its training tab starts with the trained skills only, as Crucible's does, and its talents can be dragged onto other adversaries.
+
+Players who may only observe a character can still search, filter, open the quickbar, look at the talent tree and read everything. Controls that would change the character stay inactive for them.
 
 The module brings German skill and training names (Athletik, Wahrnehmung, Arkanes …).
 
@@ -50,7 +55,9 @@ The module brings German skill and training names (Athletik, Wahrnehmung, Arkane
 | Cost preview | Hovering an action pulses the action, focus and heroism pips it costs. Missing pips turn red |
 | Conditions | In the header and the quickbar with their remaining rounds. Maintained effects have a gold frame and an ✕ to end them. When their maintenance is due (Crucible 0.11.2) they pulse, and on your own turn a button pays the Focus with Crucible's Maintain action |
 | Repeat last spell | Button in the Spells tab and the quickbar |
+| Show the portrait | Click it in play mode. The GM can show it to the players from the image window's menu |
 | Sort favorites | Drag and drop favorites (and quickbar buttons) |
+| Equip and stow | Drag an item onto an inventory section |
 | Pin skills | Pin icon next to a skill: it then appears among the favorites and in the quickbar |
 | Charges | −/+ next to charges in the inventory |
 | Keyboard | Every clickable element is reachable with Tab. Enter or Space triggers it |
@@ -135,6 +142,10 @@ Crucible is still before 1.0 and changes between versions. After an update of Fo
 For bug reports, the GM saves one file about all of Sephral’s modules in this world: `Save debug file` in the module settings, or `Save Debug File (Sephral’s Modules)` in the context menu of a chat message. It holds the versions of Foundry, the system and the active modules, the settings of the modules and what they recorded, for Sheet & Quickbar the verified and installed versions of Crucible and Ember, whether the sheets are in use and the quickbars this browser remembers. Macros call `game.modules.get("sephrals-crucible-sheet-quickbar").api.saveDebugFile()`.
 
 The file contains chat text and whispers. Check it before you share it.
+
+## Sephral’s Modules
+
+The module settings have a button *Sephral’s Modules* (GMs only). It opens one window for all of Sephral's modules in the world: the version, self-test, settings and manual of each, a button that switches on an installed module that is off (Foundry then reloads the world for everyone), and the debug file. Below, *More from Sephral* lists other modules that fit the game system of the world, shown only after a click. The list is part of the module, nothing is loaded from the internet for it.
 
 ## Limitations
 

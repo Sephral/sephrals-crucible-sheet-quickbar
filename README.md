@@ -25,11 +25,11 @@ Dense lists, a play and an edit mode, search and inline details, all in Crucible
 
 ## How it works
 
-1. Enable the module in your Crucible world. Nothing changes for anyone yet.
-2. Right click your character in the actor directory and choose **Use Sheet & Quickbar (just for me)**.
+1. Enable the module in your Crucible world. The GM is asked once whether it should be the standard sheet for everyone.
+2. Or right click your character in the actor directory and choose **Use Sheet & Quickbar (just for me)**.
 3. Double click the title bar to switch between the full sheet and the quickbar.
 
-The GM can also make it the default for everyone.
+Everyone can still switch single characters back to Crucible’s own sheet.
 
 ## Install
 

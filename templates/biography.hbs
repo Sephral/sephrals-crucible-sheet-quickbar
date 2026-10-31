@@ -1,33 +1,39 @@
 <section class="tab fo-tab fo-biography {{tabs.biography.cssClass}}" data-group="{{tabs.biography.group}}" data-tab="{{tabs.biography.id}}">
-    <div class="fo-scroll fo-bio-layout{{#unless folio.hasBiographyDetails}} no-details{{/unless}}">
-        {{#if folio.hasBiographyDetails}}
-        <aside class="fo-bio-side">
-            <div class="fo-card">
-                <h3 class="fo-card-head">{{localize "ACTOR.Details"}}</h3>
-                <div class="fo-fields">
+    <div class="fo-scroll fo-bio-layout">
+        <div class="fo-card fo-bio-card{{#unless biography.appearanceSrc}} empty{{/unless}} {{folio.bioState.appearance}}" data-bio-section="appearance">
+            <h3 class="fo-card-head fo-bio-head" data-action="foBioExpand" data-tooltip="{{biography.appearanceField.hint}}">
+                <span>{{biography.appearanceField.label}}</span><i class="fa-solid fa-chevron-down fo-chev" inert></i>
+            </h3>
+            <div class="fo-bio-body">
+                {{formInput biography.appearanceField value=biography.appearanceSrc enriched=biography.appearanceHTML toggled=true}}
+                {{#if folio.hasBiographyDetails}}
+                <div class="fo-fields fo-bio-details">
+                    <span class="fo-bio-details-head">{{localize "ACTOR.Details"}}</span>
                     {{formGroup fields.details.fields.biography.fields.pronouns value=source.system.details.biography.pronouns classes="slim"}}
                     {{formGroup fields.details.fields.biography.fields.age value=source.system.details.biography.age classes="slim"}}
                     {{formGroup fields.details.fields.biography.fields.height value=source.system.details.biography.height classes="slim"}}
                     {{formGroup fields.details.fields.biography.fields.weight value=source.system.details.biography.weight classes="slim"}}
                 </div>
+                {{/if}}
             </div>
-        </aside>
-        {{/if}}
-        <div class="fo-bio-main">
-            <div class="fo-card fo-editor-card">
-                <h3 class="fo-card-head" data-tooltip="{{biography.appearanceField.hint}}">{{biography.appearanceField.label}}</h3>
-                {{formInput biography.appearanceField value=biography.appearanceSrc enriched=biography.appearanceHTML toggled=true}}
-            </div>
-            <div class="fo-card fo-editor-card">
-                <h3 class="fo-card-head" data-tooltip="{{biography.publicField.hint}}">{{biography.publicField.label}}</h3>
+        </div>
+        <div class="fo-card fo-bio-card{{#unless biography.publicSrc}} empty{{/unless}} {{folio.bioState.public}}" data-bio-section="public">
+            <h3 class="fo-card-head fo-bio-head" data-action="foBioExpand" data-tooltip="{{biography.publicField.hint}}">
+                <span>{{biography.publicField.label}}</span><i class="fa-solid fa-chevron-down fo-chev" inert></i>
+            </h3>
+            <div class="fo-bio-body">
                 {{formInput biography.publicField value=biography.publicSrc enriched=biography.publicHTML toggled=true}}
             </div>
-            {{#if biography.privateField}}
-            <div class="fo-card fo-editor-card">
-                <h3 class="fo-card-head" data-tooltip="{{biography.privateField.hint}}">{{biography.privateField.label}}</h3>
+        </div>
+        {{#if biography.privateField}}
+        <div class="fo-card fo-bio-card{{#unless biography.privateSrc}} empty{{/unless}} {{folio.bioState.private}}" data-bio-section="private">
+            <h3 class="fo-card-head fo-bio-head" data-action="foBioExpand" data-tooltip="{{biography.privateField.hint}}">
+                <span>{{biography.privateField.label}}</span><i class="fa-solid fa-chevron-down fo-chev" inert></i>
+            </h3>
+            <div class="fo-bio-body">
                 {{formInput biography.privateField value=biography.privateSrc enriched=biography.privateHTML toggled=true}}
             </div>
-            {{/if}}
         </div>
+        {{/if}}
     </div>
 </section>
