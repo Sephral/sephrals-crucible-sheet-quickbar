@@ -150,6 +150,6 @@ The first button in the module settings, *Sephral’s Modules* (GMs only), opens
 ## Limitations
 
 * Crucible only. In worlds of other systems the module does nothing.
-* Verified with Crucible 0.11.2, Ember 0.6.3 and Foundry 14.370. Run the self test after updates.
+* Verified with Crucible 0.11.3, Ember 0.6.3 and Foundry 14.370. Run the self test after updates.
 * Character creation (level 0) keeps using the system's creation sheet.
 * The *Attunement* tab and the *Ember codex* background need the Ember module.
