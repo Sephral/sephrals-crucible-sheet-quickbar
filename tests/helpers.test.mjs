@@ -309,6 +309,33 @@ test("inventoryChoices reads the chosen sections from the actor", () => {
     "anything but a list of pairs is ignored");
 });
 
+test("canDropItem allows weapons in hand only", () => {
+  const weapon = (system, properties = []) => ({type: "weapon", system: {equipped: true, dropped: false, properties: new Set(properties), ...system}});
+  assert.equal(prepare.canDropItem(weapon({})), true);
+  assert.equal(prepare.canDropItem(weapon({category: "shieldLight"})), true, "shields are weapons in Crucible");
+  assert.equal(prepare.canDropItem(weapon({equipped: false})), false, "a stowed weapon is not in hand");
+  assert.equal(prepare.canDropItem(weapon({dropped: true, equipped: false})), false, "it lies on the ground already");
+  assert.equal(prepare.canDropItem(weapon({}, ["natural"])), false, "claws cannot be dropped");
+  for ( const type of ["armor", "accessory", "tool", "consumable", "loot"] ) {
+    assert.equal(prepare.canDropItem({type, system: {equipped: true, properties: new Set()}}), false, type);
+  }
+  assert.equal(prepare.canDropItem(undefined), false);
+});
+
+test("prepareEquipped marks what can be dropped and lists the weapons on the ground", () => {
+  const item = (id, system, type = "weapon") => ({id, uuid: `Actor.a.Item.${id}`, name: id, type, img: `${id}.webp`, system: {properties: new Set(), ...system}});
+  const actor = {items: [item("sword", {equipped: true}), item("bow", {dropped: true, equipped: false}), item("axe", {equipped: false}), item("mail", {equipped: true}, "armor")]};
+  const rows = prepare.prepareEquipped(actor, [
+    {name: "sword", type: "weapon", uuid: "Actor.a.Item.sword", tags: ["5 damage", undefined]},
+    {name: "Unarmed", type: "weapon", tags: []},
+    {name: "mail", type: "armor", uuid: "Actor.a.Item.mail", tags: ["10"]}
+  ]);
+  assert.deepEqual(rows.map(r => [r.name, r.itemId, r.canDrop, r.dropped]),
+    [["sword", "sword", true, false], ["Unarmed", null, false, false], ["mail", "mail", false, false], ["bow", "bow", false, true]]);
+  assert.deepEqual(rows[0].tags, ["5 damage"]);
+  assert.deepEqual(prepare.prepareEquipped({items: []}, undefined), []);
+});
+
 test("inventoryMove equips if needed and remembers only sections other than the default", () => {
   const shield = makeItem("weapon", {category: "shieldHeavy"});
   assert.deepEqual(prepare.inventoryMove(shield, "armor"), {equip: false, choice: null});

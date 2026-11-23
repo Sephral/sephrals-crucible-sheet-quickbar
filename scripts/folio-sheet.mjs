@@ -8,9 +8,9 @@ import {
 import {openSettings} from "./settings.mjs";
 import {setActorChoice} from "./sheet-choice.mjs";
 import {
-  acceptsInventoryDrop, computeDefenses, getProgressIssues, inventoryChoices, inventoryMove, prepareAbilities,
+  acceptsInventoryDrop, canDropItem, computeDefenses, getProgressIssues, inventoryChoices, inventoryMove, prepareAbilities,
   prepareActionChips,
-  prepareActions, prepareAttunements, prepareEffects, prepareHeader, prepareInventory, prepareLastSpell,
+  prepareActions, prepareAttunements, prepareEffects, prepareEquipped, prepareHeader, prepareInventory, prepareLastSpell,
   preparePinnedSkills, prepareQuickbarButtons, prepareResistances, prepareSkills, prepareSpellbook, prepareSpells,
   prepareTalents, prepareTargets, prepareTraining
 } from "./prepare.mjs";
@@ -388,7 +388,7 @@ export function FolioSheetMixin(Base) {
       folio.actions.chips = prepareActionChips(folio.actions.sections, this.#filters.play.section);
       folio.skills = await safe("skills", () => prepareSkills(scope, context), []);
       folio.resistances = await safe("resistances", () => prepareResistances(scope), {groups: []});
-      folio.equipped = (context.featuredEquipment ?? []).map(e => ({...e, tags: (e.tags ?? []).filter(Boolean)}));
+      folio.equipped = await safe("equipped", () => prepareEquipped(this.document, context.featuredEquipment), []);
       folio.inventory = await safe("inventory", () => prepareInventory(scope, context), {sections: []});
       folio.talents = await safe("talents", () => prepareTalents(scope, context), {sections: []});
       folio.training = await safe("training", () => prepareTraining(scope, context), {sections: []});
@@ -923,6 +923,9 @@ export function FolioSheetMixin(Base) {
         {label: "FOLIO.MENU.Unequip", icon: icon("fa-shield-minus"),
           visible: li => editable() && (li.dataset.equipped === "true"),
           onClick: (_e, li) => this.#equipItem(itemOf(li))},
+        {label: "FOLIO.MENU.Drop", icon: icon("fa-hand-point-down"),
+          visible: li => editable() && canDropItem(itemOf(li)),
+          onClick: (_e, li) => this.#dropItem(itemOf(li))},
         {label: "FOLIO.MENU.Edit", icon: icon("fa-pen-to-square"),
           onClick: (_e, li) => itemOf(li)?.sheet.render({force: true})},
         {label: "FOLIO.MENU.Delete", icon: icon("fa-trash"),
@@ -1426,8 +1429,20 @@ export function FolioSheetMixin(Base) {
 
     /** @this {FolioSheet} */
     static async #onItemDrop(event, target) {
-      const item = this.#getItem(target);
-      if ( item ) await this.document.equipItem(item.id, {equipped: false, dropped: true});
+      await this.#dropItem(this.#getItem(target));
+    }
+
+    /**
+     * Drop a weapon in hand to the ground. Crucible does this as an action that costs nothing, stowing would cost one.
+     * @param {Item} item
+     */
+    async #dropItem(item) {
+      if ( !canDropItem(item) ) return;
+      try {
+        await this.document.equipItem(item, {equipped: false, dropped: true});
+      } catch(err) {
+        ui.notifications.warn(err.message);
+      }
     }
 
     /** @this {FolioSheet} */

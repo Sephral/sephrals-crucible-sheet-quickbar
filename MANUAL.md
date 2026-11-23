@@ -58,6 +58,7 @@ The module brings German skill and training names (Athletik, Wahrnehmung, Arkane
 | Show the portrait | Click it in play mode. The GM can show it to the players from the image window's menu |
 | Sort favorites | Drag and drop favorites (and quickbar buttons) |
 | Equip and stow | Drag an item onto an inventory section |
+| Drop a weapon | Hand icon beside a weapon or shield in hand, in the play tab and the inventory, or its right click menu. Costs no action. The weapon then lies on the ground, and the fist icon picks it up again (one action in combat). Natural weapons cannot be dropped |
 | Pin skills | Pin icon next to a skill: it then appears among the favorites and in the quickbar |
 | Charges | −/+ next to charges in the inventory |
 | Keyboard | Every clickable element is reachable with Tab. Enter or Space triggers it |

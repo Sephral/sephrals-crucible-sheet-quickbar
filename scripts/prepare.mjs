@@ -906,6 +906,38 @@ export function acceptsInventoryDrop(item, section) {
 }
 
 /**
+ * Can an item be dropped to the ground? Crucible drops weapons (shields are weapons too) that are in hand, without
+ * spending Action. Its own button also shows for stowed weapons, where it does nothing, and for natural ones.
+ * @param {Item} item
+ * @returns {boolean}
+ */
+export function canDropItem(item) {
+  const system = item?.system;
+  return (item?.type === "weapon") && !!system?.equipped && !system.dropped && !system.properties?.has?.("natural");
+}
+
+/**
+ * The equipment in the sidebar of the play tab: Crucible's featured equipment, what of it can be dropped, and the
+ * weapons lying on the ground.
+ * @param {Actor} actor
+ * @param {object[]} featured   Crucible's featuredEquipment
+ * @returns {object[]}
+ */
+export function prepareEquipped(actor, featured) {
+  const items = Array.from(actor.items ?? []);
+  const entries = (featured ?? []).map(e => {
+    const item = e.uuid ? items.find(i => i.uuid === e.uuid) : null;
+    return {...e, tags: (e.tags ?? []).filter(Boolean), itemId: item?.id ?? null, canDrop: canDropItem(item), dropped: false};
+  });
+  for ( const item of items ) {
+    if ( (item.type !== "weapon") || !item.system?.dropped ) continue;
+    entries.push({name: item.name, type: item.type, uuid: item.uuid, img: item.img, itemId: item.id, canDrop: false, dropped: true,
+      tags: [_loc("FOLIO.OnTheGround")]});
+  }
+  return entries;
+}
+
+/**
  * Distribute Crucible's inventory entries over the sections they are shown in. Moved entries follow the entries the
  * section already holds.
  * @param {Record<string, {items: object[]}>} inventory      Crucible's inventory sections
@@ -991,7 +1023,7 @@ export async function prepareInventory(scope, context) {
         showStack: d.showStack,
         equipped: !!d.equipped, dropped: !!d.dropped, css: d.cssClass ?? "",
         equip: equipAction ? {icon: equipAction.icon, tooltip: _loc(equipAction.tooltip)} : null,
-        canDrop: d.actions.some(b => b.action === "itemDrop"),
+        canDrop: canDropItem(item),
         actionId, usable: !!actionId,
         search: [item.name, ...Object.values(d.tags).map(t => t?.label ?? t)].filterJoin(" ").toLowerCase(),
         expanded,

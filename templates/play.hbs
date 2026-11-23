@@ -6,10 +6,19 @@
             <h3 class="fo-block-head" data-action="foCollapse"><i class="fa-solid fa-chevron-down fo-chev" inert></i>{{localize "FOLIO.Equipped"}}</h3>
             <ul class="fo-equipped" data-tooltip-direction="RIGHT">
                 {{#each folio.equipped as |e|}}
-                <li class="fo-equip" {{#if e.uuid}}data-crucible-tooltip="{{e.type}}" data-uuid="{{e.uuid}}"{{/if}}>
+                <li class="fo-equip{{#if e.dropped}} dropped{{/if}}" {{#if e.itemId}}data-item-id="{{e.itemId}}"{{/if}} {{#if e.uuid}}data-crucible-tooltip="{{e.type}}" data-uuid="{{e.uuid}}"{{/if}}>
                     <img src="{{e.img}}" alt="" inert>
                     <span class="fo-equip-name" inert>{{e.name}}</span>
                     <span class="fo-equip-tags" inert>{{#each e.tags}}<span>{{this}}</span>{{/each}}</span>
+                    {{#if @root.folio.editable}}
+                    {{#if e.canDrop}}
+                    <button type="button" class="fo-btn fo-equip-btn" data-action="foItemDrop" data-tooltip="FOLIO.DropHint"
+                            aria-label="{{localize 'FOLIO.DropHint'}}"><i class="fa-solid fa-hand-point-down" inert></i></button>
+                    {{else if e.dropped}}
+                    <button type="button" class="fo-btn fo-equip-btn" data-action="foItemEquip" data-tooltip="FOLIO.PickUpHint"
+                            aria-label="{{localize 'FOLIO.PickUpHint'}}"><i class="fa-solid fa-hand-back-fist" inert></i></button>
+                    {{/if}}
+                    {{/if}}
                 </li>
                 {{/each}}
             </ul>
