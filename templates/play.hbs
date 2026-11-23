@@ -6,7 +6,8 @@
             <h3 class="fo-block-head" data-action="foCollapse"><i class="fa-solid fa-chevron-down fo-chev" inert></i>{{localize "FOLIO.Equipped"}}</h3>
             <ul class="fo-equipped" data-tooltip-direction="RIGHT">
                 {{#each folio.equipped as |e|}}
-                <li class="fo-equip{{#if e.dropped}} dropped{{/if}}" {{#if e.itemId}}data-item-id="{{e.itemId}}"{{/if}} {{#if e.uuid}}data-crucible-tooltip="{{e.type}}" data-uuid="{{e.uuid}}"{{/if}}>
+                <li class="fo-equip{{#if e.dropped}} dropped{{/if}}" {{#if e.itemId}}data-item-id="{{e.itemId}}"{{/if}}>
+                    {{#if e.uuid}}<span class="fo-equip-card" data-crucible-tooltip="{{e.type}}" data-uuid="{{e.uuid}}"></span>{{/if}}
                     <img src="{{e.img}}" alt="" inert>
                     <span class="fo-equip-name" inert>{{e.name}}</span>
                     <span class="fo-equip-tags" inert>{{#each e.tags}}<span>{{this}}</span>{{/each}}</span>
